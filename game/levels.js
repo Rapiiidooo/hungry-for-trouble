@@ -1,10 +1,12 @@
+import { floorplan, DEFAULT_SEED } from "./floorplans.js";
+
 export const CELL = 2;
 
 const first = [
   "#################",
   "#B....#...E....B#",
   "#.##..#.###.##..#",
-  "#...E...........#",
+  "#...E....H......#",
   "#.###.#####.###.#",
   "#.....#...#.....#",
   "###.#.#.#.#.#.###",
@@ -255,18 +257,19 @@ export const LEVELS = [
   },
 ];
 
-// Put the first visor on the route out of the starting corridor, before combat escalates.
-LEVELS[1] = {
-  ...LEVELS[1],
-  map: freezer.map((row, i) => (i === 9 ? "#V..#.......#...#" : row)),
-};
-LEVELS[3] = {
-  ...LEVELS[3],
-  map: rush.map((row, i) => (i === 6 ? "#.....VB.B......#" : row)),
-};
+for (let index = 0; index < LEVELS.length; index++) {
+  const generated = floorplan(index);
+  if (generated) LEVELS[index] = { ...LEVELS[index], ...generated };
+}
+LEVELS[4].map = finale.map((row, z) =>
+  z === 9 ? row.slice(0, 8) + "H" + row.slice(9) : row,
+);
+LEVELS[0].shape = "FIRST SHIFT";
+LEVELS[4].shape = "MANAGER'S OFFICE";
 
-export function layoutFor(index) {
-  const level = LEVELS[index];
+export function layoutFor(index, seed = DEFAULT_SEED) {
+  const generated = floorplan(index, seed);
+  const level = { ...LEVELS[index], ...generated };
   const width = level.map[0].length,
     height = level.map.length;
   const walls = [],
@@ -275,14 +278,15 @@ export function layoutFor(index) {
     enemies = [],
     gates = [],
     visors = [],
-    belts = [];
+    belts = [],
+    repairs = [];
   let start, exit, boss;
   for (let z = 0; z < height; z++)
     for (let x = 0; x < width; x++) {
       const char = level.map[z][x];
       const position = { x: x * CELL, z: z * CELL };
       if (char === "#") walls.push({ ...position, col: x, row: z });
-      else {
+      else if (char !== " ") {
         if (char === "S") start = position;
         if (char === "X") exit = position;
         if (char === "B")
@@ -294,6 +298,8 @@ export function layoutFor(index) {
               char
             ],
           });
+        if (char === "H")
+          repairs.push({ ...position, collected: false, respawn: 0 });
         if (char === "V")
           visors.push({ ...position, collected: false, respawn: 0 });
         if (char === ">" || char === "<")
@@ -301,7 +307,7 @@ export function layoutFor(index) {
         if (char === "G")
           gates.push({ ...position, col: x, row: z, phase: gates.length % 2 });
         if (char === "M") boss = position;
-        if (!["S", "X", "B", "G", "M", "V"].includes(char))
+        if (!["S", "X", "B", "G", "M", "V", "H"].includes(char))
           crumbs.push({ ...position, collected: false });
       }
     }
@@ -315,6 +321,7 @@ export function layoutFor(index) {
     enemies,
     gates,
     visors,
+    repairs,
     belts,
     start,
     exit,

@@ -1,8 +1,19 @@
 import * as THREE from "three";
 import { ASSET, bakeStatic } from "./assetlib.js";
-import { newGame, stepGame, nextLevel, gateClosed, clamp } from "./sim.js";
+import {
+  newGame,
+  stepGame,
+  nextLevel,
+  gateClosed,
+  clamp,
+  canStand,
+} from "./sim.js";
 import { Sound } from "./audio.js";
 import { LEVELS } from "./levels.js";
+import { ViewRig } from "./view-rig.js";
+import { receiptEffects } from "./combat-fx.js";
+import { RADIO } from "./story.js";
+import { upgradeArt, upgradeStats } from "./upgrade-art.js";
 import {
   TICK,
   newDaily,
@@ -11,7 +22,6 @@ import {
   recordInput,
 } from "./daily.js";
 import {
-  art,
   UPGRADES,
   upgradeChoices,
   readProgress,
@@ -28,7 +38,7 @@ const ui = Object.fromEntries(
 const sound = new Sound();
 const palette = {
   ink: 0x263650,
-  cream: 0xf4ead6,
+  cream: 0xf0f2f3,
   gold: 0xefb546,
   red: 0xc94732,
   blue: 0x6c8fb8,
@@ -45,6 +55,13 @@ const enamelColors = new Map([
   [0x86cbd9, 0xa6bfd7],
 ]);
 let renderer, scene, camera, world, menuWorld, hero, bossModel, exitModel, halo;
+let viewRig,
+  receiptFX,
+  friend,
+  repairModels = [];
+let damageBearing = 0,
+  radioUntil = 0;
+const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 let fpsCamera,
   weapon,
   ceiling,
@@ -79,7 +96,6 @@ let prototypes = {},
   menuHero,
   menuTrolley,
   shotPool,
-  hazardPool,
   fx,
   keyLight,
   fillLight;
@@ -132,8 +148,12 @@ const paths = [
   "director",
 ];
 
-const isFPS = () => mode === "playing" && game.fpsTime > 0 && !viewOverhead;
-const activeCamera = () => (isFPS() ? fpsCamera : camera);
+const isFPS = () =>
+  mode === "playing" &&
+  game.state === "playing" &&
+  game.fpsTime > 0 &&
+  !viewOverhead;
+const activeCamera = () => viewRig?.camera || camera;
 
 function releaseLook() {
   if (document.pointerLockElement === ui.world) document.exitPointerLock();
@@ -474,7 +494,7 @@ async function makeMenu() {
     for (let x = -8; x <= 8; x += 2)
       tiles.push({ x, z, y: -0.12 * scale, scale });
   instanceAsset("floor", tiles, menuWorld, (p) =>
-    ((p.x + p.z) / 2) % 2 ? 0xc1b4a0 : 0xffffff,
+    ((p.x + p.z) / 2) % 2 ? 0xaab6c4 : 0xffffff,
   );
   for (const x of [-6, -3, 0, 3, 6]) {
     const shelf = cloneAsset("shelf");
@@ -518,6 +538,7 @@ async function buildWorld() {
     world.traverse((node) => {
       if (node.isInstancedMesh) node.dispose();
       if (node.userData.ownMaterial) node.material.dispose();
+      node.userData.ownTexture?.dispose();
       if (node.isSprite) {
         node.material.map?.dispose();
         node.material.dispose();
@@ -533,6 +554,8 @@ async function buildWorld() {
   batteries = [];
   gates = [];
   visorModels = [];
+  repairModels = [];
+  friend = null;
   beltMeshes = [];
   floating.splice(0).forEach((f) => f.el.remove());
   const theme = game.map.level.theme;
@@ -540,18 +563,19 @@ async function buildWorld() {
     scale = 2 / prototypes.floor.userData.nativeSize.x;
   for (let row = 0; row < game.map.height; row++)
     for (let col = 0; col < game.map.width; col++) {
+      if (game.map.level.map[row][col] === " ") continue;
       tiles.push({ x: col * 2, z: row * 2, col, row, scale, y: -0.12 * scale });
     }
   instanceAsset("floor", tiles, world, (p) => {
     if (game.map.level.map[p.row][p.col] === "#") return 0x8a8490;
     if (theme === "ice") return (p.col + p.row) % 2 ? 0x94adca : 0xd2dfec;
-    if (theme === "warehouse") return (p.col + p.row) % 2 ? 0x93877b : 0xb2a898;
+    if (theme === "warehouse") return (p.col + p.row) % 2 ? 0x778694 : 0xa4b0ba;
     if (theme === "rush") return (p.col + p.row) % 2 ? 0x7a7270 : 0x999088;
-    if (theme === "food") return (p.col + p.row) % 2 ? 0xb09a76 : 0x837e8b;
+    if (theme === "food") return (p.col + p.row) % 2 ? 0xb1b7b8 : 0x7e94aa;
     if (theme === "dock") return (p.col + p.row) % 2 ? 0x8491a4 : 0x6a7388;
-    if (theme === "conveyor") return (p.col + p.row) % 2 ? 0xaa9e82 : 0x738099;
-    if (theme === "director") return (p.col + p.row) % 2 ? 0x7b819a : 0xa5a095;
-    return (p.col + p.row) % 2 ? 0x888175 : 0xa29a85;
+    if (theme === "conveyor") return (p.col + p.row) % 2 ? 0xabb5bb : 0x738099;
+    if (theme === "director") return (p.col + p.row) % 2 ? 0x75839a : 0xb2b7be;
+    return (p.col + p.row) % 2 ? 0x738092 : 0x98a3b0;
   });
   const chunks = new Map();
   for (const wall of game.map.walls) {
@@ -561,7 +585,16 @@ async function buildWorld() {
       wall.col === 0 ||
       wall.row === 0 ||
       wall.col === game.map.width - 1 ||
-      wall.row === game.map.height - 1;
+      wall.row === game.map.height - 1 ||
+      [
+        [1, 0],
+        [-1, 0],
+        [0, 1],
+        [0, -1],
+      ].some(
+        ([dx, dz]) =>
+          game.map.level.map[wall.row + dz]?.[wall.col + dx] === " ",
+      );
     const object = cloneAsset(theme === "ice" || border ? "freezer" : "shelf");
     object.position.set(wall.x, 0, wall.z);
     if (border)
@@ -591,6 +624,23 @@ async function buildWorld() {
     ring.position.set(item.x, 0.025, item.z);
     world.add(model, ring);
     batteries.push({ model, ring, i });
+  }
+  for (const [i, item] of game.repairs.entries()) {
+    const model = cloneAsset("battery"),
+      ring = makeRing(0.65, palette.red);
+    markEmissive(model);
+    model.traverse((node) => {
+      if (!node.isMesh) return;
+      node.material.color.setHex(palette.cream);
+      node.material.emissive.setHex(palette.red);
+      node.material.emissiveIntensity = 0.12;
+    });
+    model.position.set(item.x, 0.12, item.z);
+    const sign = label("♥ +1 REPAIR", "#ff8065", 2.1);
+    sign.position.set(item.x, 1.2, item.z);
+    ring.position.set(item.x, 0.035, item.z);
+    world.add(model, ring, sign);
+    repairModels.push({ model, ring, sign, i });
   }
   for (const [i, item] of game.visors.entries()) {
     const model = cloneAsset("visor"),
@@ -636,16 +686,21 @@ async function buildWorld() {
   );
   const lamps = instanceAsset(
     "floor",
-    [4, 16, 28].flatMap((x) =>
-      [4, 12, 20].map((z) => ({ x, z, y: 3.03, scale: 0.55 })),
-    ),
+    tiles
+      .filter(
+        (t) =>
+          t.col % 4 === 2 &&
+          t.row % 4 === 2 &&
+          game.map.level.map[t.row][t.col] !== "#",
+      )
+      .map((t) => ({ x: t.x, z: t.z, y: 3.03, scale: 0.55 })),
     ceiling,
   );
   for (const { mesh } of [...ceilingTiles, ...lamps]) {
     mesh.material = mesh.material.clone();
     mesh.userData.ownMaterial = true;
     mesh.material.emissive.setHex(
-      lamps.some((l) => l.mesh === mesh) ? 0xffe9c7 : 0x33394d,
+      lamps.some((l) => l.mesh === mesh) ? 0xe7f1ff : 0x33394d,
     );
     mesh.material.emissiveIntensity = lamps.some((l) => l.mesh === mesh)
       ? 1.1
@@ -694,6 +749,18 @@ async function buildWorld() {
   exitModel.position.set(game.map.exit.x, 0, game.map.exit.z);
   exitModel.rotation.y = Math.PI;
   world.add(exitModel);
+  if (game.levelIndex === 9 && !game.daily) {
+    friend = compactActor(
+      await ASSET("assets/polisher.js", { keepHierarchy: true }),
+    );
+    friend.position.set(game.map.exit.x - 0.7, 0, game.map.exit.z);
+    friend.scale.setScalar(0.65);
+    markEmissive(friend, true);
+    world.add(friend);
+    const name = label("MOP-3 · RESCUE", "#f0f2f3", 2.6);
+    name.position.set(game.map.exit.x, 1.65, game.map.exit.z);
+    world.add(name);
+  }
   exitModel.visible = !game.daily;
   const checkoutLabel = label("CHECKOUT", "#f4ead6", 2.5);
   checkoutLabel.position.set(game.map.exit.x, 2.05, game.map.exit.z);
@@ -730,14 +797,20 @@ async function buildWorld() {
     world.add(manager);
   }
   shotPool = pool(palette.gold, 160);
-  hazardPool = pool(palette.red, 80);
-  world.add(shotPool, hazardPool);
+  receiptFX = receiptEffects(world, ownedGeometry);
+  world.add(shotPool);
   keyLight.color.setHex(
-    theme === "ice" ? 0xe0eaff : theme === "boss" ? 0xffcfb7 : 0xffedcf,
+    theme === "ice" ? 0xd9e9ff : theme === "boss" ? 0xffd7d0 : 0xf2f6ff,
   );
   fillLight.color.setHex(theme === "ice" ? 0xadc7e7 : 0xc2cbdf);
   scene.background.setHex(theme === "ice" ? 0x344766 : palette.ink);
   follow.set(game.player.x, 0, game.player.z);
+  ui["radio-line"].textContent = game.daily
+    ? "Keep moving. Repairs restore one heart; batteries grant invincibility."
+    : RADIO[game.levelIndex];
+  ui["radio-speaker"].textContent = "MOP-3 / SERVICE RADIO";
+  radioUntil = clock + 10;
+  ui["radio"].hidden = false;
   lastState = "playing";
   lastOvertime = false;
   ui.department.textContent = game.daily
@@ -777,6 +850,8 @@ async function start(fresh = true, upgrade, options = {}) {
   releaseLook();
   accumulator = 0;
   viewOverhead = false;
+  viewRig.reset();
+  damageUntil = 0;
   wasFPS = false;
   fpsPitch = 0;
   await sound.start();
@@ -787,7 +862,9 @@ async function start(fresh = true, upgrade, options = {}) {
     dailyLog = [];
     game = dailyAttempt
       ? newDaily(dailyAttempt.config)
-      : newGame(practiceLevel);
+      : newGame(practiceLevel, {
+          seed: crypto.getRandomValues(new Uint32Array(1))[0],
+        });
     runKills = 0;
     runCrumbs = 0;
     runShots = 0;
@@ -849,6 +926,7 @@ function pause(value = !paused) {
 function menu() {
   clearInput();
   mode = "menu";
+  viewRig.reset();
   paused = false;
   if (world) world.visible = false;
   releaseLook();
@@ -899,6 +977,19 @@ function handleEvents(events) {
       floatText("WARRANTY SAVED YOU", event.x, event.z, "shield-pop");
     if (event.type === "drone-warning")
       burst(event.x, event.z, palette.red, 8, 0.5);
+    if (event.type === "receipt-impact")
+      burst(event.x, event.z, palette.cream, 5, 1.2);
+    if (event.type === "heal") {
+      floatText("♥ +1 REPAIRED", event.x, event.z, "heal-pop");
+      burst(event.x, event.z, palette.red, 20, 1.6);
+      ui.health.animate(
+        [
+          { filter: "brightness(2)", transform: "scale(1.15)" },
+          { filter: "brightness(1)", transform: "scale(1)" },
+        ],
+        { duration: 550 },
+      );
+    }
     if (event.type === "shot") recoil = 1;
     if (event.type === "hit") burst(event.x, event.z, palette.cream, 6, 2.5);
     if (event.type === "shield") burst(event.x, event.z, palette.blue, 3, 1.5);
@@ -920,7 +1011,8 @@ function handleEvents(events) {
     }
     if (event.type === "dash") burst(event.x, event.z, palette.blue, 15, 1.5);
     if (event.type === "damage") {
-      damageUntil = clock + 0.5;
+      damageUntil = clock + 0.85;
+      damageBearing = Math.atan2(event.fromX - event.x, event.fromZ - event.z);
       burst(event.x, event.z, palette.red, 25, 3);
       floatText("♥ −1", event.x, event.z, "heart-pop");
       ui.health.animate(
@@ -962,7 +1054,9 @@ function handleEvents(events) {
       viewKick = 0.35;
       showMessage(
         "MANAGEMENT HAS LEFT THE BUILDING.",
-        "Your checkout is ready.",
+        game.boss.director
+          ? "SHELF CONTROL is offline. Pick up MOP-3 at the checkout!"
+          : "Access card acquired. MOP-3 is in the control wing.",
         3,
       );
     }
@@ -981,10 +1075,14 @@ function handleEvents(events) {
       const data = UPGRADES[key],
         button = document.createElement("button");
       button.dataset.upgrade = key;
-      button.innerHTML = `<div class="upgrade-art">${art(key)}</div><small>${data.tag} · LV ${game.upgrades[key] + 1}</small><h3>${data.name}</h3><p>${data.description(game.upgrades[key])}</p><b>EQUIP & CONTINUE <span>▶</span></b>`;
+      button.innerHTML = `<div class="upgrade-art">${upgradeArt(key, game.upgrades[key])}</div><div class="upgrade-stats">${upgradeStats(key, game.upgrades[key])}</div><small>${data.tag} · LV ${game.upgrades[key] + 1}</small><h3>${data.name}</h3><p>${data.description(game.upgrades[key])}</p><b>EQUIP & CONTINUE <span>▶</span></b>`;
       button.onclick = () => start(false, key);
       ui["upgrade-options"].append(button);
     }
+    ui["checkout-repair"].textContent =
+      game.player.hp < game.player.maxHp
+        ? "♥ CHECKOUT REPAIR: +1 HEART ON DEPARTURE"
+        : "♥ HEALTH FULL · CHECKOUT REPAIRS 1 HEART WHEN NEEDED";
     ui["next-aisle"].textContent =
       `NEXT: ${LEVELS[game.levelIndex + 1].name.toUpperCase()} · ${LEVELS[game.levelIndex + 1].tagline}`;
     return;
@@ -1021,7 +1119,7 @@ function handleEvents(events) {
   ui["result-comment"].textContent = game.daily
     ? "Same challenge. Unlimited retries. Only your best score counts."
     : won
-      ? "Ten aisles. Two bosses. Resignation accepted."
+      ? "SHELF CONTROL unplugged. MOP-3 rescued. Two resignations, zero notice."
       : game.time <= 0
         ? "Store closed. Your overtime was not approved."
         : "Occupational hazard. No compensation.";
@@ -1055,15 +1153,16 @@ function updateModels(dt) {
     Math.cos(clock * 14) * moving * 0.004,
   );
   hero.scale.setScalar(scale);
-  hero.visible = !isFPS();
-  halo.visible = !isFPS();
-  ceiling.visible = isFPS();
-  weapon.visible = isFPS();
+  hero.visible = halo.visible = viewRig.blend < 0.75;
+  ceiling.visible = viewRig.blend > 0.98;
+  weapon.visible = viewRig.blend > 0.92;
   const portraitFPS = innerWidth < 700 && innerHeight > innerWidth;
   weapon.scale.setScalar(portraitFPS ? 0.32 : 0.38);
   weapon.position.set(
     (portraitFPS ? 0.05 : 0.19) + Math.sin(clock * 10) * moving * 0.001,
-    -0.23 - Math.abs(Math.sin(clock * 10)) * moving * 0.002,
+    -0.23 -
+      (1 - viewRig.blend) * 3 -
+      Math.abs(Math.sin(clock * 10)) * moving * 0.002,
     -0.39 + recoil * 0.04,
   );
   const joints = hero.userData.joints;
@@ -1128,6 +1227,13 @@ function updateModels(dt) {
     model.rotation.y = clock * 0.8;
     ring.scale.setScalar(1 + Math.sin(clock * 4) * 0.08);
   }
+  for (const { model, ring, sign, i } of repairModels) {
+    const item = game.repairs[i];
+    model.visible = ring.visible = sign.visible = !item.collected;
+    model.position.y = 0.15 + Math.sin(clock * 3) * 0.06;
+    ring.material.opacity = game.player.hp < game.player.maxHp ? 0.8 : 0.3;
+  }
+  if (friend) friend.rotation.y = Math.sin(clock * 2) * 0.3;
   for (const { model, ring, i } of visorModels) {
     const item = game.visors[i];
     model.visible = ring.visible = !item.collected;
@@ -1196,20 +1302,13 @@ function updateModels(dt) {
       }
     });
   }
-  for (const [batch, shots] of [
-    [shotPool, game.bullets],
-    [hazardPool, game.hazards],
-  ]) {
+  for (const [batch, shots] of [[shotPool, game.bullets]]) {
     batch.count = Math.min(shots.length, batch.instanceMatrix.count);
     for (let i = 0; i < batch.count; i++) {
       const b = shots[i];
-      transform.position.set(b.x, 0.4, b.z);
+      transform.position.set(b.x, 0.72, b.z);
       transform.rotation.set(0, Math.atan2(b.vx, b.vz), 0);
-      transform.scale.set(
-        batch === hazardPool ? 2 : 0.8,
-        0.8,
-        batch === hazardPool ? 2 : 2.6,
-      );
+      transform.scale.set(0.7, 0.7, 3);
       transform.updateMatrix();
       batch.setMatrixAt(i, transform.matrix);
     }
@@ -1225,7 +1324,7 @@ function screenPosition(x, y, z) {
   };
 }
 
-function updateCamera(dt) {
+function updateCamera(dt, advance = true) {
   const portrait = innerWidth < 700 && innerHeight > innerWidth;
   if (mode === "menu") {
     const target = portrait
@@ -1234,8 +1333,9 @@ function updateCamera(dt) {
     camera.position.copy(target).add(new THREE.Vector3(6, 11, 15));
     camera.lookAt(target);
   } else {
-    const x = clamp(game.player.x, portrait ? 4 : 8, portrait ? 28 : 24);
-    const z = clamp(game.player.z - 1.2, 5, 19);
+    const margin = portrait ? 4 : 8;
+    const x = clamp(game.player.x, margin, (game.map.width - 1) * 2 - margin);
+    const z = clamp(game.player.z - 1.2, 5, (game.map.height - 1) * 2 - 5);
     follow.lerp(vector.set(x, 0, z), Math.min(1, dt * 7));
     const shake = Math.max(game.shake, viewKick);
     camera.position
@@ -1244,7 +1344,7 @@ function updateCamera(dt) {
     camera.lookAt(follow);
   }
   camera.updateMatrixWorld();
-  if (isFPS()) {
+  if (mode === "playing") {
     const p = game.player;
     fpsCamera.position.set(
       p.x,
@@ -1259,53 +1359,55 @@ function updateCamera(dt) {
     );
     fpsCamera.updateMatrixWorld();
   }
+  viewRig.update(advance ? dt : 0, isFPS(), reducedMotion.matches);
 }
 
 function drawMap() {
-  mini.fillStyle = "#1a2232ee";
+  mini.clearRect(0, 0, 204, 156);
+  mini.fillStyle = "#111c2aee";
   mini.fillRect(0, 0, 204, 156);
-  for (const wall of game.map.walls) {
-    mini.fillStyle = "#657189";
-    mini.fillRect(wall.col * 12 + 1, wall.row * 12 + 1, 10, 10);
-  }
-  for (const crumb of game.crumbs)
-    if (!crumb.collected) {
-      mini.fillStyle = "#efb546";
-      mini.fillRect(crumb.x * 6 + 5, crumb.z * 6 + 5, 2, 2);
+  const size = Math.min(200 / game.map.width, 152 / game.map.height);
+  const ox = (204 - size * game.map.width) / 2,
+    oz = (156 - size * game.map.height) / 2;
+  const mark = (p, color, r) => {
+    mini.fillStyle = color;
+    mini.fillRect(
+      ox + (p.x / 2 + 0.5) * size - r / 2,
+      oz + (p.z / 2 + 0.5) * size - r / 2,
+      r,
+      r,
+    );
+  };
+  for (let z = 0; z < game.map.height; z++)
+    for (let x = 0; x < game.map.width; x++) {
+      const char = game.map.level.map[z][x];
+      if (char !== " ")
+        mark(
+          { x: x * 2, z: z * 2 },
+          char === "#" ? "#657189" : "#2c3a4a",
+          size - 1,
+        );
     }
-  for (const battery of game.batteries)
-    if (!battery.collected) {
-      mini.fillStyle = "#efb546";
-      mini.fillRect(battery.x * 6 + 3, battery.z * 6 + 3, 6, 6);
+  for (const c of game.crumbs) if (!c.collected) mark(c, "#efb546", 2);
+  for (const c of game.batteries) if (!c.collected) mark(c, "#efb546", 5);
+  for (const c of game.visors) if (!c.collected) mark(c, "#a4c0e0", 5);
+  for (const c of game.repairs)
+    if (!c.collected) {
+      mark(c, "#ff8065", 6);
+      mark(c, "#fff", 2);
     }
-  for (const visor of game.visors)
-    if (!visor.collected) {
-      mini.fillStyle = "#a4c0e0";
-      mini.fillRect(visor.x * 6 + 2, visor.z * 6 + 4, 9, 4);
-    }
-  for (const gate of game.map.gates) {
-    mini.fillStyle = gateClosed(game, gate.col, gate.row)
-      ? "#ff8065"
-      : "#a4c0e0";
-    mini.fillRect(gate.col * 12 + 1, gate.row * 12 + 4, 10, 4);
-  }
-  mini.fillStyle =
-    game.collected >= game.map.level.quota ? "#efb546" : "#a4c0e0";
+  for (const g of game.map.gates)
+    mark(g, gateClosed(game, g.col, g.row) ? "#ff8065" : "#a4c0e0", 5);
   if (!game.daily)
-    mini.fillRect(game.map.exit.x * 6 + 2, game.map.exit.z * 6 + 2, 8, 8);
-  for (const enemy of game.enemies)
-    if (enemy.respawn <= 0) {
-      mini.fillStyle = game.overtime > 0 ? "#a4c0e0" : "#ff8065";
-      mini.fillRect(enemy.x * 6 + 3, enemy.z * 6 + 3, 5, 5);
-    }
-  if (game.boss?.hp > 0) {
-    mini.fillStyle = "#ff8065";
-    mini.fillRect(game.boss.x * 6 + 1, game.boss.z * 6 + 1, 10, 10);
-  }
-  mini.fillStyle = "#ffffff";
-  mini.beginPath();
-  mini.arc(game.player.x * 6 + 6, game.player.z * 6 + 6, 4, 0, Math.PI * 2);
-  mini.fill();
+    mark(
+      game.map.exit,
+      game.collected >= game.map.level.quota ? "#efb546" : "#a4c0e0",
+      7,
+    );
+  for (const e of game.enemies)
+    if (e.respawn <= 0) mark(e, game.overtime > 0 ? "#a4c0e0" : "#ff8065", 4);
+  if (game.boss?.hp > 0) mark(game.boss, "#ff8065", 8);
+  mark(game.player, "#fff", 5);
 }
 
 function updateHud() {
@@ -1381,6 +1483,13 @@ function updateHud() {
       ? "SHIELD DOWN. MAKE IT PERSONAL."
       : "ARMOURED. DODGE THE COMPLAINTS.";
   }
+  ui["heal-hint"].textContent = game.daily
+    ? "♥ REPAIR KIT +1 · RESPAWNS IN 30s"
+    : "♥ REPAIR KIT +1 · CHECKOUT +1";
+  ui["radio"].hidden = clock > radioUntil || paused;
+  ui["damage-direction"].hidden = clock >= damageUntil || viewRig.blend < 0.8;
+  ui["damage-direction"].style.transform =
+    `rotate(${fpsYaw - damageBearing}rad)`;
   drawMap();
 }
 
@@ -1477,6 +1586,11 @@ function telemetry() {
       : null,
     audio: { enabled: sound.enabled, state: sound.ctx?.state || "idle" },
     firstPerson: isFPS(),
+    viewBlend: viewRig.blend,
+    shape: game.map.level.shape,
+    seed: game.seed,
+    repairs: game.repairs.map((r) => ({ ...r })),
+    hazards: game.hazards.map((h) => ({ ...h })),
     fpsTime: game.fpsTime,
     fpsYaw,
     fpsPitch,
@@ -1523,8 +1637,10 @@ function frame(now) {
   ui.game.classList.toggle("first-person", isFPS());
   ui.game.classList.toggle("visor-active", game.fpsTime > 0);
   sound.update(active, game.overtime, game.map.level.theme);
+  updateCamera(dt);
   if (mode === "playing" && !building) {
     if (!paused) updateModels(dt);
+    receiptFX?.update(game, activeCamera(), canStand);
     hudTime += dt;
     if (hudTime > 0.08) {
       hudTime = 0;
@@ -1572,7 +1688,6 @@ function frame(now) {
   fx.geometry.setDrawRange(0, particles.length);
   if (clock > messageUntil) ui.message.classList.remove("show");
   ui["hit-flash"].classList.toggle("active", clock < damageUntil);
-  updateCamera(dt);
   for (let i = floating.length - 1; i >= 0; i--) {
     const f = floating[i],
       age = clock - f.start;
@@ -1605,7 +1720,7 @@ function resize() {
   fpsCamera.updateProjectionMatrix();
   renderer.setPixelRatio(Math.min(devicePixelRatio, portrait ? 1.5 : 2));
   renderer.setSize(innerWidth, innerHeight, false);
-  updateCamera(1);
+  updateCamera(1, false);
 }
 
 function bindStick(id, target, aiming) {
@@ -1799,8 +1914,9 @@ async function init() {
     0.035,
     65,
   );
+  viewRig = new ViewRig(camera, fpsCamera);
   scene.add(fpsCamera);
-  keyLight = new THREE.DirectionalLight(0xffedcf, 3.2);
+  keyLight = new THREE.DirectionalLight(0xf2f6ff, 3.2);
   keyLight.position.set(5, 24, 14);
   keyLight.target.position.set(15, 0, 12);
   keyLight.castShadow = true;
@@ -1816,7 +1932,7 @@ async function init() {
   keyLight.shadow.bias = -0.0002;
   keyLight.shadow.normalBias = 0.04;
   scene.add(keyLight, keyLight.target);
-  fillLight = new THREE.HemisphereLight(0xc2cbdf, 0x705a45, 1.65);
+  fillLight = new THREE.HemisphereLight(0xc2cbdf, 0x525e70, 1.65);
   scene.add(fillLight);
   const rim = new THREE.DirectionalLight(0xb7c9e4, 1.2);
   rim.position.set(0, 8, -15);

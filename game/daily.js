@@ -1,6 +1,6 @@
 import { newGame, stepGame, clamp } from "./sim.js";
 
-export const RULESET = "daily-rush-1";
+export const RULESET = "daily-rush-2";
 export const TICK = 1 / 60;
 export const DAILY_TICKS = 5400;
 
@@ -29,6 +29,7 @@ export function newDaily(config) {
     throw new Error("Challenge has changed. Reload to start.");
   const game = newGame(expected.levelIndex, {
     hp: 4,
+    seed: expected.seed,
     upgrades: { rapid: 1, spread: 1, magnet: 1 },
   });
   game.daily = expected;
@@ -58,6 +59,7 @@ export function newDaily(config) {
       ...game.crumbs,
       ...game.batteries,
       ...game.visors,
+      ...game.repairs,
       ...game.enemies,
       ...game.map.walls,
       ...game.map.gates,

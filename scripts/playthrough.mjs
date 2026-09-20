@@ -66,7 +66,7 @@ function routes(g) {
         key = next.join(",");
       if (
         !g.map[next[1]]?.[next[0]] ||
-        g.map[next[1]][next[0]] === "#" ||
+        ["#", " "].includes(g.map[next[1]][next[0]]) ||
         found.has(key)
       )
         continue;
@@ -90,7 +90,8 @@ function lineOfSight(g, target) {
   for (let i = 1; i < d * 5; i++) {
     const x = g.pos[0] + ((target.x - g.pos[0]) * i) / (d * 5);
     const z = g.pos[1] + ((target.z - g.pos[1]) * i) / (d * 5);
-    if (g.map[Math.round(z / 2)]?.[Math.round(x / 2)] === "#") return false;
+    if (["#", " "].includes(g.map[Math.round(z / 2)]?.[Math.round(x / 2)]))
+      return false;
   }
   return true;
 }
@@ -98,6 +99,14 @@ function choosePath(g) {
   const found = routes(g);
   const pathFor = (point) =>
     found.get(point.map((n) => Math.round(n / 2)).join(","))?.path;
+  if (g.hp <= 2) {
+    const repairs = g.repairs
+      .filter((r) => !r.collected)
+      .map((r) => pathFor([r.x, r.z]))
+      .filter((p) => p?.length)
+      .sort((a, b) => a.length - b.length);
+    if (repairs[0]) return repairs[0];
+  }
   if (fpsOnly && g.floor === 2 && g.visors.some((v) => !v.collected)) {
     const visor = g.visors.find((v) => !v.collected);
     return pathFor([visor.x, visor.z]) || [];
@@ -233,6 +242,19 @@ try {
       await setKeys([]);
       await shoot(false);
       if (!sawFPS) {
+        const transition = [];
+        for (let sample = 0; sample < 10; sample++) {
+          transition.push((await read()).viewBlend);
+          await sleep(85);
+        }
+        assert.ok(
+          transition.some((value) => value > 0 && value < 1),
+          "Camera entry must interpolate",
+        );
+        await page.waitForFunction(() => window.__GAME__.viewBlend === 1);
+        report.checks.push(
+          "Overhead-to-FPS camera interpolates continuously and settles",
+        );
         await page.mouse.click(640, 400);
         await sleep(120);
         const beforeLook = await read();
@@ -257,8 +279,30 @@ try {
         );
         if (fpsOnly) {
           await page.keyboard.press("KeyV");
-          await sleep(100);
+          await sleep(200);
+          assert.ok(
+            (await read()).viewBlend > 0 && (await read()).viewBlend < 1,
+          );
           await page.keyboard.press("KeyV");
+          await page.waitForFunction(() => window.__GAME__.viewBlend === 1);
+          report.checks.push(
+            "Camera transition reverses mid-flight without snapping or pausing",
+          );
+          await page.emulateMediaFeatures([
+            { name: "prefers-reduced-motion", value: "reduce" },
+          ]);
+          await page.keyboard.press("KeyV");
+          await sleep(120);
+          assert.equal((await read()).viewBlend, 0);
+          await page.keyboard.press("KeyV");
+          await sleep(120);
+          assert.equal((await read()).viewBlend, 1);
+          await page.emulateMediaFeatures([
+            { name: "prefers-reduced-motion", value: "no-preference" },
+          ]);
+          report.checks.push(
+            "Reduced motion changes view without a camera flight",
+          );
           await page.setViewport({
             width: 390,
             height: 844,
@@ -314,7 +358,7 @@ try {
         sawFPS = true;
       }
       await page.keyboard.press("KeyV");
-      await sleep(100);
+      await sleep(950);
       assert.equal((await read()).firstPerson, false);
       assert.equal((await read()).paused, false);
       if (fpsOnly && sawFPS) break;
@@ -464,7 +508,7 @@ try {
     await page.waitForFunction(
       () => window.__GAME__.state === "playing" && window.__GAME__.floor === 1,
     );
-    assert.equal((await read()).hp, 3);
+    assert.equal((await read()).hp, 4);
     report.checks.push("Retry resets campaign, health and upgrades");
     await page.waitForFunction(() => window.__GAME__.state === "lost", {
       timeout: 70000,
@@ -473,7 +517,7 @@ try {
     report.checks.push("Enemy contact causes a real loss");
     await page.click("#retry");
     await page.waitForFunction(() => window.__GAME__.state === "playing");
-    assert.equal((await read()).hp, 3);
+    assert.equal((await read()).hp, 4);
     report.checks.push("Immediate retry after death");
   } else {
     assert.ok(sawFPS);

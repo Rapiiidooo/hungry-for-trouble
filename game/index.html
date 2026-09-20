@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
-    <meta name="theme-color" content="#f4ead6" />
+    <meta name="theme-color" content="#f0f2f3" />
     <title>Hungry for Trouble</title>
     <meta
       name="description"
@@ -15,6 +15,7 @@
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./arcade.css" />
+    <link rel="stylesheet" href="./feel.css" />
     <script type="importmap">
       {
         "imports": {
@@ -44,8 +45,8 @@
         <h1>Hungry<br />for <em>trouble.</em></h1>
         <p class="lead">Minimum wage.<br /><b>Maximum firepower.</b></p>
         <p class="pitch">
-          Collect the crumbs. Dodge the security.<br />Grab a battery. Become
-          the problem.
+          The store AI has marked you as rubbish.<br />Rescue MOP-3. Take out
+          the management.
         </p>
         <button id="start" class="primary" disabled>
           WARMING UP… <span>▶</span>
@@ -101,9 +102,10 @@
         <div class="hud-bottom">
           <div class="vitals">
             <div class="health-label">
-              WARRANTY <span id="shield-count"></span>
+              HEALTH <span id="shield-count"></span>
             </div>
             <div id="health" aria-label="Health"></div>
+            <small id="heal-hint">♥ REPAIR KIT +1 · CHECKOUT +1</small>
             <div id="ammo-panel">
               <span class="ammo-icon" aria-hidden="true">▰<br />▰<br />▰</span
               ><strong id="ammo">24</strong>
@@ -143,6 +145,14 @@
           >
         </div>
         <div id="crosshair" hidden><i></i></div>
+        <div id="damage-direction" hidden><span>▼</span></div>
+        <aside id="radio" hidden>
+          <div class="radio-portrait" aria-hidden="true">M3</div>
+          <div>
+            <b id="radio-speaker">MOP-3 / SERVICE RADIO</b>
+            <p id="radio-line"></p>
+          </div>
+        </aside>
         <div id="run-badge"></div>
         <div id="floating-fx" aria-hidden="true"></div>
       </section>
@@ -166,6 +176,7 @@
           <div class="eyebrow">AISLE CLEARED</div>
           <h2>Pick your <em>problem.</em></h2>
           <p>One free upgrade. Then straight back to the mess.</p>
+          <p id="checkout-repair" class="repair-notice"></p>
           <div id="upgrade-route" class="route-strip"></div>
           <div id="upgrade-options" class="upgrades"></div>
           <p id="next-aisle"></p>

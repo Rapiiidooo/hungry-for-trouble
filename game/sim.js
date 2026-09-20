@@ -1,3 +1,4 @@
+import { DEFAULT_SEED } from "./floorplans.js";
 import { CELL, LEVELS, layoutFor } from "./levels.js";
 
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
@@ -11,9 +12,11 @@ const directions = [
 ];
 
 export function newGame(levelIndex = 0, carry = {}) {
-  const map = layoutFor(levelIndex);
+  const seed = carry.seed ?? DEFAULT_SEED;
+  const map = layoutFor(levelIndex, seed);
   return {
     levelIndex,
+    seed,
     map,
     state: "playing",
     elapsed: 0,
@@ -25,7 +28,8 @@ export function newGame(levelIndex = 0, carry = {}) {
       angle: 0,
       hp: Math.min(
         4 + (carry.upgrades?.heart || 0),
-        (carry.hp || 3) + (levelIndex ? 1 : 0),
+        (carry.hp ?? 4 + (carry.upgrades?.heart || 0)) +
+          (carry.hp !== undefined && levelIndex ? 1 : 0),
       ),
       maxHp: 4 + (carry.upgrades?.heart || 0),
       shield: carry.upgrades?.shield || 0,
@@ -70,6 +74,7 @@ export function newGame(levelIndex = 0, carry = {}) {
     crumbs: map.crumbs,
     batteries: map.batteries,
     visors: map.visors,
+    repairs: map.repairs,
     fpsTime: 0,
     bullets: [],
     hazards: [],
@@ -117,7 +122,7 @@ export function solid(game, col, row) {
   return (
     !game.map.level.map[row] ||
     game.map.level.map[row][col] === undefined ||
-    game.map.level.map[row][col] === "#" ||
+    ["#", " "].includes(game.map.level.map[row][col]) ||
     gateClosed(game, col, row)
   );
 }
@@ -217,7 +222,7 @@ function killEnemy(game, enemy) {
   });
 }
 
-function hurt(game) {
+function hurt(game, source = game.player) {
   const p = game.player;
   if (p.invincible > 0 || p.dash > 0 || game.overtime > 0) return;
   if (p.shield > 0) {
@@ -230,7 +235,13 @@ function hurt(game) {
   p.invincible = 1.5;
   game.combo = 0;
   game.shake = 0.18;
-  game.events.push({ type: "damage", x: p.x, z: p.z });
+  game.events.push({
+    type: "damage",
+    x: p.x,
+    z: p.z,
+    fromX: source.x,
+    fromZ: source.z,
+  });
   if (p.hp <= 0) {
     game.state = "lost";
     game.events.push({ type: "lost" });
@@ -355,6 +366,18 @@ export function stepGame(game, input, dt) {
         enemy.waypoint = null;
         enemy.windup = enemy.charge = 0;
       }
+    }
+  }
+
+  for (const repair of game.repairs) {
+    if (repair.collected) {
+      repair.respawn -= dt;
+      if (game.daily && repair.respawn <= 0) repair.collected = false;
+    } else if (p.hp < p.maxHp && distance(p, repair) < 0.85) {
+      repair.collected = true;
+      repair.respawn = 30;
+      p.hp++;
+      game.events.push({ type: "heal", x: repair.x, z: repair.z });
     }
   }
 
@@ -509,7 +532,7 @@ export function stepGame(game, input, dt) {
     }
     if (distance(p, enemy) < 0.75) {
       if (game.overtime > 0) killEnemy(game, enemy);
-      else hurt(game);
+      else hurt(game, enemy);
     }
   }
 
@@ -583,26 +606,30 @@ export function stepGame(game, input, dt) {
       if (enraged)
         for (let i = 0; i < 8; i++)
           angles.push((i * Math.PI) / 4 + boss.phase * 0.12);
-      for (const direction of angles)
-        game.hazards.push({
-          x: boss.x,
-          z: boss.z,
-          vx: Math.sin(direction) * 5,
-          vz: Math.cos(direction) * 5,
-          life: 4,
-        });
+      for (const direction of angles) launchHazard(game, boss, direction, 5, 4);
       game.events.push({ type: "boss-shot" });
     }
-    if (distance(p, boss) < 1.6) hurt(game);
+    if (distance(p, boss) < 1.6) hurt(game, boss);
   }
   for (const hazard of game.hazards) {
     hazard.life -= dt;
-    hazard.x += hazard.vx * dt;
-    hazard.z += hazard.vz * dt;
-    if (!canStand(game, hazard.x, hazard.z, 0.15)) hazard.life = 0;
-    if (distance(hazard, p) < 0.48) {
-      hurt(game);
-      hazard.life = 0;
+    hazard.age = (hazard.age || 0) + dt;
+    const steps = Math.max(
+      1,
+      Math.ceil((Math.hypot(hazard.vx, hazard.vz) * dt) / 0.12),
+    );
+    for (let i = 0; i < steps && hazard.life > 0; i++) {
+      hazard.x += (hazard.vx * dt) / steps;
+      hazard.z += (hazard.vz * dt) / steps;
+      if (!canStand(game, hazard.x, hazard.z, 0.15)) {
+        hazard.life = 0;
+        game.events.push({ type: "receipt-impact", x: hazard.x, z: hazard.z });
+        break;
+      }
+      if (distance(hazard, p) < 0.48) {
+        hurt(game, { x: hazard.x - hazard.vx, z: hazard.z - hazard.vz });
+        hazard.life = 0;
+      }
     }
   }
   game.hazards = game.hazards.filter((item) => item.life > 0);
@@ -632,6 +659,7 @@ export function nextLevel(game, upgrade) {
   return newGame(game.levelIndex + 1, {
     hp: game.player.hp + (upgrade === "heart" ? 1 : 0),
     score: game.score,
+    seed: game.seed,
     upgrades,
   });
 }
@@ -651,12 +679,13 @@ export function lineOfSight(game, a, b) {
   return true;
 }
 
-function launchHazard(game, origin, angle, speed) {
+function launchHazard(game, origin, angle, speed, life = 3) {
   game.hazards.push({
     x: origin.x,
     z: origin.z,
     vx: Math.sin(angle) * speed,
     vz: Math.cos(angle) * speed,
-    life: 3,
+    life,
+    age: 0,
   });
 }

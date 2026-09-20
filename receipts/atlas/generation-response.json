@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"success\": true,\n  \"response_text\": \"\\nAgent credit budget exhausted. Send a new prompt to refresh the budget.\",\n  \"budget_credits\": 180,\n  \"graph_identifiers\": {\n    \"nodes\": [],\n    \"connections\": []\n  },\n  \"cost_usd\": 0.016860975,\n  \"cost_credits\": 2,\n  \"remaining_budget_credits\": 178,\n  \"budget_exhausted\": true\n}"
+    }
+  ],
+  "structuredContent": {
+    "success": true,
+    "response_text": "\nAgent credit budget exhausted. Send a new prompt to refresh the budget.",
+    "budget_credits": 180,
+    "graph_identifiers": {
+      "nodes": [],
+      "connections": []
+    },
+    "cost_usd": 0.016860975,
+    "cost_credits": 2,
+    "remaining_budget_credits": 178,
+    "budget_exhausted": true
+  },
+  "isError": false
+}

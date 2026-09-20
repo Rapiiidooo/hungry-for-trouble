@@ -1,6 +1,6 @@
 # Hungry for Trouble
 
-A haunted supermarket. One heavily unqualified vacuum. Collect crumbs, dodge security, grab an Overtime Battery and become the problem.
+SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must unplug the store AI and rescue MOP-3. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
 
 ## Play locally
 
@@ -18,7 +18,7 @@ Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installat
 | Pause                      | Escape                | Pause button             |
 | Change view during Vac Cam | V                     | View button              |
 
-Crumbs refill ammunition and advance the collection goal. Once the goal is met, reach the marked checkout. Batteries give eight seconds of invulnerability, free spread shots and reversed enemy pursuit. Pick one upgrade between aisles. Campaign records and unlocked aisles are saved in this browser. Vac Cam goggles grant 18 seconds of first-person play, extra ammunition and faster firing. Click to lock mouse aim, or drag if pointer lock is unavailable. The right touch stick turns and fires. V returns to overhead while keeping the fire-rate bonus.
+Crumbs refill ammunition and advance the collection goal. Once the goal is met, reach the marked checkout. Batteries give eight seconds of invulnerability, free spread shots and reversed enemy pursuit. White/red repair kits restore one heart and remain available when health is full. Checkout restores one heart on departure. Pick one upgrade between aisles; the cards show before/after mechanics and exact stats. Campaign records and unlocked aisles are saved in this browser. Vac Cam goggles grant 18 seconds of first-person play, extra ammunition and faster firing. Click to lock mouse aim, or drag if pointer lock is unavailable. The right touch stick turns and fires. V returns to overhead while keeping the fire-rate bonus.
 
 ## The escape route
 
@@ -33,7 +33,7 @@ Crumbs refill ammunition and advance the collection goal. Once the goal is met, 
 9. **Express Distress:** opposing conveyor lanes push players through a crowded layout.
 10. **Exit Interview:** the Director guards the street with rotating receipt volleys and shield windows.
 
-The route announces both bosses and saves each real clear. Unlocked aisles can be practised directly. Full campaign personal records remain separate from practice. Upgrade cards illustrate faster firing, spread, piercing, a rechargeable warranty shield, crumb attraction and extra health.
+After the familiar first aisle, seeded rooms and corridors change the footprint: dogleg, loading loop, crossroads, food court, horseshoe, frozen islands, switchback and control wing. Cover and supplies vary each campaign. The route announces both bosses and saves each real clear. Unlocked aisles can be practised directly. Full campaign personal records remain separate from practice. Upgrade cards illustrate faster firing, spread, piercing, a rechargeable warranty shield, crumb attraction and extra health.
 
 ## Daily Rush and shared scores
 
@@ -56,10 +56,11 @@ node scripts/touch-playtest.mjs
 node scripts/playthrough.mjs --fps
 node scripts/playthrough.mjs --daily
 node scripts/arcade-playtest.mjs
+node scripts/feel-playtest.mjs
 ```
 
 The simulation tests use Node's built-in test runner. The shipping and browser checks use the adjacent official `404-game-recipe` checkout; browser scripts expect local Google Chrome on macOS. Browser checks require the development server. `playthrough.mjs` finishes the campaign using real keyboard and pointer events with read-only telemetry. `touch-playtest.mjs` checks simultaneous movement, firing and dash, release, cancellation, pause and rotation.
 
-The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Audio is an original Web Audio composition and synthesised effects.
+The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits); their catalog download is waiting for the owner’s workspace-access approval and they are not yet used at runtime.
 
 For the next development session, read [docs/resume.md](docs/resume.md). Hosting and contest submission have not been performed.

@@ -1,0 +1,90 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"success\": true,\n  \"response_text\": \"All requested assets for **Hungry for Trouble** have been generated and settled in the graph. The exact prompt strings are stored in dedicated input nodes connected directly to each generator.\\n\\n---\\n\\n### 1. Generated Assets Summary\\n\\n| Asset | Node ID | Model / Engine | Output File ID (`fid`) | Actual Credits | Status |\\n| :--- | :--- | :--- | :--- | :--- | :--- |\\n| **Soundtrack Loop** (30s instrumental) | `8b8b1962` | **Google Lyria 3 Clip** (`simple_create_music`) | `33a924d2-b8a7-43ba-8716-b765c99ec0b8` | **5** | Success |\\n| **MOP-3 Portrait** (1:1 Square) | `e75480da` | **Gemini 3.1 Flash Lite Image** (`fast_text_to_image`) | `06e7c09d-6dfc-4ad7-8427-44e046209e6b` | **4** | Success |\\n| **SHELF CONTROL Portrait** (1:1 Square) | `e4b407bf` | **Gemini 3.1 Flash Lite Image** (`fast_text_to_image`) | `15d2d769-e152-4a85-82c8-b067b4a9ee02` | **4** | Success |\\n\\n- **Total Node Execution Cost:** **13 credits** (Music: 5 credits; Portraits: 4 credits each).  \\n  *(Note: Complete assistant turn total includes model processing and will finalize upon completion).*\\n\\n---\\n\\n### 2. Node Graph & Prompt Configuration\\n\\n- **`Music_Prompt` (`25ce5959`)** $\\\\rightarrow$ **`8b8b1962` (`simple_create_music`)**:\\n  - **Prompt:** `132 BPM playful supermarket muzak vibraphone over energetic breakbeat and rubbery synth bass, comic robotic stabs, urgent arcade action, no vocals, no famous references, no slow intro or fade, leave room for effects`\\n  - **Parameters:** `backend`: `\\\"Google Lyria 3 Clip (30s MP3, 44.1kHz stereo, optional images)\\\"`, `is_instrumental`: `true`\\n  - **Audio Output:** 30s 44.1kHz stereo electronic arcade loop with vibraphone lead, energetic breakbeat, and comic synth stabs.\\n- **`MOP3_Prompt` (`dfa85373`)** $\\\\rightarrow$ **`e75480da` (`fast_text_to_image`)**:\\n  - **Prompt:** `512px square original painted comic game portrait of MOP-3, battered white-and-red cleaning robot with expressive glass eyes and a mop antenna, defiant but endearing, navy background. Bold comic ink shadows, enamel white and steel blue, no cream, no text, no humans, no trademarks.`\\n  - **Parameters:** `backend`: `\\\"Gemini 3.1 Flash Lite Image\\\"`, `aspect_ratio`: `\\\"1:1 (1K)\\\"`, `seed`: `42`\\n- **`SHELF_CONTROL_Prompt` (`16e3a70a`)** $\\\\rightarrow$ **`e4b407bf` (`fast_text_to_image`)**:\\n  - **Prompt:** `512px square original painted comic game portrait of SHELF CONTROL, angry red pixel face on a navy checkout-monitor robot with a receipt paper crown, navy background. Bold comic ink shadows, enamel white and steel blue, no cream, no text, no humans, no trademarks.`\\n  - **Parameters:** `backend`: `\\\"Gemini 3.1 Flash Lite Image\\\"`, `aspect_ratio`: `\\\"1:1 (1K)\\\"`, `seed`: `42`\\n\\n---\\n\\n### 3. Download Contract & Supported Retrieval Mechanisms\\n\\n#### Web Editor Interface\\n1. **Queued ZIP Archive:**\\n   - A packaged archive named `hungry_for_trouble_assets.zip` (Download ID: `8005f076-7e6c-46b3-929f-85c4c0f7f150`) has been queued containing all three assets (`audio/hungry_for_trouble_theme.mp3`, `portraits/mop3_portrait.png`, and `portraits/shelf_control_portrait.png`).\\n   - The download card appears above the chat input in the editor. If not immediately visible, reloading the page restores all saved download cards.\\n2. **Direct Node Output Download:**\\n   - In the canvas, each node's output card and header ellipsis menu provide a direct single-asset download action for collaborators.\\n\\n#### External MCP Client / Automated Retrieval Contract (Without Sharing or API Export)\\n- Direct public unauthenticated download URLs are deliberately unavailable for private projects to prevent unauthorized exposure.\\n- **Supported Retrieval Flow:**\\n  1. Grant workspace access to the project by calling `set_project_team_access(team_access=\\\"workspace_read\\\")` (or `\\\"workspace_edit\\\"`). This permanently publishes the generated project files to the shared workspace Asset Catalog without public sharing or API export.\\n  2. Call `get_workspace_asset(fid=\\\"<FILE_UUID>\\\")` with the asset's file ID.\\n  3. The response provides compact metadata and an authenticated Atlas download URL.\\n  4. Fetch the download URL using an HTTP `GET` request with the workspace Bearer token header:\\n     ```http\\n     GET <download_url>\\n     Authorization: Bearer <WORKSPACE_API_KEY>\\n     ```\",\n  \"budget_credits\": 1000,\n  \"graph_identifiers\": {\n    \"nodes\": [\n      {\n        \"short_id\": \"16e3a70a\",\n        \"node_id\": \"16e3a70a-3ad9-4ea1-895c-23cd527a82eb\",\n        \"node_type\": \"input_text\"\n      },\n      {\n        \"short_id\": \"25ce5959\",\n        \"node_id\": \"25ce5959-33e2-4c98-8432-f9e35cc6357b\",\n        \"node_type\": \"input_text\"\n      },\n      {\n        \"short_id\": \"8b8b1962\",\n        \"node_id\": \"8b8b1962-a9b9-4da5-bd2e-ffbcaf4fde5a\",\n        \"node_type\": \"simple_create_music\"\n      },\n      {\n        \"short_id\": \"dfa85373\",\n        \"node_id\": \"dfa85373-aaea-47d6-bc25-85631a5bcc55\",\n        \"node_type\": \"input_text\"\n      },\n      {\n        \"short_id\": \"e4b407bf\",\n        \"node_id\": \"e4b407bf-9090-44c9-80ca-87a071829e9f\",\n        \"node_type\": \"fast_text_to_image\"\n      },\n      {\n        \"short_id\": \"e75480da\",\n        \"node_id\": \"e75480da-03f1-448f-8dc4-8a8a20f1c170\",\n        \"node_type\": \"fast_text_to_image\"\n      }\n    ],\n    \"connections\": [\n      {\n        \"short_id\": \"1568bbcc\",\n        \"connection_id\": \"1568bbcc-acf1-4a4a-ba9c-1a9e4f15e88f\",\n        \"from\": {\n          \"node_id\": \"16e3a70a-3ad9-4ea1-895c-23cd527a82eb\",\n          \"field\": \"value\"\n        },\n        \"to\": {\n          \"node_id\": \"e4b407bf-9090-44c9-80ca-87a071829e9f\",\n          \"field\": \"input_text\"\n        }\n      },\n      {\n        \"short_id\": \"53a305f2\",\n        \"connection_id\": \"53a305f2-1843-4537-adb4-6ed0d40c954a\",\n        \"from\": {\n          \"node_id\": \"25ce5959-33e2-4c98-8432-f9e35cc6357b\",\n          \"field\": \"value\"\n        },\n        \"to\": {\n          \"node_id\": \"8b8b1962-a9b9-4da5-bd2e-ffbcaf4fde5a\",\n          \"field\": \"input_text\"\n        }\n      },\n      {\n        \"short_id\": \"f5c0e74e\",\n        \"connection_id\": \"f5c0e74e-3adc-4b5b-8545-6b6d3bcae31f\",\n        \"from\": {\n          \"node_id\": \"dfa85373-aaea-47d6-bc25-85631a5bcc55\",\n          \"field\": \"value\"\n        },\n        \"to\": {\n          \"node_id\": \"e75480da-03f1-448f-8dc4-8a8a20f1c170\",\n          \"field\": \"input_text\"\n        }\n      }\n    ]\n  },\n  \"cost_usd\": 0.6575332249999999,\n  \"cost_credits\": 56,\n  \"remaining_budget_credits\": 944,\n  \"budget_exhausted\": false\n}"
+    }
+  ],
+  "structuredContent": {
+    "success": true,
+    "response_text": "All requested assets for **Hungry for Trouble** have been generated and settled in the graph. The exact prompt strings are stored in dedicated input nodes connected directly to each generator.\n\n---\n\n### 1. Generated Assets Summary\n\n| Asset | Node ID | Model / Engine | Output File ID (`fid`) | Actual Credits | Status |\n| :--- | :--- | :--- | :--- | :--- | :--- |\n| **Soundtrack Loop** (30s instrumental) | `8b8b1962` | **Google Lyria 3 Clip** (`simple_create_music`) | `33a924d2-b8a7-43ba-8716-b765c99ec0b8` | **5** | Success |\n| **MOP-3 Portrait** (1:1 Square) | `e75480da` | **Gemini 3.1 Flash Lite Image** (`fast_text_to_image`) | `06e7c09d-6dfc-4ad7-8427-44e046209e6b` | **4** | Success |\n| **SHELF CONTROL Portrait** (1:1 Square) | `e4b407bf` | **Gemini 3.1 Flash Lite Image** (`fast_text_to_image`) | `15d2d769-e152-4a85-82c8-b067b4a9ee02` | **4** | Success |\n\n- **Total Node Execution Cost:** **13 credits** (Music: 5 credits; Portraits: 4 credits each).  \n  *(Note: Complete assistant turn total includes model processing and will finalize upon completion).*\n\n---\n\n### 2. Node Graph & Prompt Configuration\n\n- **`Music_Prompt` (`25ce5959`)** $\\rightarrow$ **`8b8b1962` (`simple_create_music`)**:\n  - **Prompt:** `132 BPM playful supermarket muzak vibraphone over energetic breakbeat and rubbery synth bass, comic robotic stabs, urgent arcade action, no vocals, no famous references, no slow intro or fade, leave room for effects`\n  - **Parameters:** `backend`: `\"Google Lyria 3 Clip (30s MP3, 44.1kHz stereo, optional images)\"`, `is_instrumental`: `true`\n  - **Audio Output:** 30s 44.1kHz stereo electronic arcade loop with vibraphone lead, energetic breakbeat, and comic synth stabs.\n- **`MOP3_Prompt` (`dfa85373`)** $\\rightarrow$ **`e75480da` (`fast_text_to_image`)**:\n  - **Prompt:** `512px square original painted comic game portrait of MOP-3, battered white-and-red cleaning robot with expressive glass eyes and a mop antenna, defiant but endearing, navy background. Bold comic ink shadows, enamel white and steel blue, no cream, no text, no humans, no trademarks.`\n  - **Parameters:** `backend`: `\"Gemini 3.1 Flash Lite Image\"`, `aspect_ratio`: `\"1:1 (1K)\"`, `seed`: `42`\n- **`SHELF_CONTROL_Prompt` (`16e3a70a`)** $\\rightarrow$ **`e4b407bf` (`fast_text_to_image`)**:\n  - **Prompt:** `512px square original painted comic game portrait of SHELF CONTROL, angry red pixel face on a navy checkout-monitor robot with a receipt paper crown, navy background. Bold comic ink shadows, enamel white and steel blue, no cream, no text, no humans, no trademarks.`\n  - **Parameters:** `backend`: `\"Gemini 3.1 Flash Lite Image\"`, `aspect_ratio`: `\"1:1 (1K)\"`, `seed`: `42`\n\n---\n\n### 3. Download Contract & Supported Retrieval Mechanisms\n\n#### Web Editor Interface\n1. **Queued ZIP Archive:**\n   - A packaged archive named `hungry_for_trouble_assets.zip` (Download ID: `8005f076-7e6c-46b3-929f-85c4c0f7f150`) has been queued containing all three assets (`audio/hungry_for_trouble_theme.mp3`, `portraits/mop3_portrait.png`, and `portraits/shelf_control_portrait.png`).\n   - The download card appears above the chat input in the editor. If not immediately visible, reloading the page restores all saved download cards.\n2. **Direct Node Output Download:**\n   - In the canvas, each node's output card and header ellipsis menu provide a direct single-asset download action for collaborators.\n\n#### External MCP Client / Automated Retrieval Contract (Without Sharing or API Export)\n- Direct public unauthenticated download URLs are deliberately unavailable for private projects to prevent unauthorized exposure.\n- **Supported Retrieval Flow:**\n  1. Grant workspace access to the project by calling `set_project_team_access(team_access=\"workspace_read\")` (or `\"workspace_edit\"`). This permanently publishes the generated project files to the shared workspace Asset Catalog without public sharing or API export.\n  2. Call `get_workspace_asset(fid=\"<FILE_UUID>\")` with the asset's file ID.\n  3. The response provides compact metadata and an authenticated Atlas download URL.\n  4. Fetch the download URL using an HTTP `GET` request with the workspace Bearer token header:\n     ```http\n     GET <download_url>\n     Authorization: Bearer <WORKSPACE_API_KEY>\n     ```",
+    "budget_credits": 1000,
+    "graph_identifiers": {
+      "nodes": [
+        {
+          "short_id": "16e3a70a",
+          "node_id": "16e3a70a-3ad9-4ea1-895c-23cd527a82eb",
+          "node_type": "input_text"
+        },
+        {
+          "short_id": "25ce5959",
+          "node_id": "25ce5959-33e2-4c98-8432-f9e35cc6357b",
+          "node_type": "input_text"
+        },
+        {
+          "short_id": "8b8b1962",
+          "node_id": "8b8b1962-a9b9-4da5-bd2e-ffbcaf4fde5a",
+          "node_type": "simple_create_music"
+        },
+        {
+          "short_id": "dfa85373",
+          "node_id": "dfa85373-aaea-47d6-bc25-85631a5bcc55",
+          "node_type": "input_text"
+        },
+        {
+          "short_id": "e4b407bf",
+          "node_id": "e4b407bf-9090-44c9-80ca-87a071829e9f",
+          "node_type": "fast_text_to_image"
+        },
+        {
+          "short_id": "e75480da",
+          "node_id": "e75480da-03f1-448f-8dc4-8a8a20f1c170",
+          "node_type": "fast_text_to_image"
+        }
+      ],
+      "connections": [
+        {
+          "short_id": "1568bbcc",
+          "connection_id": "1568bbcc-acf1-4a4a-ba9c-1a9e4f15e88f",
+          "from": {
+            "node_id": "16e3a70a-3ad9-4ea1-895c-23cd527a82eb",
+            "field": "value"
+          },
+          "to": {
+            "node_id": "e4b407bf-9090-44c9-80ca-87a071829e9f",
+            "field": "input_text"
+          }
+        },
+        {
+          "short_id": "53a305f2",
+          "connection_id": "53a305f2-1843-4537-adb4-6ed0d40c954a",
+          "from": {
+            "node_id": "25ce5959-33e2-4c98-8432-f9e35cc6357b",
+            "field": "value"
+          },
+          "to": {
+            "node_id": "8b8b1962-a9b9-4da5-bd2e-ffbcaf4fde5a",
+            "field": "input_text"
+          }
+        },
+        {
+          "short_id": "f5c0e74e",
+          "connection_id": "f5c0e74e-3adc-4b5b-8545-6b6d3bcae31f",
+          "from": {
+            "node_id": "dfa85373-aaea-47d6-bc25-85631a5bcc55",
+            "field": "value"
+          },
+          "to": {
+            "node_id": "e75480da-03f1-448f-8dc4-8a8a20f1c170",
+            "field": "input_text"
+          }
+        }
+      ]
+    },
+    "cost_usd": 0.6575332249999999,
+    "cost_credits": 56,
+    "remaining_budget_credits": 944,
+    "budget_exhausted": false
+  },
+  "isError": false
+}

@@ -90,6 +90,10 @@ export class Sound {
   }
 
   effect(type, count = 1) {
+    if (type === "heal") {
+      this.note(660, 0.18, 0.18, "sine", 880);
+      this.note(990, 0.3, 0.16, "sine", 1320, 0.12);
+    }
     if (type === "drone-warning") this.note(620, 0.2, 0.13, "square", 920);
     if (type === "drone-shot") this.note(250, 0.1, 0.15, "sawtooth", 70);
     if (type === "shield-save") this.note(1200, 0.35, 0.22, "sine", 400);

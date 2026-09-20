@@ -14,7 +14,7 @@
 .menu-secondary button,
 .secondary {
   border: 1px solid #26365055;
-  background: #fff6e6eb;
+  background: #f9fbffeb;
   color: var(--ink);
   padding: 13px 15px;
   text-align: left;
@@ -32,12 +32,12 @@
   display: block;
   font: 6px var(--sans);
   letter-spacing: 0.7px;
-  color: #655b4f;
+  color: #526073;
   margin-top: 6px;
 }
 .menu-secondary button:hover,
 .secondary:hover {
-  background: #e8dcc3;
+  background: #dce3eb;
   border-color: var(--gold);
 }
 .controls {
@@ -52,7 +52,7 @@
   background: var(--cream);
   box-shadow:
     7px 8px 0 #1a223280,
-    inset 0 0 0 5px #b9ad9826;
+    inset 0 0 0 5px #9eafc226;
 }
 .panel h2 {
   margin-top: 14px;
@@ -64,14 +64,14 @@
   width: 257px;
   padding: 13px 16px 14px;
   background: #263650e8;
-  border: 1px solid #f4ead640;
+  border: 1px solid #f0f2f340;
   border-left: 4px solid var(--red);
   border-radius: 3px;
   box-shadow: 0 5px 25px #0004;
 }
 .health-label {
   font: 700 7px var(--sans);
-  color: #d6cbb8;
+  color: #c5d0df;
   letter-spacing: 1.7px;
   display: flex;
   justify-content: space-between;
@@ -148,7 +148,7 @@
   display: block;
   font-size: 6px;
   letter-spacing: 0.2px;
-  color: #d6cbb8;
+  color: #c5d0df;
   margin-top: 4px;
 }
 #ammo-track {
@@ -157,7 +157,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #f4ead626;
+  background: #f0f2f326;
 }
 #ammo-fill {
   display: block;
@@ -196,7 +196,7 @@
   left: 36px;
   font-size: 6px;
   letter-spacing: 1.2px;
-  color: #d6cbb8;
+  color: #c5d0df;
 }
 .world-pop {
   position: absolute;
@@ -278,7 +278,7 @@
   width: 21px;
   height: 21px;
   transform: translate(-50%, -50%);
-  border: 2px solid #f4ead6be;
+  border: 2px solid #f0f2f3be;
   border-radius: 50%;
   filter: drop-shadow(0 1px 2px #263650);
 }
@@ -324,8 +324,8 @@
 }
 .upgrades button {
   position: relative;
-  background: #fff6e6b0;
-  border-bottom: 4px solid #b9ad98;
+  background: #f9fbffb0;
+  border-bottom: 4px solid #9eafc2;
   padding: 18px 20px;
 }
 .upgrades button:hover {
@@ -345,7 +345,7 @@
   font-size: 28px;
 }
 .upgrades b {
-  border-top: 1px solid #655b4f33;
+  border-top: 1px solid #52607333;
   padding-top: 12px;
   display: flex;
   justify-content: space-between;
@@ -353,7 +353,7 @@
 #next-aisle {
   font-size: 10px;
   margin-bottom: 0;
-  color: #655b4f;
+  color: #526073;
 }
 .route-strip {
   display: flex;
@@ -365,8 +365,8 @@
   flex: 1;
   padding: 6px 0;
   min-width: 0;
-  border: 1px solid #655b4f35;
-  background: #e8dcc3;
+  border: 1px solid #52607335;
+  background: #dce3eb;
 }
 .route-strip .node-symbol,
 .route-strip svg,
@@ -402,7 +402,7 @@
   font-size: 7px;
   letter-spacing: 2px;
   color: var(--red);
-  border-bottom: 1px solid #655b4f55;
+  border-bottom: 1px solid #52607355;
   padding-bottom: 10px;
 }
 .route-map {
@@ -420,16 +420,16 @@
   bottom: 25%;
   left: 7%;
   right: 7%;
-  border: 3px solid #8e847450;
+  border: 3px solid #8495ab50;
   border-left: 0;
   z-index: 0;
 }
 .route-map .route-node {
   position: relative;
   z-index: 1;
-  border: 1px solid #b9ad9866;
-  border-bottom: 4px solid #b9ad98;
-  background: #fff6e6;
+  border: 1px solid #9eafc266;
+  border-bottom: 4px solid #9eafc2;
+  background: #f9fbff;
   padding: 13px 8px 11px;
   color: var(--ink);
   min-width: 0;
@@ -439,7 +439,7 @@
   position: absolute;
   top: 8px;
   left: 9px;
-  color: #655b4f;
+  color: #526073;
   font: 700 16px var(--display);
 }
 .route-map .node-symbol {
@@ -447,7 +447,7 @@
   place-items: center;
   height: 64px;
   font-size: 24px;
-  color: #655b4f;
+  color: #526073;
 }
 .route-map b {
   display: block;
@@ -458,7 +458,7 @@
   font: 6px var(--sans);
   letter-spacing: 0.8px;
   margin-top: 8px;
-  color: #655b4f;
+  color: #526073;
 }
 .route-map svg {
   height: 64px;
@@ -467,7 +467,7 @@
 }
 .route-map .boss-node {
   border-color: #c9473280;
-  background: #f2dcca;
+  background: #f2dedb;
 }
 .route-map .route-node:nth-child(6) {
   grid-column: 5;
@@ -508,16 +508,16 @@
 .route-map .current {
   border: 1px solid var(--gold);
   border-bottom-width: 4px;
-  background: #f3dba0;
+  background: #d6e3f0;
   box-shadow: 0 3px 0 #b98442;
 }
 .route-map button:not(:disabled):hover {
   transform: translateY(-3px);
-  background-color: #ead5aa;
+  background-color: #c2d4e7;
 }
 #stage-preview {
   padding: 16px;
-  background: #e8dcc390;
+  background: #dce3eb90;
   border-left: 3px solid var(--gold);
   text-align: left;
   display: grid;
@@ -576,7 +576,7 @@
   letter-spacing: 1.5px;
 }
 #refresh-board {
-  border: 1px solid #655b4f40;
+  border: 1px solid #52607340;
   color: var(--ink);
   background: none;
   font-size: 7px;
@@ -588,7 +588,7 @@
   list-style: none;
   max-height: 220px;
   overflow-y: auto;
-  border-top: 1px solid #655b4f33;
+  border-top: 1px solid #52607333;
 }
 #leaderboard li {
   display: grid;
@@ -597,13 +597,13 @@
   align-items: center;
   text-align: left;
   padding: 12px 10px;
-  border-bottom: 1px solid #655b4f26;
+  border-bottom: 1px solid #52607326;
 }
 #leaderboard li:first-child {
   background: #efb5460c;
 }
 #leaderboard li > span {
-  color: #655b4f;
+  color: #526073;
   font: 700 20px var(--display);
 }
 #leaderboard li > b {
@@ -613,7 +613,7 @@
 }
 #leaderboard li > small {
   font-size: 6px;
-  color: #655b4f;
+  color: #526073;
 }
 #leaderboard li > strong {
   font: 700 25px var(--display);
@@ -624,7 +624,7 @@
   display: block;
   text-align: center;
   font-size: 11px;
-  color: #655b4f;
+  color: #526073;
   padding: 27px 10px;
 }
 .panel .board-note {
@@ -639,7 +639,7 @@
   margin-bottom: 8px;
   font-size: 7px;
   letter-spacing: 1px;
-  color: #655b4f;
+  color: #526073;
 }
 #score-form > div {
   display: flex;
@@ -647,9 +647,9 @@
 #score-name {
   width: 100%;
   min-width: 0;
-  background: #fff6e6;
+  background: #f9fbff;
   color: var(--ink);
-  border: 1px solid #655b4f80;
+  border: 1px solid #52607380;
   padding: 12px;
   font: 15px var(--display);
 }
@@ -669,7 +669,7 @@
   width: 100%;
   background: #263650;
   color: var(--cream);
-  border: 1px solid #b9ad98;
+  border: 1px solid #9eafc2;
   padding: 8px;
   margin-top: 12px;
 }

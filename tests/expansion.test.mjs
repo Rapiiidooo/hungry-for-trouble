@@ -29,15 +29,19 @@ test("drones telegraph locked aim, launch receipts and cannot shoot through shel
   game.batteries = [];
   const drone = game.enemies.find((e) => e.kind === "shooter");
   game.enemies = [drone];
-  Object.assign(game.player, { x: 8, z: 8 });
-  Object.assign(drone, { x: 18, z: 8, shotCooldown: 0 });
+  // Use the unchanged introductory corridor to isolate the drone's firing contract.
+  game.map = newGame().map;
+  Object.assign(game.player, { x: 2, z: 6 });
+  Object.assign(drone, { x: 12, z: 6, shotCooldown: 0 });
   assert.ok(tick(game, {}, 0.1).some((e) => e.type === "drone-warning"));
   assert.equal(game.hazards.length, 0);
   assert.ok(tick(game, {}, 0.7).some((e) => e.type === "drone-shot"));
   assert.ok(game.hazards.length > 0);
-  assert.ok(!lineOfSight(game, { x: 6, z: 2 }, { x: 6, z: 8 }));
+  assert.ok(!lineOfSight(game, { x: 4, z: 2 }, { x: 4, z: 6 }));
   const shielded = newGame(5);
-  shielded.hazards.push({ x: 6, z: 3, vx: 0, vz: 6, life: 3 });
+  shielded.map = newGame().map;
+  shielded.enemies = [];
+  shielded.hazards.push({ x: 4, z: 2, vx: 0, vz: 6, life: 3 });
   tick(shielded, {}, 0.7);
   assert.equal(shielded.hazards.length, 0);
 });
@@ -46,9 +50,16 @@ test("late stages change movement and durability, visor lasts 18 seconds", () =>
   const game = newGame(8);
   game.enemies = [];
   game.batteries = [];
-  Object.assign(game.player, { x: 8, z: 6 });
+  const belt = game.map.belts.find(
+    (b) => b.direction === 1 && canStand(game, b.x + 1.5, b.z),
+  );
+  Object.assign(game.player, belt);
+  const beforeBelt = game.player.x;
   tick(game, {}, 0.5);
-  assert.ok(game.player.x > 9, "The belt must move an idle player");
+  assert.ok(
+    game.player.x > beforeBelt + 1,
+    "The belt must move an idle player",
+  );
   const visor = game.visors[0];
   Object.assign(game.player, visor);
   assert.ok(stepGame(game, {}, TICK).some((e) => e.type === "visor"));
@@ -80,7 +91,7 @@ test("defensive upgrades carry and block damage without hiding the health loss",
   game.upgrades.heart = 1;
   const heart = nextLevel(game, "heart");
   assert.equal(heart.player.maxHp, 6);
-  assert.equal(heart.player.hp, 5);
+  assert.equal(heart.player.hp, 6);
 });
 
 export function idleReplay(config, movingTicks = 0) {
@@ -114,6 +125,7 @@ test("every seeded daily layout keeps reflected actors and pickups on walkable c
       ...game.crumbs,
       ...game.batteries,
       ...game.visors,
+      ...game.repairs,
     ])
       assert.ok(
         canStand(game, point.x, point.z),

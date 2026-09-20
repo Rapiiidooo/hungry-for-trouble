@@ -2,13 +2,13 @@
 :root {
   color-scheme: dark;
   --ink: #263650;
-  --cream: #f4ead6;
+  --cream: #f0f2f3;
   --gold: #efb546;
   --red: #b83d2b;
-  --muted: #c2b8a6;
+  --muted: #b4becb;
   --danger: #ff8065;
   --blue: #a4c0e0;
-  --paper-muted: #655b4f;
+  --paper-muted: #526073;
   --sans: "DM Sans", sans-serif;
   --display: "Barlow Condensed", Impact, sans-serif;
 }
@@ -65,12 +65,12 @@ a:focus-visible {
   background:
     linear-gradient(
       90deg,
-      #f4ead6 0,
-      #f4ead6fa 28%,
-      #f4ead6d9 43%,
-      #f4ead600 76%
+      #f0f2f3 0,
+      #f0f2f3fa 28%,
+      #f0f2f3d9 43%,
+      #f0f2f300 76%
     ),
-    linear-gradient(0deg, #f4ead6de, transparent 24%);
+    linear-gradient(0deg, #f0f2f3de, transparent 24%);
   z-index: 1;
 }
 header {
@@ -94,7 +94,7 @@ header {
 .stamp {
   font-size: 8px;
   letter-spacing: 2px;
-  color: #655b4f;
+  color: #526073;
 }
 header > div {
   margin-left: auto;
@@ -104,7 +104,7 @@ header > div {
 header button {
   border: 1px solid #26365055;
   border-radius: 3px;
-  background: #f4ead6e8;
+  background: #f0f2f3e8;
   color: var(--ink);
   font-size: 8px;
   letter-spacing: 1px;
@@ -159,12 +159,12 @@ h1 em {
 .pitch {
   font-size: 12px;
   line-height: 1.8;
-  color: #655b4f;
+  color: #526073;
   margin: 0 0 25px;
 }
 .primary {
   background: var(--red);
-  color: #f4ead6;
+  color: #f0f2f3;
   border: 0;
   border-radius: 4px;
   display: flex;
@@ -194,7 +194,7 @@ h1 em {
   gap: 15px;
   flex-wrap: wrap;
   font-size: 9px;
-  color: #655b4f;
+  color: #526073;
   margin-top: 24px;
 }
 .controls span {
@@ -204,7 +204,7 @@ h1 em {
 }
 kbd {
   font: 8px var(--sans);
-  border: 1px solid #b9ad9844;
+  border: 1px solid #9eafc244;
   padding: 4px 6px;
   border-radius: 3px;
   color: inherit;
@@ -213,7 +213,7 @@ kbd {
   display: block;
   font-size: 8px;
   letter-spacing: 1.4px;
-  color: #655b4f;
+  color: #526073;
   margin-top: 24px;
 }
 .touch-hint {
@@ -240,7 +240,7 @@ kbd {
   margin-top: 7px;
   font-size: 10px;
   letter-spacing: 0;
-  color: #655b4f;
+  color: #526073;
 }
 footer {
   position: absolute;
@@ -251,7 +251,7 @@ footer {
   justify-content: space-between;
   font-size: 7px;
   letter-spacing: 1.6px;
-  color: #655b4f;
+  color: #526073;
   z-index: 3;
 }
 .playing .shade {
@@ -272,7 +272,7 @@ footer {
 .playing header button {
   color: var(--cream);
   background: #263650e8;
-  border-color: #f4ead655;
+  border-color: #f0f2f355;
 }
 .playing header :focus-visible,
 .playing #hud :focus-visible {
@@ -305,7 +305,7 @@ footer {
   display: block;
   font-size: 7px;
   letter-spacing: 1.5px;
-  color: #d6cbb8;
+  color: #c5d0df;
   margin-bottom: 6px;
 }
 .hud-top strong {
@@ -320,13 +320,13 @@ footer {
   font-size: 39px;
 }
 #quota {
-  color: #c2b8a6;
+  color: #b4becb;
   font-size: 22px;
 }
 .track {
   height: 3px;
   width: 140px;
-  background: #c2b8a633;
+  background: #b4becb33;
   margin: 8px auto;
 }
 .track i {
@@ -367,7 +367,7 @@ footer {
   font-size: 9px;
   letter-spacing: 1px;
   margin-top: 5px;
-  color: #f4ead6;
+  color: #f0f2f3;
 }
 #dash-status {
   font-size: 8px;
@@ -387,7 +387,7 @@ footer {
 }
 .score-block small {
   display: block;
-  color: #d6cbb8;
+  color: #c5d0df;
   font-size: 7px;
   letter-spacing: 1.5px;
   margin-top: 7px;
@@ -428,7 +428,7 @@ footer {
   width: 126px;
   height: 96px;
   opacity: 0.9;
-  border: 1px solid #c2b8a63d;
+  border: 1px solid #b4becb3d;
   border-radius: 5px;
 }
 #message {
@@ -458,7 +458,7 @@ footer {
   font: 11px var(--sans);
   text-transform: none;
   margin-top: 6px;
-  color: #f4ead6;
+  color: #f0f2f3;
 }
 #hit-flash {
   pointer-events: none;
@@ -509,7 +509,7 @@ footer {
 }
 #boss-state {
   font-size: 8px;
-  color: #f4ead6;
+  color: #f0f2f3;
   display: block;
   margin-top: 5px;
 }
@@ -532,7 +532,7 @@ footer {
   color: var(--ink);
   background: var(--cream);
   color-scheme: light;
-  border: 1px solid #b9ad9830;
+  border: 1px solid #9eafc230;
   border-radius: 9px;
   padding: 40px;
   text-align: center;
@@ -554,7 +554,7 @@ footer {
 .panel p {
   font-size: 12px;
   line-height: 1.7;
-  color: #655b4f;
+  color: #526073;
 }
 .panel .primary {
   width: 100%;
@@ -565,7 +565,7 @@ footer {
   border: 0;
   background: none;
   font-size: 10px;
-  color: #655b4f;
+  color: #526073;
   text-decoration: underline;
   text-underline-offset: 5px;
   padding: 20px 0 0;
@@ -592,9 +592,9 @@ footer {
 }
 .upgrades button {
   text-align: left;
-  border: 1px solid #b9ad983d;
+  border: 1px solid #9eafc23d;
   border-radius: 5px;
-  background: #fff6e6;
+  background: #f9fbff;
   color: var(--ink);
   padding: 20px;
   transition:
@@ -607,7 +607,7 @@ footer {
 }
 .upgrades button > span {
   font: 700 25px var(--display);
-  color: #655b4f;
+  color: #526073;
 }
 .upgrades h3 {
   font: 700 24px var(--display);
@@ -658,7 +658,7 @@ footer {
     flex-shrink: 0;
     position: relative;
     border-radius: 50%;
-    border: 1px solid #f4ead660;
+    border: 1px solid #f0f2f360;
     background: #26365080;
     touch-action: none;
   }
@@ -668,9 +668,9 @@ footer {
     top: 32px;
     width: 42px;
     height: 42px;
-    border: 1px solid #f4ead680;
+    border: 1px solid #f0f2f380;
     border-radius: 50%;
-    background: #f4ead626;
+    background: #f0f2f326;
     pointer-events: none;
   }
   .stick > span {
@@ -680,7 +680,7 @@ footer {
     width: 100%;
     font-size: 6px;
     letter-spacing: 1px;
-    color: #f4ead6;
+    color: #f0f2f3;
     pointer-events: none;
   }
   #aim-stick {
@@ -776,8 +776,8 @@ footer {
   }
   .shade {
     background:
-      linear-gradient(180deg, #f4ead6eb, #f4ead600 13%),
-      linear-gradient(0deg, #f4ead6 5%, #f4ead6f5 48%, #f4ead600 94%);
+      linear-gradient(180deg, #f0f2f3eb, #f0f2f300 13%),
+      linear-gradient(0deg, #f0f2f3 5%, #f0f2f3f5 48%, #f0f2f300 94%);
   }
   #hero-label {
     display: none;

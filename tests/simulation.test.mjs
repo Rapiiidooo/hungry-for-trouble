@@ -33,12 +33,23 @@ test("every floor has a connected maze, reachable pickups and enough crumbs", ()
       ]) {
         const p = [queue[i][0] + dx, queue[i][1] + dz],
           key = p.join(",");
-        if (rows[p[1]]?.[p[0]] && rows[p[1]][p[0]] !== "#" && !seen.has(key)) {
+        if (
+          rows[p[1]]?.[p[0]] &&
+          !["#", " "].includes(rows[p[1]][p[0]]) &&
+          !seen.has(key)
+        ) {
           seen.add(key);
           queue.push(p);
         }
       }
-    for (const point of [...layout.crumbs, ...layout.batteries, layout.exit])
+    for (const point of [
+      ...layout.crumbs,
+      ...layout.batteries,
+      ...layout.repairs,
+      ...layout.visors,
+      ...layout.enemies,
+      layout.exit,
+    ])
       assert.ok(
         seen.has([point.x / 2, point.z / 2].join(",")),
         `${layout.level.name}: unreachable objective`,
@@ -105,13 +116,13 @@ test("damage has a grace period, death stops play and restart clears state", () 
     { ...game.enemies[0], x: game.player.x, z: game.player.z, stun: 10 },
   ];
   tick(game, {}, 0.5);
-  assert.equal(game.player.hp, 2);
-  tick(game, {}, 3.2);
+  assert.equal(game.player.hp, 3);
+  tick(game, {}, 5);
   assert.equal(game.state, "lost");
   const time = game.time;
   assert.deepEqual(stepGame(game, { x: 1 }, 0.02), []);
   assert.equal(game.time, time);
-  assert.equal(newGame().player.hp, 3);
+  assert.equal(newGame().player.hp, 4);
 });
 
 test("exit requires the quota and final boss, upgrades transfer between floors", () => {
@@ -157,7 +168,7 @@ test("ice preserves momentum and repeated spread upgrades add real pellets", () 
     ice = newGame(1);
   for (const game of [normal, ice]) {
     game.enemies = [];
-    Object.assign(game.player, { x: 4, z: 6 });
+    Object.assign(game.player, game.map.start);
     tick(game, { x: 1 }, 0.3);
     tick(game, {}, 0.1);
   }
