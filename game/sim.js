@@ -1,0 +1,522 @@
+import { CELL, LEVELS, layoutFor } from "./levels.js";
+
+export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+const length = (x, z) => Math.hypot(x, z);
+const distance = (a, b) => length(a.x - b.x, a.z - b.z);
+const directions = [
+  [1, 0],
+  [-1, 0],
+  [0, 1],
+  [0, -1],
+];
+
+export function newGame(levelIndex = 0, carry = {}) {
+  const map = layoutFor(levelIndex);
+  return {
+    levelIndex,
+    map,
+    state: "playing",
+    elapsed: 0,
+    time: map.level.time,
+    player: {
+      ...map.start,
+      vx: 0,
+      vz: 0,
+      angle: 0,
+      hp: Math.min(4, (carry.hp || 3) + (levelIndex ? 1 : 0)),
+      invincible: 1.5,
+      dash: 0,
+      dashCooldown: 0,
+      fireCooldown: 0,
+    },
+    enemies: map.enemies.map((enemy, id) => ({
+      ...enemy,
+      id,
+      origin: { x: enemy.x, z: enemy.z },
+      hp: 3,
+      angle: 0,
+      stun: 0,
+      respawn: 0,
+      waypoint: null,
+      pathTimer: 0,
+      hit: 0,
+      windup: 0,
+      charge: 0,
+      chargeCooldown: 3 + id,
+      chargeX: 0,
+      chargeZ: 0,
+    })),
+    boss: map.boss
+      ? {
+          ...map.boss,
+          hp: 180,
+          maxHp: 180,
+          phase: 0,
+          fire: 1.5,
+          exposed: false,
+          hit: 0,
+        }
+      : null,
+    crumbs: map.crumbs,
+    batteries: map.batteries,
+    bullets: [],
+    hazards: [],
+    collected: 0,
+    score: carry.score || 0,
+    ammo: 24,
+    overtime: 0,
+    combo: 0,
+    comboTimer: 0,
+    kills: 0,
+    shots: 0,
+    hits: 0,
+    upgrades: { rapid: 0, spread: 0, pierce: 0, ...carry.upgrades },
+    events: [],
+    shake: 0,
+    gateClock: 0,
+  };
+}
+
+export function gateClosed(game, col, row) {
+  const gate = game.map.gates.find(
+    (item) => item.col === col && item.row === row,
+  );
+  if (!gate) return false;
+  // A gate waits while an actor occupies it so it cannot entomb a player or enemy.
+  if (
+    [game.player, ...game.enemies].some(
+      (actor) =>
+        Math.abs(actor.x - gate.x) < 1.35 && Math.abs(actor.z - gate.z) < 1.35,
+    )
+  )
+    return false;
+  return Math.floor(game.elapsed / 4 + gate.phase) % 2 === 0;
+}
+
+export function solid(game, col, row) {
+  return (
+    !game.map.level.map[row] ||
+    game.map.level.map[row][col] === undefined ||
+    game.map.level.map[row][col] === "#" ||
+    gateClosed(game, col, row)
+  );
+}
+
+export function canStand(game, x, z, radius = 0.34) {
+  const left = Math.round((x - radius) / CELL),
+    right = Math.round((x + radius) / CELL);
+  const top = Math.round((z - radius) / CELL),
+    bottom = Math.round((z + radius) / CELL);
+  for (let row = top; row <= bottom; row++)
+    for (let col = left; col <= right; col++) {
+      if (!solid(game, col, row)) continue;
+      const nearestX = clamp(x, col * CELL - 1, col * CELL + 1);
+      const nearestZ = clamp(z, row * CELL - 1, row * CELL + 1);
+      if (length(x - nearestX, z - nearestZ) < radius) return false;
+    }
+  return true;
+}
+
+function move(game, actor, dx, dz) {
+  // Substeps prevent dashes and frame stalls from crossing thin walls.
+  const steps = Math.max(1, Math.ceil(length(dx, dz) / 0.18));
+  for (let i = 0; i < steps; i++) {
+    if (canStand(game, actor.x + dx / steps, actor.z)) actor.x += dx / steps;
+    else if ("vx" in actor) actor.vx = 0;
+    if (canStand(game, actor.x, actor.z + dz / steps)) actor.z += dz / steps;
+    else if ("vz" in actor) actor.vz = 0;
+  }
+}
+
+export function pathTo(game, from, target, flee = false) {
+  const start = [Math.round(from.x / CELL), Math.round(from.z / CELL)];
+  let goal = [Math.round(target.x / CELL), Math.round(target.z / CELL)];
+  if (solid(game, ...goal)) {
+    // Predicted ambush targets can lie beyond the store or deep inside shelves.
+    const candidates = [];
+    for (let row = 0; row < game.map.height; row++)
+      for (let col = 0; col < game.map.width; col++)
+        if (!solid(game, col, row)) candidates.push([col, row]);
+    goal =
+      candidates.sort(
+        (a, b) =>
+          length(a[0] - goal[0], a[1] - goal[1]) -
+          length(b[0] - goal[0], b[1] - goal[1]),
+      )[0] || start;
+  }
+  if (flee) {
+    const candidates = directions
+      .map(([x, z]) => [start[0] + x, start[1] + z])
+      .filter((point) => !solid(game, ...point));
+    const best = candidates.sort(
+      (a, b) =>
+        length(b[0] - goal[0], b[1] - goal[1]) -
+        length(a[0] - goal[0], a[1] - goal[1]),
+    )[0];
+    return best ? { x: best[0] * CELL, z: best[1] * CELL } : { ...from };
+  }
+  const queue = [{ p: start, first: null }],
+    seen = new Set([start.join(",")]);
+  for (let i = 0; i < queue.length; i++) {
+    const { p, first } = queue[i];
+    if (p[0] === goal[0] && p[1] === goal[1])
+      return first || { x: goal[0] * CELL, z: goal[1] * CELL };
+    for (const [dx, dz] of directions) {
+      const next = [p[0] + dx, p[1] + dz],
+        key = next.join(",");
+      if (seen.has(key) || solid(game, ...next)) continue;
+      seen.add(key);
+      queue.push({
+        p: next,
+        first: first || { x: next[0] * CELL, z: next[1] * CELL },
+      });
+    }
+  }
+  return { ...from };
+}
+
+function killEnemy(game, enemy) {
+  if (enemy.respawn > 0) return;
+  enemy.respawn = 9;
+  enemy.hp = 0;
+  enemy.windup = enemy.charge = 0;
+  game.combo = game.comboTimer > 0 ? game.combo + 1 : 1;
+  game.comboTimer = 3;
+  game.score += 100 * Math.min(game.combo, 8);
+  game.ammo = Math.min(99, game.ammo + 7);
+  game.kills++;
+  game.events.push({
+    type: "enemy-down",
+    x: enemy.x,
+    z: enemy.z,
+    combo: game.combo,
+  });
+}
+
+function hurt(game) {
+  const p = game.player;
+  if (p.invincible > 0 || p.dash > 0 || game.overtime > 0) return;
+  p.hp--;
+  p.invincible = 1.5;
+  game.combo = 0;
+  game.shake = 0.18;
+  game.events.push({ type: "damage", x: p.x, z: p.z });
+  if (p.hp <= 0) {
+    game.state = "lost";
+    game.events.push({ type: "lost" });
+  }
+}
+
+function fire(game, input) {
+  const p = game.player;
+  if (!input.fire || p.fireCooldown > 0) return;
+  if (game.ammo <= 0 && game.overtime <= 0) {
+    p.fireCooldown = 0.4;
+    game.events.push({ type: "empty" });
+    return;
+  }
+  if (game.overtime <= 0) game.ammo--;
+  p.fireCooldown =
+    game.overtime > 0 ? 0.11 : 0.22 / (1 + game.upgrades.rapid * 0.25);
+  const spread = Math.max(game.upgrades.spread, game.overtime > 0 ? 1 : 0);
+  const offsets = Array.from(
+    { length: 1 + spread * 2 },
+    (_, i) => (i - spread) * 0.12,
+  );
+  for (const offset of offsets) {
+    const angle = p.angle + offset;
+    game.bullets.push({
+      x: p.x,
+      z: p.z,
+      vx: Math.sin(angle) * 19,
+      vz: Math.cos(angle) * 19,
+      life: 0.85,
+      pierce: game.upgrades.pierce,
+      damage: game.overtime > 0 ? 3 : 1,
+      hit: new Set(),
+    });
+  }
+  game.shots++;
+  game.events.push({ type: "shot", x: p.x, z: p.z });
+}
+
+export function stepGame(game, input, dt) {
+  game.events = [];
+  if (game.state !== "playing" || dt <= 0) return game.events;
+  dt = Math.min(dt, 0.05);
+  game.elapsed += dt;
+  game.time = Math.max(0, game.time - dt);
+  game.overtime = Math.max(0, game.overtime - dt);
+  game.comboTimer = Math.max(0, game.comboTimer - dt);
+  game.shake = Math.max(0, game.shake - dt);
+  if (game.time === 0) {
+    game.state = "lost";
+    return [{ type: "lost" }];
+  }
+  const p = game.player;
+  for (const key of ["invincible", "dash", "dashCooldown", "fireCooldown"])
+    p[key] = Math.max(0, p[key] - dt);
+  let ix = input.x || 0,
+    iz = input.z || 0;
+  const size = length(ix, iz);
+  if (size > 1) {
+    ix /= size;
+    iz /= size;
+  }
+  if (Number.isFinite(input.aim)) p.angle = input.aim;
+  else if (size > 0.1) p.angle = Math.atan2(ix, iz);
+  if (input.dash && p.dashCooldown === 0 && size > 0.1) {
+    p.dash = 0.18;
+    p.dashCooldown = 1.2;
+    game.events.push({ type: "dash", x: p.x, z: p.z });
+  }
+  const speed = p.dash > 0 ? 13 : game.overtime > 0 ? 5.9 : 4.7;
+  const grip = game.map.level.theme === "ice" && p.dash === 0 ? 5 : 24;
+  p.vx += (ix * speed - p.vx) * Math.min(1, dt * grip);
+  p.vz += (iz * speed - p.vz) * Math.min(1, dt * grip);
+  move(game, p, p.vx * dt, p.vz * dt);
+  fire(game, input);
+
+  for (const crumb of game.crumbs)
+    if (!crumb.collected && distance(p, crumb) < 0.85) {
+      crumb.collected = true;
+      game.collected++;
+      game.score += 10;
+      game.ammo = Math.min(99, game.ammo + 2);
+      game.events.push({ type: "crumb", x: crumb.x, z: crumb.z });
+      if (game.collected === game.map.level.quota)
+        game.events.push({ type: "exit-open" });
+    }
+  for (const battery of game.batteries) {
+    if (battery.collected) {
+      battery.respawn -= dt;
+      if (battery.respawn <= 0 && game.map.boss) battery.collected = false;
+    } else if (distance(p, battery) < 0.85) {
+      battery.collected = true;
+      battery.respawn = 28;
+      game.overtime = 8;
+      game.ammo = Math.min(99, game.ammo + 12);
+      game.score += 50;
+      game.events.push({ type: "overtime", x: battery.x, z: battery.z });
+      for (const enemy of game.enemies) {
+        enemy.waypoint = null;
+        enemy.windup = enemy.charge = 0;
+      }
+    }
+  }
+
+  for (const enemy of game.enemies) {
+    enemy.hit = Math.max(0, enemy.hit - dt);
+    enemy.stun = Math.max(0, enemy.stun - dt);
+    enemy.chargeCooldown = Math.max(0, enemy.chargeCooldown - dt);
+    if (enemy.respawn > 0) {
+      enemy.respawn -= dt;
+      if (enemy.respawn <= 0) {
+        Object.assign(enemy, enemy.origin, {
+          hp: 3,
+          waypoint: null,
+          stun: 1,
+          windup: 0,
+          charge: 0,
+          chargeCooldown: 3,
+        });
+        if (distance(p, enemy) < 3) enemy.respawn = 2;
+      }
+      continue;
+    }
+    if (enemy.stun === 0) {
+      if (enemy.windup > 0) {
+        enemy.windup = Math.max(0, enemy.windup - dt);
+        if (enemy.windup === 0) {
+          enemy.charge = 0.6;
+          game.events.push({ type: "charge", x: enemy.x, z: enemy.z });
+        }
+      } else if (enemy.charge > 0) {
+        enemy.charge = Math.max(0, enemy.charge - dt);
+        move(game, enemy, enemy.chargeX * 7.8 * dt, enemy.chargeZ * 7.8 * dt);
+        if (enemy.charge === 0) {
+          enemy.stun = 0.5;
+          enemy.waypoint = null;
+        }
+      } else {
+        const separation = distance(p, enemy);
+        if (
+          enemy.kind === "ambusher" &&
+          game.overtime <= 0 &&
+          enemy.chargeCooldown === 0 &&
+          separation > 2.3 &&
+          separation < 6.5 &&
+          (Math.abs(p.x - enemy.x) < 0.6 || Math.abs(p.z - enemy.z) < 0.6)
+        ) {
+          let clear = true;
+          for (let t = 0.2; t < separation; t += 0.2)
+            if (
+              !canStand(
+                game,
+                enemy.x + ((p.x - enemy.x) * t) / separation,
+                enemy.z + ((p.z - enemy.z) * t) / separation,
+                0.15,
+              )
+            )
+              clear = false;
+          if (clear) {
+            enemy.windup = 0.65;
+            enemy.chargeCooldown = 4.5;
+            enemy.chargeX = (p.x - enemy.x) / separation;
+            enemy.chargeZ = (p.z - enemy.z) / separation;
+            enemy.angle = Math.atan2(enemy.chargeX, enemy.chargeZ);
+            game.events.push({
+              type: "charge-warning",
+              x: enemy.x,
+              z: enemy.z,
+            });
+          }
+        }
+        if (enemy.windup === 0) {
+          const arrived =
+            !enemy.waypoint || distance(enemy, enemy.waypoint) < 0.08;
+          if (arrived) {
+            const target =
+              enemy.kind === "ambusher"
+                ? { x: p.x + ix * 5, z: p.z + iz * 5 }
+                : p;
+            enemy.waypoint = pathTo(game, enemy, target, game.overtime > 0);
+          }
+          const dx = enemy.waypoint.x - enemy.x,
+            dz = enemy.waypoint.z - enemy.z;
+          const d = length(dx, dz);
+          const step = Math.min(
+            d,
+            game.map.level.speed * (game.overtime > 0 ? 0.8 : 1) * dt,
+          );
+          if (d > 0.01) {
+            enemy.angle = Math.atan2(dx, dz);
+            const oldX = enemy.x,
+              oldZ = enemy.z;
+            move(game, enemy, (dx / d) * step, (dz / d) * step);
+            if (length(enemy.x - oldX, enemy.z - oldZ) < step * 0.5)
+              enemy.waypoint = null;
+          }
+        }
+      }
+    }
+    if (distance(p, enemy) < 0.75) {
+      if (game.overtime > 0) killEnemy(game, enemy);
+      else hurt(game);
+    }
+  }
+
+  for (const bullet of game.bullets) {
+    bullet.life -= dt;
+    const substeps = 3;
+    for (let i = 0; i < substeps && bullet.life > 0; i++) {
+      bullet.x += (bullet.vx * dt) / substeps;
+      bullet.z += (bullet.vz * dt) / substeps;
+      if (!canStand(game, bullet.x, bullet.z, 0.08)) {
+        bullet.life = 0;
+        break;
+      }
+      for (const enemy of game.enemies)
+        if (
+          enemy.respawn <= 0 &&
+          !bullet.hit.has(enemy.id) &&
+          distance(bullet, enemy) < 0.6
+        ) {
+          bullet.hit.add(enemy.id);
+          enemy.hp -= bullet.damage;
+          enemy.stun = 0.16;
+          enemy.hit = 0.12;
+          game.hits++;
+          game.events.push({ type: "hit", x: enemy.x, z: enemy.z });
+          if (enemy.hp <= 0) killEnemy(game, enemy);
+          if (bullet.pierce-- <= 0) bullet.life = 0;
+          break;
+        }
+      if (
+        game.boss &&
+        game.boss.hp > 0 &&
+        distance(bullet, game.boss) < 1.3 &&
+        !bullet.hit.has("boss")
+      ) {
+        bullet.hit.add("boss");
+        bullet.life = 0;
+        // Overtime clears ordinary enemies, but the Manager still requires attack windows.
+        const damage = game.boss.exposed ? Math.min(1, bullet.damage) : 0;
+        game.boss.hp = Math.max(0, game.boss.hp - damage);
+        game.boss.hit = 0.1;
+        game.events.push({
+          type: damage > 0 ? "hit" : "shield",
+          x: game.boss.x,
+          z: game.boss.z,
+        });
+        if (game.boss.hp === 0) {
+          game.score += 2500;
+          game.events.push({ type: "boss-down" });
+        }
+      }
+    }
+  }
+  game.bullets = game.bullets.filter((bullet) => bullet.life > 0);
+  if (game.boss && game.boss.hp > 0) {
+    const boss = game.boss;
+    boss.hit = Math.max(0, boss.hit - dt);
+    boss.phase += dt;
+    boss.fire -= dt;
+    boss.exposed = boss.phase % 6 > 3.5;
+    if (boss.fire <= 0 && !boss.exposed) {
+      const enraged = boss.hp < boss.maxHp / 2;
+      boss.fire = enraged ? 0.7 : 0.95;
+      const angle = Math.atan2(p.x - boss.x, p.z - boss.z);
+      const angles = [-0.24, 0, 0.24].map((offset) => angle + offset);
+      if (enraged)
+        for (let i = 0; i < 8; i++)
+          angles.push((i * Math.PI) / 4 + boss.phase * 0.12);
+      for (const direction of angles)
+        game.hazards.push({
+          x: boss.x,
+          z: boss.z,
+          vx: Math.sin(direction) * 5,
+          vz: Math.cos(direction) * 5,
+          life: 4,
+        });
+      game.events.push({ type: "boss-shot" });
+    }
+    if (distance(p, boss) < 1.6) hurt(game);
+  }
+  for (const hazard of game.hazards) {
+    hazard.life -= dt;
+    hazard.x += hazard.vx * dt;
+    hazard.z += hazard.vz * dt;
+    if (!canStand(game, hazard.x, hazard.z, 0.15)) hazard.life = 0;
+    if (distance(hazard, p) < 0.48) {
+      hurt(game);
+      hazard.life = 0;
+    }
+  }
+  game.hazards = game.hazards.filter((item) => item.life > 0);
+  if (
+    game.state === "playing" &&
+    game.collected >= game.map.level.quota &&
+    (!game.boss || game.boss.hp === 0) &&
+    distance(p, game.map.exit) < 1
+  ) {
+    game.score += Math.round(game.time * 10);
+    game.state = game.levelIndex === LEVELS.length - 1 ? "won" : "cleared";
+    game.events.push({ type: game.state });
+  }
+  return game.events;
+}
+
+export function nextLevel(game, upgrade) {
+  if (
+    game.state !== "cleared" ||
+    !["rapid", "spread", "pierce"].includes(upgrade)
+  )
+    return null;
+  const upgrades = { ...game.upgrades, [upgrade]: game.upgrades[upgrade] + 1 };
+  return newGame(game.levelIndex + 1, {
+    hp: game.player.hp,
+    score: game.score,
+    upgrades,
+  });
+}

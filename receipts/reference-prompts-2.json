@@ -1,0 +1,11 @@
+{
+  "mode": "built-in ImageGen, original isolated object references",
+  "style": "A chunky toy-scale midnight supermarket, cream enamel, tomato red, petrol-blue shadows, lime energy, warm brass, rounded industrial shapes, original comic arcade game art, no trademarks, no text, plain warm white background, evenly lit three-quarter view, whole isolated object fully visible.",
+  "assets": {
+    "polisher": "One hostile sentient floor-polishing machine, broad low teal disc base with two visible buffing brushes underneath, cream sloped head with a narrow tomato-red visor, charcoal rubber bumper, angular bent metal handle leaning backward, brass hinges, lime tiny warning lamp. 1m wide, 0.9m tall. A comic industrial ambusher with a triangular silhouette, visually distinct from a shopping trolley.",
+    "freezer": "One supermarket freezer island cabinet, teal rounded metal base on four dark feet, thick cream rim, two inset cold pale-blue glass lids, brass hinges and rectangular handles, lime status lamps, a few simple frozen-food boxes visible below the frosty glass, 2m wide by 1.1m tall by 1.6m deep. Low enough for an overhead game camera to see past it.",
+    "checkout": "One compact toy supermarket checkout exit, cream and tomato-red cashier counter with a dark charcoal conveyor belt and brass roller ends, little angled till monitor with lime screen, a striped cream and red exit post beside it, a slim rounded overhead exit arch with a blank lime panel. 2m wide, 1.6m tall and 1.2m deep. No people, no typography.",
+    "snack": "One stylized crunchy golden cereal nugget collectible, irregular rounded triangular puff with three shallow indents and a toasted ochre edge, 0.18m wide, plump and recognisable from all sides, warm luminous buttery-gold material. Isolated single object, no bowl, no package, no crumbs around it, no flat sprite.",
+    "floor": "One isolated square modular supermarket floor tile as a physical toy diorama asset, about 2m square and 0.12m thick, cream glazed ceramic surface with one petrol-blue corner inset and fine dark grout around its beveled perimeter. Whole raised tile visible from a high three-quarter angle, clean readable solid volume, underside visible along its front edge. No characters or other props."
+  }
+}

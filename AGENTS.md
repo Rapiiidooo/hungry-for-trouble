@@ -1,3 +1,3 @@
 # Project entry point
 
-Read `../WORKSPACE.md`, then `tasks/first-playable.md`. Keep the live task current so development can resume after context or usage limits. The current task overrides the earlier brainstorm in `../prompts/maze-shooter.md`.
+Read `../WORKSPACE.md`, then `docs/resume.md`. Keep the handoff current so development can resume after context or usage limits. It overrides the earlier brainstorm in `../prompts/maze-shooter.md`. Record newly requested unfinished work in `tasks/` and remove finished trackers after their results are saved.

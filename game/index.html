@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#102c37" />
+    <title>Hungry for Trouble</title>
+    <meta
+      name="description"
+      content="A haunted supermarket. One heavily unqualified vacuum. Eat crumbs, dodge security and turn the tables."
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./style.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./vendor/three.module.js",
+          "three/addons/": "./vendor/"
+        }
+      }
+    </script>
+    <script type="module" src="./main.js"></script>
+  </head>
+  <body>
+    <main id="game">
+      <canvas id="world" aria-label="Haunted supermarket maze"></canvas>
+      <div class="shade"></div>
+      <header>
+        <a class="brand" href="./">HFT<span>✳</span></a
+        ><span class="stamp">NIGHT SHIFT. DAYLIGHT ROBBERY.</span>
+        <div>
+          <button id="pause" hidden aria-label="Pause">Ⅱ</button
+          ><button id="sound" aria-label="Toggle sound" aria-pressed="true">
+            SOUND ON
+          </button>
+        </div>
+      </header>
+      <section id="menu">
+        <div class="eyebrow"><i></i> CLEANUP ON AISLE EVERYWHERE.</div>
+        <h1>Hungry<br />for <em>trouble.</em></h1>
+        <p class="lead">Minimum wage.<br /><b>Maximum firepower.</b></p>
+        <p class="pitch">
+          Collect the crumbs. Dodge the security.<br />Grab a battery. Become
+          the problem.
+        </p>
+        <button id="start" class="primary" disabled>
+          WARMING UP… <span>↗</span>
+        </button>
+        <div class="controls">
+          <span><kbd>WASD</kbd> move</span
+          ><span><kbd>MOUSE</kbd> aim & fire</span
+          ><span><kbd>SPACE</kbd> dash</span>
+        </div>
+        <p class="touch-hint">Left thumb moves. Right thumb aims and fires.</p>
+        <small id="best">FIVE AISLES. ZERO QUALIFICATIONS.</small>
+      </section>
+      <aside id="hero-label">
+        <span>EMPLOYEE OF THE MONTH*</span
+        ><small>*Only employee remaining.</small>
+      </aside>
+      <section id="hud" hidden aria-label="Game status">
+        <div class="hud-top">
+          <div>
+            <small id="department">AISLE 01</small
+            ><strong id="floor-name">Cereal Situation</strong>
+          </div>
+          <div class="quota">
+            <small id="goal-label">CRUMBS TO COLLECT</small
+            ><strong
+              ><span id="collected">0</span
+              ><span id="quota"> / 38</span></strong
+            >
+            <div class="track"><i id="quota-fill"></i></div>
+          </div>
+          <div class="timer">
+            <small>STORE CLOSES</small><strong id="clock">01:50</strong>
+          </div>
+        </div>
+        <div id="overtime" hidden>
+          <b>OVERTIME!</b><span id="overtime-time">8.0</span
+          ><small>THEY SHOULD BE RUNNING.</small>
+        </div>
+        <div id="boss-bar" hidden>
+          <span>THE MANAGER</span>
+          <div><i id="boss-fill"></i></div>
+          <small id="boss-state">Wait for the shield to drop.</small>
+        </div>
+        <div class="hud-bottom">
+          <div>
+            <span id="health" aria-label="Health">♥ ♥ ♥</span
+            ><small id="ammo">24 SHOTS</small>
+          </div>
+          <div id="dash-status">DASH READY <kbd>SPACE</kbd></div>
+          <div class="score-block">
+            <strong id="score">000000</strong
+            ><small id="combo">NIGHT SHIFT SCORE</small>
+          </div>
+        </div>
+        <canvas
+          id="minimap"
+          width="204"
+          height="156"
+          aria-label="Map of crumbs, batteries and exit"
+        ></canvas>
+        <div id="touch-controls">
+          <div id="move-stick" class="stick" aria-label="Move">
+            <span>MOVE</span><i></i>
+          </div>
+          <button id="dash-button" aria-label="Dash">DASH ↟</button>
+          <div id="aim-stick" class="stick" aria-label="Aim and fire">
+            <span>AIM / FIRE</span><i></i>
+          </div>
+        </div>
+        <div id="exit-label" hidden>CHECKOUT ↗</div>
+      </section>
+      <div id="message" role="status" aria-live="polite"></div>
+      <div id="hit-flash"></div>
+      <section id="pause-screen" class="overlay" hidden>
+        <div class="panel">
+          <div class="eyebrow">UNPAID BREAK</div>
+          <h2>Dust can <em>wait.</em></h2>
+          <button id="resume" class="primary">
+            BACK TO WORK <span>↗</span></button
+          ><button id="pause-retry" class="text-button">
+            Restart the shift
+          </button>
+        </div>
+      </section>
+      <section id="upgrade-screen" class="overlay" hidden>
+        <div class="panel upgrade-panel">
+          <div class="eyebrow">AISLE CLEARED</div>
+          <h2>Pick your <em>problem.</em></h2>
+          <p>One free upgrade. Then straight back to the mess.</p>
+          <div class="upgrades">
+            <button data-upgrade="rapid">
+              <span>01</span>
+              <h3>Overcaffeinated</h3>
+              <p>Fire 25% faster.</p>
+              <b>TAKE IT ↗</b></button
+            ><button data-upgrade="spread">
+              <span>02</span>
+              <h3>Crumb storm</h3>
+              <p>Three shots for the price of one.</p>
+              <b>TAKE IT ↗</b></button
+            ><button data-upgrade="pierce">
+              <span>03</span>
+              <h3>Receipt railgun</h3>
+              <p>Shots pierce one extra enemy.</p>
+              <b>TAKE IT ↗</b>
+            </button>
+          </div>
+        </div>
+      </section>
+      <section id="result" class="overlay" hidden>
+        <div class="panel">
+          <div id="result-eyebrow" class="eyebrow">PERFORMANCE REVIEW</div>
+          <h2 id="result-title">You <em>suck.</em></h2>
+          <p id="result-comment">Occupational hazard. No compensation.</p>
+          <strong id="final-score">0</strong><small id="result-stats"></small
+          ><button id="retry" class="primary">
+            ONE MORE SHIFT <span>↗</span></button
+          ><button id="back-menu" class="text-button">Clock out</button>
+        </div>
+      </section>
+      <div id="error" role="alert" hidden></div>
+      <footer id="footer">
+        <span>ALL ORIGINAL. DEEPLY UNPROFESSIONAL.</span
+        ><span>A 404 GAME JAM EXPERIMENT</span>
+      </footer>
+    </main>
+  </body>
+</html>
