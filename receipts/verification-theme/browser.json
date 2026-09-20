@@ -1,0 +1,54 @@
+{
+  "errors": [],
+  "screenshots": [
+    "menu-desktop.png",
+    "route-desktop.png",
+    "daily-desktop.png",
+    "playing-desktop.png",
+    "menu-mobile.png",
+    "route-mobile.png",
+    "daily-mobile.png",
+    "playing-mobile.png",
+    "menu-landscape.png",
+    "route-landscape.png",
+    "daily-landscape.png",
+    "playing-landscape.png"
+  ],
+  "checks": [
+    {
+      "viewport": "desktop",
+      "ready": true,
+      "primaryContrast": 4.7,
+      "routeNodes": 10,
+      "overflow": false,
+      "game": {
+        "mode": "playing",
+        "state": "playing"
+      }
+    },
+    {
+      "viewport": "mobile",
+      "ready": true,
+      "primaryContrast": 4.7,
+      "routeNodes": 10,
+      "overflow": false,
+      "game": {
+        "mode": "playing",
+        "state": "playing"
+      }
+    },
+    {
+      "viewport": "landscape",
+      "ready": true,
+      "primaryContrast": 4.7,
+      "routeNodes": 10,
+      "overflow": false,
+      "game": {
+        "mode": "playing",
+        "state": "playing"
+      }
+    }
+  ],
+  "utc": "2026-09-20T22:18:07.582Z",
+  "result": "PASS"
+}

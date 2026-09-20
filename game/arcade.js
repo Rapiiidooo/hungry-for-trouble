@@ -2,26 +2,26 @@ import { LEVELS } from "./levels.js";
 
 const drawings = {
   rapid:
-    '<path d="M40 43h56v39q0 23-28 23T40 82z" fill="#f5e9c9"/><path d="M96 51h8q22 0 16 20t-24 10" fill="none" stroke="#f5e9c9" stroke-width="9"/><path d="m74 50-18 28h15l-7 23 26-31H74z" fill="#f1533f"/><path d="M51 31q-9-10 3-20m18 20q-9-10 3-20m16 20q-9-10 3-20" stroke="#52c9c1" stroke-width="5" fill="none"/>',
+    '<path d="M40 43h56v39q0 23-28 23T40 82z" fill="#f4ead6"/><path d="M96 51h8q22 0 16 20t-24 10" fill="none" stroke="#f4ead6" stroke-width="9"/><path d="m74 50-18 28h15l-7 23 26-31H74z" fill="#c94732"/><path d="M51 31q-9-10 3-20m18 20q-9-10 3-20m16 20q-9-10 3-20" stroke="#6c8fb8" stroke-width="5" fill="none"/>',
   spread:
-    '<path d="m39 98 24-21 15 15-21 24z" fill="#f5e9c9"/><path d="M53 89 82 60" stroke="#203f49" stroke-width="15"/><g fill="#d5f65b"><path d="m38 26 17 1 4 17-20 2z"/><path d="m91 11 18 13-7 17-18-8z"/><path d="m110 58 20 5-2 19-20-1z"/></g><path d="m63 65-11-14m28 1 13-12m-2 35 16-2" stroke="#52c9c1" stroke-width="4"/>',
+    '<path d="m39 98 24-21 15 15-21 24z" fill="#f4ead6"/><path d="M53 89 82 60" stroke="#344158" stroke-width="15"/><g fill="#efb546"><path d="m38 26 17 1 4 17-20 2z"/><path d="m91 11 18 13-7 17-18-8z"/><path d="m110 58 20 5-2 19-20-1z"/></g><path d="m63 65-11-14m28 1 13-12m-2 35 16-2" stroke="#6c8fb8" stroke-width="4"/>',
   pierce:
-    '<path d="M24 106 97 29" stroke="#52c9c1" stroke-width="8"/><path d="m46 20 17 7 14-7 15 7v72l-15-7-14 7-17-7z" fill="#f5e9c9"/><path d="m54 42 28 0m-28 10h28m-28 10h17m-17 11h28" stroke="#203f49" stroke-width="4"/><path d="m31 94 76-71" stroke="#d5f65b" stroke-width="9"/><path d="m89 21 26-5-7 26z" fill="#d5f65b"/>',
+    '<path d="M24 106 97 29" stroke="#6c8fb8" stroke-width="8"/><path d="m46 20 17 7 14-7 15 7v72l-15-7-14 7-17-7z" fill="#f4ead6"/><path d="m54 42 28 0m-28 10h28m-28 10h17m-17 11h28" stroke="#344158" stroke-width="4"/><path d="m31 94 76-71" stroke="#efb546" stroke-width="9"/><path d="m89 21 26-5-7 26z" fill="#efb546"/>',
   shield:
-    '<path d="m70 15 44 17-6 46q-12 22-38 37-26-15-38-37l-6-46z" fill="#52c9c1" stroke="#f5e9c9" stroke-width="6"/><path d="m70 32 27 11-5 31q-7 14-22 24z" fill="#203f49"/><path d="m47 65 15 14 31-35" fill="none" stroke="#d5f65b" stroke-width="8"/>',
+    '<path d="m70 15 44 17-6 46q-12 22-38 37-26-15-38-37l-6-46z" fill="#6c8fb8" stroke="#f4ead6" stroke-width="6"/><path d="m70 32 27 11-5 31q-7 14-22 24z" fill="#344158"/><path d="m47 65 15 14 31-35" fill="none" stroke="#efb546" stroke-width="8"/>',
   magnet:
-    '<path d="M32 30v39q0 40 38 40t38-40V30H86v39q0 17-16 17T54 69V30z" fill="#f1533f"/><path d="M32 30h22v24H32zm54 0h22v24H86z" fill="#f5e9c9"/><path d="m59 13 10 15-8 13-11-15zm21-5 13 9-4 14-13-9z" fill="#d5f65b"/><path d="m22 69-10-6m109 9 11-7" stroke="#52c9c1" stroke-width="5"/>',
+    '<path d="M32 30v39q0 40 38 40t38-40V30H86v39q0 17-16 17T54 69V30z" fill="#c94732"/><path d="M32 30h22v24H32zm54 0h22v24H86z" fill="#f4ead6"/><path d="m59 13 10 15-8 13-11-15zm21-5 13 9-4 14-13-9z" fill="#efb546"/><path d="m22 69-10-6m109 9 11-7" stroke="#6c8fb8" stroke-width="5"/>',
   heart:
-    '<path d="M70 105 28 65C-5 32 44 2 70 37c26-35 75-5 42 28z" fill="#f1533f" stroke="#f5e9c9" stroke-width="5"/><path d="M58 57h12V45h12v12h12v12H82v12H70V69H58z" fill="#f5e9c9"/>',
+    '<path d="M70 105 28 65C-5 32 44 2 70 37c26-35 75-5 42 28z" fill="#c94732" stroke="#f4ead6" stroke-width="5"/><path d="M58 57h12V45h12v12h12v12H82v12H70V69H58z" fill="#f4ead6"/>',
   manager:
-    '<path d="M25 39h93l-9 50H34z" fill="#f1533f" stroke="#f5e9c9" stroke-width="5"/><path d="M40 45v37m18-37v37m18-37v37m18-37v37" stroke="#203f49" stroke-width="5"/><path d="M21 23h15v16" stroke="#f1533f" stroke-width="8" fill="none"/><circle cx="43" cy="103" r="12" fill="#203f49"/><circle cx="100" cy="103" r="12" fill="#203f49"/><circle cx="53" cy="55" r="10" fill="#f5e9c9"/><circle cx="91" cy="55" r="10" fill="#f5e9c9"/><path d="m42 41 21 7m38-7-21 7" stroke="#203f49" stroke-width="7"/><path d="M66 15h15v20H66z" fill="#d5f65b"/>',
+    '<path d="M25 39h93l-9 50H34z" fill="#c94732" stroke="#f4ead6" stroke-width="5"/><path d="M40 45v37m18-37v37m18-37v37m18-37v37" stroke="#344158" stroke-width="5"/><path d="M21 23h15v16" stroke="#c94732" stroke-width="8" fill="none"/><circle cx="43" cy="103" r="12" fill="#344158"/><circle cx="100" cy="103" r="12" fill="#344158"/><circle cx="53" cy="55" r="10" fill="#f4ead6"/><circle cx="91" cy="55" r="10" fill="#f4ead6"/><path d="m42 41 21 7m38-7-21 7" stroke="#344158" stroke-width="7"/><path d="M66 15h15v20H66z" fill="#efb546"/>',
   director:
-    '<rect x="20" y="85" width="27" height="35" rx="8" fill="#203f49"/><rect x="95" y="85" width="27" height="35" rx="8" fill="#203f49"/><path d="M39 23h65v80H39z" fill="#f5e9c9"/><path d="M47 31h49v31H47z" fill="#203f49"/><path d="m51 40 16 7-6 8-10-4zm41 0-16 7 6 8 10-4z" fill="#52c9c1"/><path d="M49 70h46v15H49z" fill="#f1533f"/><circle cx="22" cy="67" r="19" fill="#f1533f"/><circle cx="119" cy="67" r="19" fill="#f1533f"/><circle cx="22" cy="67" r="10" fill="#203f49"/><circle cx="119" cy="67" r="10" fill="#203f49"/><path d="M61 13h20v12H61z" fill="#d99c4b"/>',
+    '<rect x="20" y="85" width="27" height="35" rx="8" fill="#344158"/><rect x="95" y="85" width="27" height="35" rx="8" fill="#344158"/><path d="M39 23h65v80H39z" fill="#f4ead6"/><path d="M47 31h49v31H47z" fill="#344158"/><path d="m51 40 16 7-6 8-10-4zm41 0-16 7 6 8 10-4z" fill="#6c8fb8"/><path d="M49 70h46v15H49z" fill="#c94732"/><circle cx="22" cy="67" r="19" fill="#c94732"/><circle cx="119" cy="67" r="19" fill="#c94732"/><circle cx="22" cy="67" r="10" fill="#344158"/><circle cx="119" cy="67" r="10" fill="#344158"/><path d="M61 13h20v12H61z" fill="#b98442"/>',
   visor:
-    '<rect x="16" y="38" width="112" height="54" rx="21" fill="#f5e9c9"/><circle cx="44" cy="65" r="22" fill="#203f49"/><circle cx="100" cy="65" r="22" fill="#203f49"/><circle cx="44" cy="65" r="16" fill="#52c9c1"/><circle cx="100" cy="65" r="16" fill="#52c9c1"/><path d="M107 36V15" stroke="#d99c4b" stroke-width="6"/><circle cx="71" cy="31" r="9" fill="#f1533f"/>',
+    '<rect x="16" y="38" width="112" height="54" rx="21" fill="#f4ead6"/><circle cx="44" cy="65" r="22" fill="#344158"/><circle cx="100" cy="65" r="22" fill="#344158"/><circle cx="44" cy="65" r="16" fill="#6c8fb8"/><circle cx="100" cy="65" r="16" fill="#6c8fb8"/><path d="M107 36V15" stroke="#b98442" stroke-width="6"/><circle cx="71" cy="31" r="9" fill="#c94732"/>',
 };
 export function art(name) {
-  return `<svg viewBox="0 0 144 130" aria-hidden="true" focusable="false"><ellipse cx="72" cy="114" rx="52" ry="7" fill="#071f2b" opacity=".5"/>${drawings[name] || drawings.magnet}</svg>`;
+  return `<svg viewBox="0 0 144 130" aria-hidden="true" focusable="false"><ellipse cx="72" cy="114" rx="52" ry="7" fill="#1a2232" opacity=".5"/>${drawings[name] || drawings.magnet}</svg>`;
 }
 export const UPGRADES = {
   rapid: {

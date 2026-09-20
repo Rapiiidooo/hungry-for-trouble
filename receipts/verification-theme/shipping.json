@@ -1,0 +1,7 @@
+{
+  "command": "npm run check",
+  "result": "PASS",
+  "modules": 24,
+  "pages": 1,
+  "scope": "JavaScript syntax and in-folder paths. No simulation, asset geometry or daily scoring changes."
+}

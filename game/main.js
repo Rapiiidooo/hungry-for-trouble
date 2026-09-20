@@ -27,11 +27,23 @@ const ui = Object.fromEntries(
 );
 const sound = new Sound();
 const palette = {
-  cream: 0xf5e9c9,
-  lime: 0xd5f65b,
-  red: 0xf1533f,
-  teal: 0x52c9c1,
+  ink: 0x263650,
+  cream: 0xf4ead6,
+  gold: 0xefb546,
+  red: 0xc94732,
+  blue: 0x6c8fb8,
+  brass: 0xb98442,
 };
+const enamelColors = new Map([
+  [0xf5e9c9, palette.cream],
+  [0xd5f65b, palette.gold],
+  [0xf1533f, palette.red],
+  [0x52c9c1, palette.blue],
+  [0xd99c4b, palette.brass],
+  [0x203f49, 0x344158],
+  [0x10202a, 0x1a2232],
+  [0x86cbd9, 0xa6bfd7],
+]);
 let renderer, scene, camera, world, menuWorld, hero, bossModel, exitModel, halo;
 let fpsCamera,
   weapon,
@@ -239,7 +251,22 @@ function cloneAsset(name) {
   return copy;
 }
 
+function recolorEnamel(model) {
+  // Repaint cached materials at assembly time, keeping verified recipe sources intact.
+  model.traverse((node) => {
+    if (!node.isMesh) return;
+    const materials = Array.isArray(node.material)
+      ? node.material
+      : [node.material];
+    for (const material of materials) {
+      const color = enamelColors.get(material.color?.getHex());
+      if (color !== undefined) material.color.setHex(color);
+    }
+  });
+}
+
 function compactActor(model) {
+  recolorEnamel(model);
   // Bake the body and each moving part separately, preserving pivots and articulation.
   const candidates = [];
   const jointRefs = model.userData.joints || {};
@@ -292,7 +319,7 @@ function markEmissive(object, active = false) {
       node.material = node.material.clone();
       node.userData.ownMaterial = true;
     }
-    node.material.emissive.setHex(active ? palette.lime : 0x000000);
+    node.material.emissive.setHex(active ? palette.gold : 0x000000);
     node.material.emissiveIntensity = active ? 0.25 : 0;
   });
 }
@@ -317,12 +344,12 @@ function makeRing(radius, color) {
   return object;
 }
 
-function label(text, color = "#d5f65b", width = 3.8) {
+function label(text, color = "#efb546", width = 3.8) {
   const canvas = document.createElement("canvas");
   canvas.width = 512;
   canvas.height = 80;
   const ctx = canvas.getContext("2d");
-  ctx.fillStyle = "#102c37e6";
+  ctx.fillStyle = "#263650e6";
   ctx.fillRect(0, 0, 512, 80);
   ctx.fillStyle = color;
   ctx.font = "bold 35px sans-serif";
@@ -447,7 +474,7 @@ async function makeMenu() {
     for (let x = -8; x <= 8; x += 2)
       tiles.push({ x, z, y: -0.12 * scale, scale });
   instanceAsset("floor", tiles, menuWorld, (p) =>
-    ((p.x + p.z) / 2) % 2 ? 0x668a83 : 0xffffff,
+    ((p.x + p.z) / 2) % 2 ? 0xc1b4a0 : 0xffffff,
   );
   for (const x of [-6, -3, 0, 3, 6]) {
     const shelf = cloneAsset("shelf");
@@ -516,15 +543,15 @@ async function buildWorld() {
       tiles.push({ x: col * 2, z: row * 2, col, row, scale, y: -0.12 * scale });
     }
   instanceAsset("floor", tiles, world, (p) => {
-    if (game.map.level.map[p.row][p.col] === "#") return 0x6c9288;
-    if (theme === "ice") return (p.col + p.row) % 2 ? 0xa9eced : 0xe8ffff;
-    if (theme === "warehouse") return (p.col + p.row) % 2 ? 0x789999 : 0xa1b4a2;
-    if (theme === "rush") return (p.col + p.row) % 2 ? 0x737e73 : 0x8d8c77;
-    if (theme === "food") return (p.col + p.row) % 2 ? 0xb6a075 : 0x638b80;
-    if (theme === "dock") return (p.col + p.row) % 2 ? 0x859695 : 0x587d7b;
-    if (theme === "conveyor") return (p.col + p.row) % 2 ? 0x98a981 : 0x617d7b;
-    if (theme === "director") return (p.col + p.row) % 2 ? 0x6f8f94 : 0x9ba687;
-    return (p.col + p.row) % 2 ? 0x567a71 : 0x718b77;
+    if (game.map.level.map[p.row][p.col] === "#") return 0x8a8490;
+    if (theme === "ice") return (p.col + p.row) % 2 ? 0x94adca : 0xd2dfec;
+    if (theme === "warehouse") return (p.col + p.row) % 2 ? 0x93877b : 0xb2a898;
+    if (theme === "rush") return (p.col + p.row) % 2 ? 0x7a7270 : 0x999088;
+    if (theme === "food") return (p.col + p.row) % 2 ? 0xb09a76 : 0x837e8b;
+    if (theme === "dock") return (p.col + p.row) % 2 ? 0x8491a4 : 0x6a7388;
+    if (theme === "conveyor") return (p.col + p.row) % 2 ? 0xaa9e82 : 0x738099;
+    if (theme === "director") return (p.col + p.row) % 2 ? 0x7b819a : 0xa5a095;
+    return (p.col + p.row) % 2 ? 0x888175 : 0xa29a85;
   });
   const chunks = new Map();
   for (const wall of game.map.walls) {
@@ -560,14 +587,14 @@ async function buildWorld() {
     model.position.set(item.x, 0.1, item.z);
     model.scale.setScalar(1.2);
     markEmissive(model, true);
-    const ring = makeRing(0.6, palette.lime);
+    const ring = makeRing(0.6, palette.gold);
     ring.position.set(item.x, 0.025, item.z);
     world.add(model, ring);
     batteries.push({ model, ring, i });
   }
   for (const [i, item] of game.visors.entries()) {
     const model = cloneAsset("visor"),
-      ring = makeRing(0.65, palette.teal);
+      ring = makeRing(0.65, palette.blue);
     model.position.set(item.x, 0.35, item.z);
     ring.position.set(item.x, 0.03, item.z);
     world.add(model, ring);
@@ -583,7 +610,7 @@ async function buildWorld() {
     for (const { mesh } of beltTiles) {
       mesh.material = mesh.material.clone();
       mesh.userData.ownMaterial = true;
-      mesh.material.color.setHex(0x254852);
+      mesh.material.color.setHex(0x344158);
     }
     beltMeshes = instanceAsset(
       "snack",
@@ -605,7 +632,7 @@ async function buildWorld() {
     "floor",
     tiles.map((t) => ({ ...t, y: 3.1 })),
     ceiling,
-    () => 0x324b50,
+    () => 0x454c62,
   );
   const lamps = instanceAsset(
     "floor",
@@ -618,7 +645,7 @@ async function buildWorld() {
     mesh.material = mesh.material.clone();
     mesh.userData.ownMaterial = true;
     mesh.material.emissive.setHex(
-      lamps.some((l) => l.mesh === mesh) ? 0xffe7b0 : 0x193940,
+      lamps.some((l) => l.mesh === mesh) ? 0xffe9c7 : 0x33394d,
     );
     mesh.material.emissiveIntensity = lamps.some((l) => l.mesh === mesh)
       ? 1.1
@@ -657,7 +684,7 @@ async function buildWorld() {
       model.scale.setScalar(1.25);
       model.traverse((n) => {
         if (n.isMesh && n.material.color.getHex() === palette.red)
-          n.material.color.setHex(0xd99c4b);
+          n.material.color.setHex(palette.brass);
       });
     }
     world.add(model);
@@ -668,7 +695,7 @@ async function buildWorld() {
   exitModel.rotation.y = Math.PI;
   world.add(exitModel);
   exitModel.visible = !game.daily;
-  const checkoutLabel = label("CHECKOUT", "#f5e9c9", 2.5);
+  const checkoutLabel = label("CHECKOUT", "#f4ead6", 2.5);
   checkoutLabel.position.set(game.map.exit.x, 2.05, game.map.exit.z);
   world.add(checkoutLabel);
   checkoutLabel.visible = !game.daily;
@@ -696,20 +723,20 @@ async function buildWorld() {
     world.add(bossModel);
     const manager = label(
       game.boss.director ? "THE DIRECTOR" : "THE MANAGER",
-      "#f1533f",
+      "#ff8065",
       3.5,
     );
     manager.position.set(game.boss.x, 3.7, game.boss.z);
     world.add(manager);
   }
-  shotPool = pool(palette.lime, 160);
+  shotPool = pool(palette.gold, 160);
   hazardPool = pool(palette.red, 80);
   world.add(shotPool, hazardPool);
   keyLight.color.setHex(
-    theme === "ice" ? 0xd9fbff : theme === "boss" ? 0xffc7a7 : 0xffe2ac,
+    theme === "ice" ? 0xe0eaff : theme === "boss" ? 0xffcfb7 : 0xffedcf,
   );
-  fillLight.color.setHex(theme === "ice" ? 0x6abfff : 0x81c7de);
-  scene.background.setHex(theme === "ice" ? 0x173c4a : 0x102c37);
+  fillLight.color.setHex(theme === "ice" ? 0xadc7e7 : 0xc2cbdf);
+  scene.background.setHex(theme === "ice" ? 0x344766 : palette.ink);
   follow.set(game.player.x, 0, game.player.z);
   lastState = "playing";
   lastOvertime = false;
@@ -847,7 +874,7 @@ function handleEvents(events) {
   for (const event of events) {
     sound.effect(event.type, game.collected);
     if (event.type === "crumb") {
-      burst(event.x, event.z, palette.lime, 5, 1.3);
+      burst(event.x, event.z, palette.gold, 5, 1.3);
       if (clock - lastAmmoPop > 0.18) {
         floatText("+2 AMMO", event.x, event.z);
         lastAmmoPop = clock;
@@ -858,7 +885,7 @@ function handleEvents(events) {
       fpsYaw = game.player.angle;
       fpsPitch = 0;
       pointerFire = false;
-      burst(event.x, event.z, palette.teal, 50, 3);
+      burst(event.x, event.z, palette.blue, 50, 3);
       showMessage(
         "VAC CAM ONLINE",
         "18 seconds of rapid fire. V switches your view.",
@@ -874,10 +901,10 @@ function handleEvents(events) {
       burst(event.x, event.z, palette.red, 8, 0.5);
     if (event.type === "shot") recoil = 1;
     if (event.type === "hit") burst(event.x, event.z, palette.cream, 6, 2.5);
-    if (event.type === "shield") burst(event.x, event.z, palette.teal, 3, 1.5);
+    if (event.type === "shield") burst(event.x, event.z, palette.blue, 3, 1.5);
     if (event.type === "charge-warning")
       burst(event.x, event.z, palette.red, 10, 0.7);
-    if (event.type === "charge") burst(event.x, event.z, palette.teal, 14, 2);
+    if (event.type === "charge") burst(event.x, event.z, palette.blue, 14, 2);
     if (event.type === "enemy-down") {
       burst(event.x, event.z, palette.red, 32, 4);
       viewKick = 0.1;
@@ -891,7 +918,7 @@ function handleEvents(events) {
         1.1,
       );
     }
-    if (event.type === "dash") burst(event.x, event.z, palette.teal, 15, 1.5);
+    if (event.type === "dash") burst(event.x, event.z, palette.blue, 15, 1.5);
     if (event.type === "damage") {
       damageUntil = clock + 0.5;
       burst(event.x, event.z, palette.red, 25, 3);
@@ -912,7 +939,7 @@ function handleEvents(events) {
         1.5,
       );
     if (event.type === "overtime") {
-      burst(event.x, event.z, palette.lime, 55, 5);
+      burst(event.x, event.z, palette.gold, 55, 5);
       viewKick = 0.12;
       showMessage(
         "UNREASONABLE OVERTIME.",
@@ -927,7 +954,7 @@ function handleEvents(events) {
           : "TIME TO CHECK OUT!",
         game.boss?.hp > 0
           ? `Defeat the ${game.boss.director ? "Director" : "Manager"}, then reach the checkout.`
-          : "Follow the lime marker to the checkout.",
+          : "Follow the gold marker to the checkout.",
         3,
       );
     if (event.type === "boss-down") {
@@ -1048,7 +1075,7 @@ function updateModels(dt) {
   });
   halo.position.set(p.x, 0.025, p.z);
   halo.scale.setScalar(overtime ? 1.5 : p.dash > 0 ? 1.3 : 1);
-  halo.material.color.setHex(overtime ? palette.lime : palette.cream);
+  halo.material.color.setHex(overtime ? palette.gold : palette.cream);
   halo.material.opacity =
     p.invincible > 0 ? 0.35 + Math.sin(clock * 20) * 0.25 : 0.8;
   if (overtime !== lastOvertime) {
@@ -1078,7 +1105,7 @@ function updateModels(dt) {
             : enemy.windup > 0 || enemy.charge > 0 || enemy.tell > 0
               ? palette.red
               : overtime
-                ? palette.teal
+                ? palette.blue
                 : 0,
         );
         node.material.emissiveIntensity =
@@ -1127,7 +1154,7 @@ function updateModels(dt) {
     const closed = gateClosed(game, data.col, data.row);
     model.position.y +=
       ((closed ? 0 : -1.4) - model.position.y) * Math.min(1, dt * 15);
-    ring.material.color.setHex(closed ? palette.red : palette.lime);
+    ring.material.color.setHex(closed ? palette.red : palette.gold);
   }
   for (const { mesh, local } of crumbMeshes) {
     for (const [i, crumb] of game.crumbs.entries()) {
@@ -1163,7 +1190,7 @@ function updateModels(dt) {
     bossModel.traverse((node) => {
       if (node.isMesh) {
         node.material.emissive.setHex(
-          boss.exposed ? palette.lime : palette.red,
+          boss.exposed ? palette.gold : palette.red,
         );
         node.material.emissiveIntensity = boss.hit > 0 ? 0.8 : 0.1;
       }
@@ -1235,44 +1262,44 @@ function updateCamera(dt) {
 }
 
 function drawMap() {
-  mini.fillStyle = "#0b2530ee";
+  mini.fillStyle = "#1a2232ee";
   mini.fillRect(0, 0, 204, 156);
   for (const wall of game.map.walls) {
-    mini.fillStyle = "#476362";
+    mini.fillStyle = "#657189";
     mini.fillRect(wall.col * 12 + 1, wall.row * 12 + 1, 10, 10);
   }
   for (const crumb of game.crumbs)
     if (!crumb.collected) {
-      mini.fillStyle = "#bed067";
+      mini.fillStyle = "#efb546";
       mini.fillRect(crumb.x * 6 + 5, crumb.z * 6 + 5, 2, 2);
     }
   for (const battery of game.batteries)
     if (!battery.collected) {
-      mini.fillStyle = "#d5f65b";
+      mini.fillStyle = "#efb546";
       mini.fillRect(battery.x * 6 + 3, battery.z * 6 + 3, 6, 6);
     }
   for (const visor of game.visors)
     if (!visor.collected) {
-      mini.fillStyle = "#52c9c1";
+      mini.fillStyle = "#a4c0e0";
       mini.fillRect(visor.x * 6 + 2, visor.z * 6 + 4, 9, 4);
     }
   for (const gate of game.map.gates) {
     mini.fillStyle = gateClosed(game, gate.col, gate.row)
-      ? "#f1533f"
-      : "#52c9c1";
+      ? "#ff8065"
+      : "#a4c0e0";
     mini.fillRect(gate.col * 12 + 1, gate.row * 12 + 4, 10, 4);
   }
   mini.fillStyle =
-    game.collected >= game.map.level.quota ? "#d5f65b" : "#52c9c1";
+    game.collected >= game.map.level.quota ? "#efb546" : "#a4c0e0";
   if (!game.daily)
     mini.fillRect(game.map.exit.x * 6 + 2, game.map.exit.z * 6 + 2, 8, 8);
   for (const enemy of game.enemies)
     if (enemy.respawn <= 0) {
-      mini.fillStyle = game.overtime > 0 ? "#52c9c1" : "#f1533f";
+      mini.fillStyle = game.overtime > 0 ? "#a4c0e0" : "#ff8065";
       mini.fillRect(enemy.x * 6 + 3, enemy.z * 6 + 3, 5, 5);
     }
   if (game.boss?.hp > 0) {
-    mini.fillStyle = "#f1533f";
+    mini.fillStyle = "#ff8065";
     mini.fillRect(game.boss.x * 6 + 1, game.boss.z * 6 + 1, 10, 10);
   }
   mini.fillStyle = "#ffffff";
@@ -1764,7 +1791,7 @@ async function init() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x102c37);
+  scene.background = new THREE.Color(palette.ink);
   camera = new THREE.OrthographicCamera(-10, 10, 8, -8, 0.1, 100);
   fpsCamera = new THREE.PerspectiveCamera(
     76,
@@ -1773,7 +1800,7 @@ async function init() {
     65,
   );
   scene.add(fpsCamera);
-  keyLight = new THREE.DirectionalLight(0xffe2ac, 3.2);
+  keyLight = new THREE.DirectionalLight(0xffedcf, 3.2);
   keyLight.position.set(5, 24, 14);
   keyLight.target.position.set(15, 0, 12);
   keyLight.castShadow = true;
@@ -1789,9 +1816,9 @@ async function init() {
   keyLight.shadow.bias = -0.0002;
   keyLight.shadow.normalBias = 0.04;
   scene.add(keyLight, keyLight.target);
-  fillLight = new THREE.HemisphereLight(0x81c7de, 0x66502e, 1.65);
+  fillLight = new THREE.HemisphereLight(0xc2cbdf, 0x705a45, 1.65);
   scene.add(fillLight);
-  const rim = new THREE.DirectionalLight(0x64d9d3, 1.5);
+  const rim = new THREE.DirectionalLight(0xb7c9e4, 1.2);
   rim.position.set(0, 8, -15);
   scene.add(rim);
   const loaded = await Promise.all(
@@ -1823,11 +1850,12 @@ async function init() {
     if (node.material.color.getHex() === 0x203f49)
       node.material.color.setHex(0xf5e9c9);
   });
+  for (const prototype of Object.values(prototypes)) recolorEnamel(prototype);
   prototypes.snack.traverse((node) => {
     if (!node.isMesh) return;
     node.material = node.material.clone();
-    node.material.color.setHex(palette.lime);
-    node.material.emissive.setHex(palette.lime);
+    node.material.color.setHex(palette.gold);
+    node.material.emissive.setHex(palette.gold);
     node.material.emissiveIntensity = 0.25;
   });
   for (const name of paths)

@@ -6,6 +6,8 @@ The arcade expansion is implemented and verified locally. The user loves the cor
 
 Local preview: `http://localhost:3001`. Active server tool session `82435`, command `npm run dev` / `node scripts/serve.mjs`. Use the current session or identify its exact PID before restarting only this server. Preserve the coffin project and its port 3000 process. Test browsers close themselves. No remote, hosting project, deployment or push was created; publication remains a separately authorized action.
 
+The latest visual pass replaces the rejected acid-green/petrol treatment with retro supermarket colours: cream paper menus, tomato red actions, ink blue fixtures and honey gold pickups. Follow `docs/style-lock.md`; do not restore the previous neon palette. The recolour is applied at runtime so recipe geometry and historical generation receipts stay intact.
+
 ## Implemented behavior
 
 - Ten connected, distinct maps, with the original Manager at five and the Director guarding the exit at ten. Later stages combine ranged receipt drones, armoured trolleys, shutters, ice and directional conveyors.
@@ -22,6 +24,8 @@ Seventeen Node checks and the 24-module shipping check pass. The complete pack p
 Browser checks cover all ten campaign clears, both bosses, death/retry, 90-second daily survival and accepted server replay, a lost daily run seen by a second browser identity, first-person mouse/touch input, saved unlocks, practice, offline ranking feedback, portrait/landscape touch controls and restart resource stability. The official jam gate passes on local phone emulation with 4G/CPU shaping. It is not a physical-phone or published-URL verdict. Reports and representative screenshots are in `receipts/verification-expansion/`; earlier five-floor baseline receipts remain in `receipts/verification/`.
 
 The Browser plugin had no available browser bindings after its documented discovery. Verification uses Puppeteer from the adjacent official recipe and local Google Chrome. Changing Puppeteer's `isMobile` during a test reloads the page; retain it when checking rotation. The automated campaign is a precise player, so its completion speed is not a human play-time estimate. The user's next playtest should judge feel and replay value.
+
+The theme refresh was checked in desktop, portrait and landscape browser views, including the route and live daily board. Existing smoke and first-person input checks pass, and the shipping check still covers 24 modules. Screenshots and exact verification scope are saved in `receipts/verification-theme/`; the earlier mobile performance gate remains evidence for the expansion checkpoint, not a new performance measurement of this recolour.
 
 ## Source and operation
 
