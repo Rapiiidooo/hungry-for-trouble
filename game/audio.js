@@ -90,6 +90,13 @@ export class Sound {
   }
 
   effect(type, count = 1) {
+    if (type === "drone-warning") this.note(620, 0.2, 0.13, "square", 920);
+    if (type === "drone-shot") this.note(250, 0.1, 0.15, "sawtooth", 70);
+    if (type === "shield-save") this.note(1200, 0.35, 0.22, "sine", 400);
+    if (type === "visor" || type === "wave") {
+      for (const [i, f] of [330, 660, 990].entries())
+        this.note(f, 0.2, 0.19, "triangle", f, i * 0.1);
+    }
     if (type === "charge-warning") {
       this.note(450, 0.12, 0.2, "square", 650);
       this.note(450, 0.12, 0.2, "square", 650, 0.2);

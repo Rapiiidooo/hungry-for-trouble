@@ -5,7 +5,16 @@ const require = createRequire(
   new URL("../../404-game-recipe/package.json", import.meta.url),
 );
 const puppeteer = require("puppeteer");
-const output = new URL("../outputs/playthrough/", import.meta.url);
+const fpsOnly = process.argv.includes("--fps");
+const dailyOnly = process.argv.includes("--daily");
+const output = new URL(
+  fpsOnly
+    ? "../outputs/fps/"
+    : dailyOnly
+      ? "../outputs/daily-survival/"
+      : "../outputs/playthrough/",
+  import.meta.url,
+);
 await mkdir(output, { recursive: true });
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const browser = await puppeteer.launch({
@@ -89,6 +98,10 @@ function choosePath(g) {
   const found = routes(g);
   const pathFor = (point) =>
     found.get(point.map((n) => Math.round(n / 2)).join(","))?.path;
+  if (fpsOnly && g.floor === 2 && g.visors.some((v) => !v.collected)) {
+    const visor = g.visors.find((v) => !v.collected);
+    return pathFor([visor.x, visor.z]) || [];
+  }
   const candidates = g.crumbs
     .map((point) => ({ point, path: pathFor(point) }))
     .filter((c) => c.path);
@@ -107,7 +120,11 @@ function choosePath(g) {
     return nearestBattery.path.length
       ? nearestBattery.path
       : [nearestBattery.point];
-  if (g.collected >= g.quota && (!g.boss || g.boss.hp <= 0))
+  if (
+    g.runKind !== "daily" &&
+    g.collected >= g.quota &&
+    (!g.boss || g.boss.hp <= 0)
+  )
     return pathFor([g.exit.x, g.exit.z]) || [];
   if (g.boss?.hp > 0 && g.collected >= g.quota) {
     const targets = [
@@ -137,7 +154,13 @@ try {
   page.on("console", (e) => {
     if (e.type() === "error") report.errors.push(e.text());
   });
-  await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1 });
+  await page.setViewport({
+    width: 1280,
+    height: 800,
+    deviceScaleFactor: 1,
+    isMobile: fpsOnly,
+    hasTouch: fpsOnly,
+  });
   await page.goto("http://localhost:3001/", { waitUntil: "networkidle0" });
   await page.waitForFunction(() => window.__READY__);
   await page.click("#start");
@@ -182,16 +205,121 @@ try {
   await page.waitForFunction(
     () => !window.__GAME__.paused && window.__GAME__.elapsed < 1,
   );
+  if (dailyOnly) {
+    await page.keyboard.press("Escape");
+    await page.click("#pause-menu");
+    await page.click("#open-daily");
+    await page.waitForFunction(
+      () => !document.getElementById("daily-start").disabled,
+    );
+    await page.click("#daily-start");
+    await page.waitForFunction(
+      () =>
+        window.__GAME__.runKind === "daily" && window.__GAME__.elapsed > 0.2,
+    );
+  }
 
   let waypoint = null,
     previous = null,
     lastFloor = 1,
     lastLog = 0,
     sawOvertime = false,
+    sawFPS = false,
     screenshots = new Set();
-  const deadline = Date.now() + 480000;
+  const deadline = Date.now() + 720000;
   while (Date.now() < deadline) {
     const g = await read();
+    if (g.firstPerson) {
+      await setKeys([]);
+      await shoot(false);
+      if (!sawFPS) {
+        await page.mouse.click(640, 400);
+        await sleep(120);
+        const beforeLook = await read();
+        await page.mouse.move(735, 420);
+        await sleep(150);
+        const afterLook = await read();
+        assert.ok(afterLook.firstPerson && afterLook.fpsTime > 0);
+        assert.ok(
+          Math.abs(afterLook.fpsYaw - beforeLook.fpsYaw) > 0.05,
+          "Mouse movement must turn the first-person camera",
+        );
+        const shots = afterLook.shots;
+        await shoot(true);
+        await sleep(350);
+        await shoot(false);
+        assert.ok((await read()).shots > shots);
+        await page.screenshot({
+          path: new URL("first-person.png", output).pathname,
+        });
+        report.checks.push(
+          "Visor pickup enters first person; real mouse look and firing work",
+        );
+        if (fpsOnly) {
+          await page.keyboard.press("KeyV");
+          await sleep(100);
+          await page.keyboard.press("KeyV");
+          await page.setViewport({
+            width: 390,
+            height: 844,
+            deviceScaleFactor: 2,
+            isMobile: true,
+            hasTouch: true,
+          });
+          await sleep(200);
+          const client = await page.createCDPSession();
+          const points = await page.evaluate(() =>
+            ["move-stick", "aim-stick"].map((id, i) => {
+              const r = document.getElementById(id).getBoundingClientRect();
+              return { id: i + 1, x: r.x + r.width / 2, y: r.y + r.height / 2 };
+            }),
+          );
+          const beforeTouch = await read();
+          await client.send("Input.dispatchTouchEvent", {
+            type: "touchStart",
+            touchPoints: points,
+          });
+          await client.send("Input.dispatchTouchEvent", {
+            type: "touchMove",
+            touchPoints: [
+              { ...points[0], y: points[0].y - 30 },
+              { ...points[1], x: points[1].x + 26 },
+            ],
+          });
+          await sleep(400);
+          await client.send("Input.dispatchTouchEvent", {
+            type: "touchEnd",
+            touchPoints: [],
+          });
+          const afterTouch = await read();
+          assert.ok(
+            Math.abs(afterTouch.fpsYaw - beforeTouch.fpsYaw) > 0.3,
+            "The right touch stick must turn the FPS view",
+          );
+          assert.ok(
+            afterTouch.shots > beforeTouch.shots,
+            "The right touch stick must fire in FPS",
+          );
+          assert.ok(
+            distance(afterTouch.pos, beforeTouch.pos) > 0.2,
+            "The left touch stick must move in FPS",
+          );
+          await page.screenshot({
+            path: new URL("first-person-mobile.png", output).pathname,
+          });
+          report.checks.push(
+            "Simultaneous touch movement, look and fire work in first person",
+          );
+        }
+        sawFPS = true;
+      }
+      await page.keyboard.press("KeyV");
+      await sleep(100);
+      assert.equal((await read()).firstPerson, false);
+      assert.equal((await read()).paused, false);
+      if (fpsOnly && sawFPS) break;
+      continue;
+    }
     if (g.state === "lost")
       throw new Error(
         `Lost on aisle ${g.floor}, crumbs ${g.collected}/${g.quota}, time ${g.time.toFixed(1)}`,
@@ -298,32 +426,90 @@ try {
     await sleep(65);
   }
   const end = await read();
-  assert.equal(end.state, "won", "Campaign must end through its real checkout");
-  assert.equal(report.floors.length, 5);
-  assert.ok(sawOvertime);
-  assert.ok(report.floors.some((f) => f.kills > 0));
-  report.checks.push(
-    "All five floors cleared through actual movement and firing",
-    "Overtime collected through movement",
-    "Shots defeat pursuing enemies",
-    "Repeated upgrades change the arsenal",
-    "Final boss defeated before checkout",
-  );
-  await page.click("#retry");
-  await page.waitForFunction(
-    () => window.__GAME__.state === "playing" && window.__GAME__.floor === 1,
-  );
-  assert.equal((await read()).hp, 3);
-  report.checks.push("Retry resets campaign, health and upgrades");
-  await page.waitForFunction(() => window.__GAME__.state === "lost", {
-    timeout: 70000,
-  });
-  await page.screenshot({ path: new URL("lost.png", output).pathname });
-  report.checks.push("Enemy contact causes a real loss");
-  await page.click("#retry");
-  await page.waitForFunction(() => window.__GAME__.state === "playing");
-  assert.equal((await read()).hp, 3);
-  report.checks.push("Immediate retry after death");
+  if (dailyOnly) {
+    assert.equal(end.state, "won");
+    assert.equal(end.dailyTicks, 5400);
+    await page.type("#score-name", "QA_SURVIVOR");
+    await page.click("#submit-score");
+    await page.waitForFunction(
+      () =>
+        document
+          .getElementById("score-status")
+          .textContent.includes("VERIFIED"),
+      { timeout: 20000 },
+    );
+    await page.screenshot({
+      path: new URL("survived-verified.png", output).pathname,
+    });
+    report.checks.push(
+      "Full 90-second daily survival is replayed and accepted by the server",
+    );
+  } else if (!fpsOnly) {
+    assert.equal(
+      end.state,
+      "won",
+      "Campaign must end through its real checkout",
+    );
+    assert.equal(report.floors.length, 10);
+    assert.ok(sawOvertime);
+    assert.ok(report.floors.some((f) => f.kills > 0));
+    report.checks.push(
+      "All ten floors cleared through actual movement and firing",
+      "Overtime collected through movement",
+      "Shots defeat pursuing enemies",
+      "Repeated upgrades change the arsenal",
+      "Final boss defeated before checkout",
+    );
+    await page.click("#retry");
+    await page.waitForFunction(
+      () => window.__GAME__.state === "playing" && window.__GAME__.floor === 1,
+    );
+    assert.equal((await read()).hp, 3);
+    report.checks.push("Retry resets campaign, health and upgrades");
+    await page.waitForFunction(() => window.__GAME__.state === "lost", {
+      timeout: 70000,
+    });
+    await page.screenshot({ path: new URL("lost.png", output).pathname });
+    report.checks.push("Enemy contact causes a real loss");
+    await page.click("#retry");
+    await page.waitForFunction(() => window.__GAME__.state === "playing");
+    assert.equal((await read()).hp, 3);
+    report.checks.push("Immediate retry after death");
+  } else {
+    assert.ok(sawFPS);
+    assert.equal(end.firstPerson, false);
+    await page.keyboard.press("Escape");
+    await page.click("#pause-route");
+    assert.equal(
+      await page.$$eval(
+        "#route-map button:not(:disabled)",
+        (nodes) => nodes.length,
+      ),
+      2,
+    );
+    await page.screenshot({
+      path: new URL("unlocked-route.png", output).pathname,
+    });
+    await page.reload({ waitUntil: "networkidle0" });
+    await page.waitForFunction(() => window.__READY__);
+    await page.click("#open-route");
+    assert.equal(
+      await page.$$eval(
+        "#route-map button:not(:disabled)",
+        (nodes) => nodes.length,
+      ),
+      2,
+    );
+    await page.click("#route-map button:nth-child(2)");
+    await page.click("#practice-start");
+    await page.waitForFunction(
+      () =>
+        window.__GAME__.floor === 2 && window.__GAME__.runKind === "practice",
+    );
+    report.checks.push(
+      "Completed stages stay unlocked after reload and launch as practice",
+    );
+  }
   assert.deepEqual(report.errors, []);
   report.result = "PASS";
 } catch (error) {

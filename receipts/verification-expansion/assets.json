@@ -1,0 +1,458 @@
+[
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 31,
+  "tris": 2016,
+  "materials": 5,
+  "size": [
+   1.173,
+   1,
+   1.028
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.1798,
+    "edgeDensity": 0.1752
+   },
+   "right": {
+    "coverage": 0.1426,
+    "edgeDensity": 0.2331
+   },
+   "back": {
+    "coverage": 0.1907,
+    "edgeDensity": 0.133
+   },
+   "left": {
+    "coverage": 0.1465,
+    "edgeDensity": 0.2404
+   }
+  },
+  "error": null,
+  "name": "audit_drone",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 18,
+  "tris": 504,
+  "materials": 6,
+  "size": [
+   0.472,
+   0.6,
+   0.413
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.3276,
+    "edgeDensity": 0.101
+   },
+   "right": {
+    "coverage": 0.288,
+    "edgeDensity": 0.1207
+   },
+   "back": {
+    "coverage": 0.3252,
+    "edgeDensity": 0.1074
+   },
+   "left": {
+    "coverage": 0.283,
+    "edgeDensity": 0.1111
+   }
+  },
+  "error": null,
+  "name": "battery",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 37,
+  "tris": 2164,
+  "materials": 5,
+  "size": [
+   1.779,
+   1.6,
+   1.411
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.2463,
+    "edgeDensity": 0.2234
+   },
+   "right": {
+    "coverage": 0.1421,
+    "edgeDensity": 0.2311
+   },
+   "back": {
+    "coverage": 0.2516,
+    "edgeDensity": 0.214
+   },
+   "left": {
+    "coverage": 0.1756,
+    "edgeDensity": 0.2472
+   }
+  },
+  "error": null,
+  "name": "checkout",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 107,
+  "tris": 4300,
+  "materials": 5,
+  "size": [
+   2.745,
+   2.5,
+   1.79
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.2432,
+    "edgeDensity": 0.2765
+   },
+   "right": {
+    "coverage": 0.189,
+    "edgeDensity": 0.2324
+   },
+   "back": {
+    "coverage": 0.2107,
+    "edgeDensity": 0.251
+   },
+   "left": {
+    "coverage": 0.1887,
+    "edgeDensity": 0.2377
+   }
+  },
+  "error": null,
+  "name": "director",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 7,
+  "tris": 160,
+  "materials": 4,
+  "size": [
+   1.528,
+   0.12,
+   1.528
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.2132,
+    "edgeDensity": 0.1214
+   },
+   "right": {
+    "coverage": 0.2132,
+    "edgeDensity": 0.1204
+   },
+   "back": {
+    "coverage": 0.2132,
+    "edgeDensity": 0.1321
+   },
+   "left": {
+    "coverage": 0.2132,
+    "edgeDensity": 0.131
+   }
+  },
+  "error": null,
+  "name": "floor",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 35,
+  "tris": 1084,
+  "materials": 6,
+  "size": [
+   2.093,
+   1.1,
+   1.615
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.3589,
+    "edgeDensity": 0.1392
+   },
+   "right": {
+    "coverage": 0.3192,
+    "edgeDensity": 0.1204
+   },
+   "back": {
+    "coverage": 0.363,
+    "edgeDensity": 0.1426
+   },
+   "left": {
+    "coverage": 0.3191,
+    "edgeDensity": 0.1125
+   }
+  },
+  "error": null,
+  "name": "freezer",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 57,
+  "tris": 3276,
+  "materials": 6,
+  "size": [
+   0.867,
+   0.9,
+   1.049
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.1841,
+    "edgeDensity": 0.1807
+   },
+   "right": {
+    "coverage": 0.1703,
+    "edgeDensity": 0.1515
+   },
+   "back": {
+    "coverage": 0.1568,
+    "edgeDensity": 0.1417
+   },
+   "left": {
+    "coverage": 0.1707,
+    "edgeDensity": 0.1644
+   }
+  },
+  "error": null,
+  "name": "polisher",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 74,
+  "tris": 3216,
+  "materials": 5,
+  "size": [
+   0.844,
+   1.1,
+   0.971
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.2503,
+    "edgeDensity": 0.2186
+   },
+   "right": {
+    "coverage": 0.2615,
+    "edgeDensity": 0.2122
+   },
+   "back": {
+    "coverage": 0.2519,
+    "edgeDensity": 0.2043
+   },
+   "left": {
+    "coverage": 0.2635,
+    "edgeDensity": 0.2313
+   }
+  },
+  "error": null,
+  "name": "security_trolley",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 143,
+  "tris": 4940,
+  "materials": 6,
+  "size": [
+   1.986,
+   1.35,
+   1.557
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.4024,
+    "edgeDensity": 0.2947
+   },
+   "right": {
+    "coverage": 0.3609,
+    "edgeDensity": 0.1208
+   },
+   "back": {
+    "coverage": 0.4024,
+    "edgeDensity": 0.2991
+   },
+   "left": {
+    "coverage": 0.3607,
+    "edgeDensity": 0.1206
+   }
+  },
+  "error": null,
+  "name": "shelf",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 1,
+  "tris": 180,
+  "materials": 1,
+  "size": [
+   0.219,
+   0.14,
+   0.236
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.1954,
+    "edgeDensity": 0.1104
+   },
+   "right": {
+    "coverage": 0.1811,
+    "edgeDensity": 0.1031
+   },
+   "back": {
+    "coverage": 0.1954,
+    "edgeDensity": 0.1047
+   },
+   "left": {
+    "coverage": 0.2107,
+    "edgeDensity": 0.0963
+   }
+  },
+  "error": null,
+  "name": "snack",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 47,
+  "tris": 4844,
+  "materials": 7,
+  "size": [
+   0.742,
+   0.85,
+   1.012
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.181,
+    "edgeDensity": 0.2505
+   },
+   "right": {
+    "coverage": 0.1996,
+    "edgeDensity": 0.1719
+   },
+   "back": {
+    "coverage": 0.1926,
+    "edgeDensity": 0.1712
+   },
+   "left": {
+    "coverage": 0.2007,
+    "edgeDensity": 0.1848
+   }
+  },
+  "error": null,
+  "name": "vacuum",
+  "problems": []
+ },
+ {
+  "ok": true,
+  "mounts": null,
+  "meshes": 21,
+  "tris": 2544,
+  "materials": 5,
+  "size": [
+   0.907,
+   0.65,
+   0.665
+  ],
+  "groundOffset": 0,
+  "centreOffset": [
+   0,
+   0
+  ],
+  "sides": {
+   "front": {
+    "coverage": 0.2062,
+    "edgeDensity": 0.2044
+   },
+   "right": {
+    "coverage": 0.1455,
+    "edgeDensity": 0.1607
+   },
+   "back": {
+    "coverage": 0.2113,
+    "edgeDensity": 0.1263
+   },
+   "left": {
+    "coverage": 0.1501,
+    "edgeDensity": 0.153
+   }
+  },
+  "error": null,
+  "name": "visor",
+  "problems": []
+ }
+]

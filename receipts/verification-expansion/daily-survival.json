@@ -1,0 +1,266 @@
+{
+  "input": "Real keyboard and pointer events; read-only telemetry. No state injection.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Full 90-second daily survival is replayed and accepted by the server"
+  ],
+  "floors": [
+    {
+      "floor": 8,
+      "seconds": 89.99999999999618,
+      "kills": 29,
+      "crumbs": 167,
+      "score": 8770,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 1,
+        "spread": 1,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 1,
+        "heart": 0
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 8,
+      "elapsed": 0.2,
+      "pos": [
+        2,
+        22
+      ],
+      "waypoint": [
+        2,
+        20
+      ],
+      "crumbs": 0,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 56,
+      "draws": 284
+    },
+    {
+      "floor": 8,
+      "elapsed": 7.3,
+      "pos": [
+        10,
+        3.9
+      ],
+      "waypoint": [
+        8,
+        4
+      ],
+      "crumbs": 14,
+      "hp": 5,
+      "kills": 2,
+      "overtime": 2.6,
+      "fps": 60,
+      "draws": 224
+    },
+    {
+      "floor": 8,
+      "elapsed": 14.4,
+      "pos": [
+        29.9,
+        2
+      ],
+      "waypoint": [
+        30,
+        4
+      ],
+      "crumbs": 28,
+      "hp": 5,
+      "kills": 3,
+      "overtime": 4.8,
+      "fps": 60,
+      "draws": 247
+    },
+    {
+      "floor": 8,
+      "elapsed": 21.4,
+      "pos": [
+        20.2,
+        2.1
+      ],
+      "waypoint": [
+        18,
+        2
+      ],
+      "crumbs": 43,
+      "hp": 5,
+      "kills": 3,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 266
+    },
+    {
+      "floor": 8,
+      "elapsed": 28.4,
+      "pos": [
+        5.1,
+        1.9
+      ],
+      "waypoint": [
+        4,
+        2
+      ],
+      "crumbs": 57,
+      "hp": 5,
+      "kills": 5,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 236
+    },
+    {
+      "floor": 8,
+      "elapsed": 35.4,
+      "pos": [
+        3.7,
+        2.1
+      ],
+      "waypoint": [
+        2,
+        2
+      ],
+      "crumbs": 65,
+      "hp": 5,
+      "kills": 9,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 215
+    },
+    {
+      "floor": 8,
+      "elapsed": 42.5,
+      "pos": [
+        17.9,
+        2
+      ],
+      "waypoint": [
+        20,
+        2
+      ],
+      "crumbs": 77,
+      "hp": 5,
+      "kills": 11,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 248
+    },
+    {
+      "floor": 8,
+      "elapsed": 49.5,
+      "pos": [
+        22.2,
+        8
+      ],
+      "waypoint": [
+        24,
+        8
+      ],
+      "crumbs": 91,
+      "hp": 5,
+      "kills": 12,
+      "overtime": 0.5,
+      "fps": 60,
+      "draws": 250
+    },
+    {
+      "floor": 8,
+      "elapsed": 56.5,
+      "pos": [
+        28,
+        16.7
+      ],
+      "waypoint": [
+        28,
+        16
+      ],
+      "crumbs": 105,
+      "hp": 5,
+      "kills": 14,
+      "overtime": 3.1,
+      "fps": 60,
+      "draws": 221
+    },
+    {
+      "floor": 8,
+      "elapsed": 63.5,
+      "pos": [
+        14,
+        3.2
+      ],
+      "waypoint": [
+        14,
+        4
+      ],
+      "crumbs": 120,
+      "hp": 5,
+      "kills": 17,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 248
+    },
+    {
+      "floor": 8,
+      "elapsed": 70.6,
+      "pos": [
+        3.4,
+        4
+      ],
+      "waypoint": [
+        4,
+        4
+      ],
+      "crumbs": 132,
+      "hp": 5,
+      "kills": 21,
+      "overtime": 3.9,
+      "fps": 60,
+      "draws": 209
+    },
+    {
+      "floor": 8,
+      "elapsed": 77.6,
+      "pos": [
+        3.8,
+        17.9
+      ],
+      "waypoint": [
+        2,
+        18
+      ],
+      "crumbs": 145,
+      "hp": 5,
+      "kills": 23,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 292
+    },
+    {
+      "floor": 8,
+      "elapsed": 84.6,
+      "pos": [
+        12.1,
+        10.3
+      ],
+      "waypoint": [
+        12,
+        8
+      ],
+      "crumbs": 159,
+      "hp": 5,
+      "kills": 27,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 252
+    }
+  ],
+  "result": "PASS"
+}

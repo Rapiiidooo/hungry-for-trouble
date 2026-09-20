@@ -127,7 +127,7 @@ test("exit requires the quota and final boss, upgrades transfer between floors",
   assert.equal(next.upgrades.spread, 1);
   assert.equal(next.score, game.score);
   assert.equal(nextLevel(next, "rapid"), null);
-  const last = newGame(4);
+  const last = newGame(9);
   last.collected = last.map.level.quota;
   Object.assign(last.player, last.map.exit);
   stepGame(last, {}, 1 / 120);

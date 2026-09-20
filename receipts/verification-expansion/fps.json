@@ -1,0 +1,106 @@
+{
+  "input": "Real keyboard and pointer events; read-only telemetry. No state injection.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Visor pickup enters first person; real mouse look and firing work",
+    "Simultaneous touch movement, look and fire work in first person",
+    "Completed stages stay unlocked after reload and launch as practice"
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "seconds": 19.98333333333348,
+      "kills": 3,
+      "crumbs": 49,
+      "score": 1790,
+      "hp": 3,
+      "upgrades": {
+        "rapid": 0,
+        "spread": 0,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 0
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 1,
+      "elapsed": 0.1,
+      "pos": [
+        2,
+        22
+      ],
+      "waypoint": [
+        2,
+        20
+      ],
+      "crumbs": 0,
+      "hp": 3,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 261
+    },
+    {
+      "floor": 1,
+      "elapsed": 7,
+      "pos": [
+        7.7,
+        1.9
+      ],
+      "waypoint": [
+        10,
+        2
+      ],
+      "crumbs": 16,
+      "hp": 3,
+      "kills": 1,
+      "overtime": 6.9,
+      "fps": 60,
+      "draws": 231
+    },
+    {
+      "floor": 1,
+      "elapsed": 14.1,
+      "pos": [
+        28.3,
+        2
+      ],
+      "waypoint": [
+        30,
+        2
+      ],
+      "crumbs": 34,
+      "hp": 3,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 219
+    },
+    {
+      "floor": 2,
+      "elapsed": 1,
+      "pos": [
+        2,
+        19.5
+      ],
+      "waypoint": [
+        2,
+        18
+      ],
+      "crumbs": 1,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 286
+    }
+  ],
+  "result": "PASS"
+}

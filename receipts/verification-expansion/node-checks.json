@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "commands": [
+    "npm test",
+    "npm run check"
+  ],
+  "tests": 17,
+  "modules": 24,
+  "pages": 1,
+  "coverage": [
+    "Gameplay, six daily layout variants and replay parity",
+    "Two HTTP clients, tampered scores, invalid inputs, early submission, duplicate submission",
+    "Best score persistence, server restart and UTC reset"
+  ],
+  "runtime": "Node v24.21.0"
+}

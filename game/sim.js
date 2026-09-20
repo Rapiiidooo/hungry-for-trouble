@@ -23,7 +23,12 @@ export function newGame(levelIndex = 0, carry = {}) {
       vx: 0,
       vz: 0,
       angle: 0,
-      hp: Math.min(4, (carry.hp || 3) + (levelIndex ? 1 : 0)),
+      hp: Math.min(
+        4 + (carry.upgrades?.heart || 0),
+        (carry.hp || 3) + (levelIndex ? 1 : 0),
+      ),
+      maxHp: 4 + (carry.upgrades?.heart || 0),
+      shield: carry.upgrades?.shield || 0,
       invincible: 1.5,
       dash: 0,
       dashCooldown: 0,
@@ -33,7 +38,11 @@ export function newGame(levelIndex = 0, carry = {}) {
       ...enemy,
       id,
       origin: { x: enemy.x, z: enemy.z },
-      hp: 3,
+      hp: enemy.kind === "armoured" ? 9 : enemy.kind === "shooter" ? 5 : 3,
+      maxHp: enemy.kind === "armoured" ? 9 : enemy.kind === "shooter" ? 5 : 3,
+      shotCooldown: 1.5 + id * 0.3,
+      tell: 0,
+      shotAngle: 0,
       angle: 0,
       stun: 0,
       respawn: 0,
@@ -49,8 +58,9 @@ export function newGame(levelIndex = 0, carry = {}) {
     boss: map.boss
       ? {
           ...map.boss,
-          hp: 180,
-          maxHp: 180,
+          hp: levelIndex === 9 ? 360 : 180,
+          maxHp: levelIndex === 9 ? 360 : 180,
+          director: levelIndex === 9,
           phase: 0,
           fire: 1.5,
           exposed: false,
@@ -59,6 +69,8 @@ export function newGame(levelIndex = 0, carry = {}) {
       : null,
     crumbs: map.crumbs,
     batteries: map.batteries,
+    visors: map.visors,
+    fpsTime: 0,
     bullets: [],
     hazards: [],
     collected: 0,
@@ -70,7 +82,15 @@ export function newGame(levelIndex = 0, carry = {}) {
     kills: 0,
     shots: 0,
     hits: 0,
-    upgrades: { rapid: 0, spread: 0, pierce: 0, ...carry.upgrades },
+    upgrades: {
+      rapid: 0,
+      spread: 0,
+      pierce: 0,
+      shield: 0,
+      magnet: 0,
+      heart: 0,
+      ...carry.upgrades,
+    },
     events: [],
     shake: 0,
     gateClock: 0,
@@ -177,7 +197,11 @@ export function pathTo(game, from, target, flee = false) {
 
 function killEnemy(game, enemy) {
   if (enemy.respawn > 0) return;
-  enemy.respawn = 9;
+  enemy.respawn = game.daily
+    ? Math.max(3, 8 - game.wave)
+    : game.levelIndex >= 5
+      ? 7
+      : 9;
   enemy.hp = 0;
   enemy.windup = enemy.charge = 0;
   game.combo = game.comboTimer > 0 ? game.combo + 1 : 1;
@@ -196,6 +220,12 @@ function killEnemy(game, enemy) {
 function hurt(game) {
   const p = game.player;
   if (p.invincible > 0 || p.dash > 0 || game.overtime > 0) return;
+  if (p.shield > 0) {
+    p.shield--;
+    p.invincible = 1.5;
+    game.events.push({ type: "shield-save", x: p.x, z: p.z });
+    return;
+  }
   p.hp--;
   p.invincible = 1.5;
   game.combo = 0;
@@ -217,7 +247,9 @@ function fire(game, input) {
   }
   if (game.overtime <= 0) game.ammo--;
   p.fireCooldown =
-    game.overtime > 0 ? 0.11 : 0.22 / (1 + game.upgrades.rapid * 0.25);
+    game.overtime > 0
+      ? 0.11
+      : (game.fpsTime > 0 ? 0.14 : 0.22) / (1 + game.upgrades.rapid * 0.25);
   const spread = Math.max(game.upgrades.spread, game.overtime > 0 ? 1 : 0);
   const offsets = Array.from(
     { length: 1 + spread * 2 },
@@ -247,11 +279,23 @@ export function stepGame(game, input, dt) {
   game.elapsed += dt;
   game.time = Math.max(0, game.time - dt);
   game.overtime = Math.max(0, game.overtime - dt);
+  game.fpsTime = Math.max(0, game.fpsTime - dt);
   game.comboTimer = Math.max(0, game.comboTimer - dt);
   game.shake = Math.max(0, game.shake - dt);
-  if (game.time === 0) {
-    game.state = "lost";
-    return [{ type: "lost" }];
+  if (game.time < 1e-8) {
+    game.time = 0;
+    game.state = game.daily ? "won" : "lost";
+    if (game.daily) game.score += 500 + game.player.hp * 150;
+    return [{ type: game.state }];
+  }
+  if (game.daily && Math.floor(game.elapsed / 18) + 1 > game.wave) {
+    game.wave++;
+    game.events.push({ type: "wave", wave: game.wave });
+    for (const c of game.crumbs)
+      if (distance(c, game.player) > 4) c.collected = false;
+    for (const e of game.enemies) {
+      e.shotCooldown = Math.min(e.shotCooldown, 1);
+    }
   }
   const p = game.player;
   for (const key of ["invincible", "dash", "dashCooldown", "fireCooldown"])
@@ -275,26 +319,35 @@ export function stepGame(game, input, dt) {
   p.vx += (ix * speed - p.vx) * Math.min(1, dt * grip);
   p.vz += (iz * speed - p.vz) * Math.min(1, dt * grip);
   move(game, p, p.vx * dt, p.vz * dt);
+  const belt = game.map.belts.find(
+    (b) => Math.abs(p.x - b.x) < 1 && Math.abs(p.z - b.z) < 0.85,
+  );
+  if (belt) move(game, p, belt.direction * 2.3 * dt, 0);
   fire(game, input);
 
   for (const crumb of game.crumbs)
-    if (!crumb.collected && distance(p, crumb) < 0.85) {
+    if (
+      !crumb.collected &&
+      distance(p, crumb) < 0.85 + game.upgrades.magnet * 0.32 &&
+      lineOfSight(game, p, crumb)
+    ) {
       crumb.collected = true;
       game.collected++;
       game.score += 10;
       game.ammo = Math.min(99, game.ammo + 2);
       game.events.push({ type: "crumb", x: crumb.x, z: crumb.z });
-      if (game.collected === game.map.level.quota)
+      if (!game.daily && game.collected === game.map.level.quota)
         game.events.push({ type: "exit-open" });
     }
   for (const battery of game.batteries) {
     if (battery.collected) {
       battery.respawn -= dt;
-      if (battery.respawn <= 0 && game.map.boss) battery.collected = false;
+      if (battery.respawn <= 0 && (game.map.boss || game.daily))
+        battery.collected = false;
     } else if (distance(p, battery) < 0.85) {
       battery.collected = true;
       battery.respawn = 28;
-      game.overtime = 8;
+      game.overtime = game.daily ? 5 : 8;
       game.ammo = Math.min(99, game.ammo + 12);
       game.score += 50;
       game.events.push({ type: "overtime", x: battery.x, z: battery.z });
@@ -302,6 +355,20 @@ export function stepGame(game, input, dt) {
         enemy.waypoint = null;
         enemy.windup = enemy.charge = 0;
       }
+    }
+  }
+
+  for (const visor of game.visors) {
+    if (visor.collected) {
+      visor.respawn -= dt;
+      if (game.daily && visor.respawn <= 0) visor.collected = false;
+    } else if (distance(p, visor) < 0.85) {
+      visor.collected = true;
+      visor.respawn = 36;
+      game.fpsTime = 18;
+      game.ammo = Math.min(99, game.ammo + 24);
+      p.invincible = Math.max(p.invincible, 2);
+      game.events.push({ type: "visor", x: visor.x, z: visor.z });
     }
   }
 
@@ -313,17 +380,53 @@ export function stepGame(game, input, dt) {
       enemy.respawn -= dt;
       if (enemy.respawn <= 0) {
         Object.assign(enemy, enemy.origin, {
-          hp: 3,
+          hp: enemy.maxHp,
           waypoint: null,
           stun: 1,
           windup: 0,
           charge: 0,
           chargeCooldown: 3,
+          tell: 0,
+          shotCooldown: 1.5,
         });
         if (distance(p, enemy) < 3) enemy.respawn = 2;
       }
       continue;
     }
+    if (enemy.kind === "shooter" && enemy.stun === 0 && game.overtime <= 0) {
+      const gap = distance(p, enemy);
+      enemy.shotCooldown = Math.max(0, enemy.shotCooldown - dt);
+      if (enemy.tell > 0) {
+        enemy.tell = Math.max(0, enemy.tell - dt);
+        if (enemy.tell === 0) {
+          const offsets =
+            game.levelIndex >= 7 || (game.daily && game.wave > 2)
+              ? [-0.13, 0, 0.13]
+              : [0];
+          for (const offset of offsets)
+            launchHazard(game, enemy, enemy.shotAngle + offset, 6.2);
+          enemy.shotCooldown = game.daily
+            ? Math.max(0.9, 2.2 - game.wave * 0.2)
+            : 2;
+          game.events.push({ type: "drone-shot", x: enemy.x, z: enemy.z });
+        }
+      } else if (
+        enemy.shotCooldown === 0 &&
+        gap < 14 &&
+        lineOfSight(game, enemy, p)
+      ) {
+        enemy.tell = 0.65;
+        enemy.shotAngle = Math.atan2(p.x - enemy.x, p.z - enemy.z);
+        game.events.push({ type: "drone-warning", x: enemy.x, z: enemy.z });
+      }
+      if (
+        enemy.tell > 0 ||
+        (gap > 4 && gap < 10 && lineOfSight(game, enemy, p))
+      ) {
+        enemy.angle = Math.atan2(p.x - enemy.x, p.z - enemy.z);
+        continue;
+      }
+    } else if (game.overtime > 0) enemy.tell = 0;
     if (enemy.stun === 0) {
       if (enemy.windup > 0) {
         enemy.windup = Math.max(0, enemy.windup - dt);
@@ -387,7 +490,11 @@ export function stepGame(game, input, dt) {
           const d = length(dx, dz);
           const step = Math.min(
             d,
-            game.map.level.speed * (game.overtime > 0 ? 0.8 : 1) * dt,
+            game.map.level.speed *
+              (game.overtime > 0 ? 0.8 : 1) *
+              (enemy.kind === "armoured" ? 0.78 : 1) *
+              (game.daily ? 1 + (game.wave - 1) * 0.1 : 1) *
+              dt,
           );
           if (d > 0.01) {
             enemy.angle = Math.atan2(dx, dz);
@@ -462,12 +569,17 @@ export function stepGame(game, input, dt) {
     boss.hit = Math.max(0, boss.hit - dt);
     boss.phase += dt;
     boss.fire -= dt;
-    boss.exposed = boss.phase % 6 > 3.5;
+    boss.exposed = boss.director ? boss.phase % 7 > 4 : boss.phase % 6 > 3.5;
     if (boss.fire <= 0 && !boss.exposed) {
       const enraged = boss.hp < boss.maxHp / 2;
       boss.fire = enraged ? 0.7 : 0.95;
       const angle = Math.atan2(p.x - boss.x, p.z - boss.z);
       const angles = [-0.24, 0, 0.24].map((offset) => angle + offset);
+      if (boss.director) {
+        for (let i = 0; i < 12; i++)
+          angles.push((i * Math.PI) / 6 + boss.phase * 0.5);
+        boss.fire = enraged ? 0.6 : 0.9;
+      }
       if (enraged)
         for (let i = 0; i < 8; i++)
           angles.push((i * Math.PI) / 4 + boss.phase * 0.12);
@@ -496,6 +608,7 @@ export function stepGame(game, input, dt) {
   game.hazards = game.hazards.filter((item) => item.life > 0);
   if (
     game.state === "playing" &&
+    !game.daily &&
     game.collected >= game.map.level.quota &&
     (!game.boss || game.boss.hp === 0) &&
     distance(p, game.map.exit) < 1
@@ -510,13 +623,40 @@ export function stepGame(game, input, dt) {
 export function nextLevel(game, upgrade) {
   if (
     game.state !== "cleared" ||
-    !["rapid", "spread", "pierce"].includes(upgrade)
+    !["rapid", "spread", "pierce", "shield", "magnet", "heart"].includes(
+      upgrade,
+    )
   )
     return null;
   const upgrades = { ...game.upgrades, [upgrade]: game.upgrades[upgrade] + 1 };
   return newGame(game.levelIndex + 1, {
-    hp: game.player.hp,
+    hp: game.player.hp + (upgrade === "heart" ? 1 : 0),
     score: game.score,
     upgrades,
+  });
+}
+
+export function lineOfSight(game, a, b) {
+  const d = distance(a, b);
+  for (let t = 0.25; t < d; t += 0.25)
+    if (
+      !canStand(
+        game,
+        a.x + ((b.x - a.x) * t) / d,
+        a.z + ((b.z - a.z) * t) / d,
+        0.08,
+      )
+    )
+      return false;
+  return true;
+}
+
+function launchHazard(game, origin, angle, speed) {
+  game.hazards.push({
+    x: origin.x,
+    z: origin.z,
+    vx: Math.sin(angle) * speed,
+    vz: Math.cos(angle) * speed,
+    life: 3,
   });
 }

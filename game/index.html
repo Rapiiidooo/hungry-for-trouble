@@ -14,6 +14,7 @@
     />
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./arcade.css" />
     <script type="importmap">
       {
         "imports": {
@@ -47,15 +48,23 @@
           the problem.
         </p>
         <button id="start" class="primary" disabled>
-          WARMING UP… <span>↗</span>
+          WARMING UP… <span>▶</span>
         </button>
+        <div class="menu-secondary">
+          <button id="open-route" disabled>
+            <span>▣</span> ESCAPE ROUTE <small>10 AISLES · 2 BOSSES</small>
+          </button>
+          <button id="open-daily" disabled>
+            <span>◷</span> DAILY RUSH <small>90 SECONDS · WORLD SCORES</small>
+          </button>
+        </div>
         <div class="controls">
           <span><kbd>WASD</kbd> move</span
           ><span><kbd>MOUSE</kbd> aim & fire</span
           ><span><kbd>SPACE</kbd> dash</span>
         </div>
         <p class="touch-hint">Left thumb moves. Right thumb aims and fires.</p>
-        <small id="best">FIVE AISLES. ZERO QUALIFICATIONS.</small>
+        <small id="best">TEN AISLES. TWO BOSSES. ONE WAY OUT.</small>
       </section>
       <aside id="hero-label">
         <span>EMPLOYEE OF THE MONTH*</span
@@ -76,7 +85,8 @@
             <div class="track"><i id="quota-fill"></i></div>
           </div>
           <div class="timer">
-            <small>STORE CLOSES</small><strong id="clock">01:50</strong>
+            <small id="clock-label">STORE CLOSES</small
+            ><strong id="clock">01:50</strong>
           </div>
         </div>
         <div id="overtime" hidden>
@@ -84,14 +94,24 @@
           ><small>THEY SHOULD BE RUNNING.</small>
         </div>
         <div id="boss-bar" hidden>
-          <span>THE MANAGER</span>
+          <span id="boss-name">THE MANAGER</span>
           <div><i id="boss-fill"></i></div>
           <small id="boss-state">Wait for the shield to drop.</small>
         </div>
         <div class="hud-bottom">
-          <div>
-            <span id="health" aria-label="Health">♥ ♥ ♥</span
-            ><small id="ammo">24 SHOTS</small>
+          <div class="vitals">
+            <div class="health-label">
+              WARRANTY <span id="shield-count"></span>
+            </div>
+            <div id="health" aria-label="Health"></div>
+            <div id="ammo-panel">
+              <span class="ammo-icon" aria-hidden="true">▰<br />▰<br />▰</span
+              ><strong id="ammo">24</strong>
+              <div>
+                <b>SHOTS</b><small id="ammo-hint">CRUMBS REFILL AMMO</small>
+              </div>
+              <div id="ammo-track"><i id="ammo-fill"></i></div>
+            </div>
           </div>
           <div id="dash-status">DASH READY <kbd>SPACE</kbd></div>
           <div class="score-block">
@@ -109,12 +129,22 @@
           <div id="move-stick" class="stick" aria-label="Move">
             <span>MOVE</span><i></i>
           </div>
-          <button id="dash-button" aria-label="Dash">DASH ↟</button>
+          <button id="dash-button" aria-label="Dash">DASH</button>
           <div id="aim-stick" class="stick" aria-label="Aim and fire">
             <span>AIM / FIRE</span><i></i>
           </div>
         </div>
-        <div id="exit-label" hidden>CHECKOUT ↗</div>
+        <div id="exit-label" hidden><span>EXIT</span> CHECKOUT</div>
+        <div id="visor-hud" hidden>
+          <b>VAC CAM</b><span id="visor-time">18.0</span
+          ><button id="view-toggle">OVERHEAD [V]</button
+          ><small id="visor-hint"
+            >Click to lock aim · WASD moves · Mouse fires</small
+          >
+        </div>
+        <div id="crosshair" hidden><i></i></div>
+        <div id="run-badge"></div>
+        <div id="floating-fx" aria-hidden="true"></div>
       </section>
       <div id="message" role="status" aria-live="polite"></div>
       <div id="hit-flash"></div>
@@ -123,10 +153,12 @@
           <div class="eyebrow">UNPAID BREAK</div>
           <h2>Dust can <em>wait.</em></h2>
           <button id="resume" class="primary">
-            BACK TO WORK <span>↗</span></button
+            BACK TO WORK <span>▶</span></button
           ><button id="pause-retry" class="text-button">
             Restart the shift
           </button>
+          <button id="pause-route" class="text-button">Escape route</button>
+          <button id="pause-menu" class="text-button">Clock out</button>
         </div>
       </section>
       <section id="upgrade-screen" class="overlay" hidden>
@@ -134,24 +166,9 @@
           <div class="eyebrow">AISLE CLEARED</div>
           <h2>Pick your <em>problem.</em></h2>
           <p>One free upgrade. Then straight back to the mess.</p>
-          <div class="upgrades">
-            <button data-upgrade="rapid">
-              <span>01</span>
-              <h3>Overcaffeinated</h3>
-              <p>Fire 25% faster.</p>
-              <b>TAKE IT ↗</b></button
-            ><button data-upgrade="spread">
-              <span>02</span>
-              <h3>Crumb storm</h3>
-              <p>Three shots for the price of one.</p>
-              <b>TAKE IT ↗</b></button
-            ><button data-upgrade="pierce">
-              <span>03</span>
-              <h3>Receipt railgun</h3>
-              <p>Shots pierce one extra enemy.</p>
-              <b>TAKE IT ↗</b>
-            </button>
-          </div>
+          <div id="upgrade-route" class="route-strip"></div>
+          <div id="upgrade-options" class="upgrades"></div>
+          <p id="next-aisle"></p>
         </div>
       </section>
       <section id="result" class="overlay" hidden>
@@ -159,10 +176,78 @@
           <div id="result-eyebrow" class="eyebrow">PERFORMANCE REVIEW</div>
           <h2 id="result-title">You <em>suck.</em></h2>
           <p id="result-comment">Occupational hazard. No compensation.</p>
-          <strong id="final-score">0</strong><small id="result-stats"></small
-          ><button id="retry" class="primary">
-            ONE MORE SHIFT <span>↗</span></button
+          <strong id="final-score">0</strong><small id="result-stats"></small>
+          <form id="score-form" hidden>
+            <label for="score-name">NAME ON THE BOARD</label>
+            <div>
+              <input
+                id="score-name"
+                name="name"
+                minlength="2"
+                maxlength="16"
+                pattern="[A-Za-z0-9 _\-]{2,16}"
+                placeholder="DUSTBUSTER"
+                autocomplete="nickname"
+                required
+              /><button id="submit-score" type="submit">POST SCORE</button>
+            </div>
+          </form>
+          <p id="score-status" role="status" hidden></p>
+          <button id="share-score" class="text-button" hidden>
+            Copy challenge result
+          </button>
+          <input
+            id="share-output"
+            readonly
+            hidden
+            aria-label="Shareable result"
+          />
+          <button id="retry" class="primary">
+            ONE MORE SHIFT <span>▶</span></button
           ><button id="back-menu" class="text-button">Clock out</button>
+        </div>
+      </section>
+      <section id="route-screen" class="overlay" hidden>
+        <div class="panel route-panel">
+          <div class="eyebrow">FROM MINIMUM WAGE TO MAXIMUM ESCAPE</div>
+          <h2>Your <em>way out.</em></h2>
+          <p>Clear the aisles. Beat management. Reach the street.</p>
+          <div class="route-zones">
+            <span>THE NIGHT SHIFT</span><span>AFTER HOURS</span>
+          </div>
+          <div id="route-map" class="route-map"></div>
+          <div id="stage-preview">
+            <strong id="stage-title">Aisle 01 · Cereal Situation</strong>
+            <p id="stage-description">Start a shift to unlock the route.</p>
+            <button id="practice-start" class="secondary">
+              PRACTICE THIS AISLE
+            </button>
+          </div>
+          <button id="route-close" class="text-button">Back</button>
+        </div>
+      </section>
+      <section id="daily-screen" class="overlay" hidden>
+        <div class="panel daily-panel">
+          <div class="eyebrow">ONE DAY. SAME MESS. EVERYBODY.</div>
+          <h2>Daily <em>rush.</em></h2>
+          <p>Survive 90 seconds. Chain takedowns. Climb the shared board.</p>
+          <div class="daily-ticket">
+            <span id="daily-date">CONNECTING</span><b>90s</b
+            ><span>5 WAVES<br />ONE SHOT AT A TIME</span>
+          </div>
+          <p id="daily-status" role="status">Loading today's challenge…</p>
+          <button id="daily-start" class="primary" disabled>
+            ENTER TODAY'S RUSH <span>▶</span>
+          </button>
+          <div class="board-heading">
+            <b>TODAY'S TOP 30</b><button id="refresh-board">REFRESH</button>
+          </div>
+          <ol id="leaderboard"></ol>
+          <p class="board-note">
+            Best score per browser identity. Names are aliases. Resets at 00:00
+            UTC.
+          </p>
+          <button id="daily-close" class="text-button">Back</button>
         </div>
       </section>
       <div id="error" role="alert" hidden></div>

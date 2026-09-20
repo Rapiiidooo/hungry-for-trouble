@@ -1,0 +1,20 @@
+{
+  "mode": "built-in ImageGen",
+  "assets": [
+    {
+      "name": "audit_drone",
+      "prompt": "Use case: stylized-concept. Asset type: original 3D game object reference, single object on a plain light petrol gray studio background, no text or logos. Chunky toy supermarket appliance, rounded enamel housings and thick functional parts, cream #f5e9c9, tomato #f1533f, petrol #102c37, teal #52c9c1, ochre #d99c4b. Clean readable silhouette, moderately low-poly construction, soft studio light, three-quarter front view, object fully visible. No characters from existing games, no trademarks. Subject: a hostile floating receipt-printer drone, about one metre high. Cream rounded printer housing with tomato side armor, a large teal scanner eye above a broad forward receipt cannon, curled cream paper strip, two compact side duct fans, charcoal underside hover ring. Funny officious little security robot, no wheels, one coherent object.",
+      "file": "references/audit_drone.png"
+    },
+    {
+      "name": "visor",
+      "prompt": "Use case: stylized-concept. Asset type: original 3D game object reference, single object on a plain light petrol gray studio background, no text or logos. Chunky toy supermarket appliance, rounded enamel housings and thick functional parts, cream #f5e9c9, tomato #f1533f, petrol #102c37, teal #52c9c1, ochre #d99c4b. Clean readable silhouette, moderately low-poly construction, soft studio light, three-quarter front view, object fully visible. No characters from existing games, no trademarks. Subject: collectible oversized retro surveillance goggles, about 0.65 metres high. Cream thick binocular frame with two luminous cyan glass lenses, tomato top recording lamp, chunky charcoal head strap forming a back loop, short ochre antenna. Distinct physical first-person power-up, hovering slightly, no wearer, no other objects.",
+      "file": "references/visor.png"
+    },
+    {
+      "name": "director",
+      "prompt": "Use case: stylized-concept. Asset type: original 3D game object reference, single object on a plain light petrol gray studio background, no text or logos. Chunky toy supermarket appliance, rounded enamel housings and thick functional parts, cream #f5e9c9, tomato #f1533f, petrol #102c37, teal #52c9c1, ochre #d99c4b. Clean readable silhouette, moderately low-poly construction, soft studio light, three-quarter front view, object fully visible. No characters from existing games, no trademarks. Subject: a giant angry automated supermarket self-checkout boss, about 2.5 metres high. Broad cream kiosk with tomato shoulder armor, a dark rectangular monitor face with two luminous teal eyes, a wide striped scanner mouth, twin chunky forward receipt cannon arms, heavy petrol tread tracks with visible cream wheels, paper rolls on its back and brass top beacon. Sturdy imposing silhouette, absurd corporate villain, no humanoid hands, no writing.",
+      "file": "references/director.png"
+    }
+  ]
+}

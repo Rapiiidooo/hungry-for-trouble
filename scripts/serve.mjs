@@ -1,6 +1,10 @@
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { createLeaderboard } from "../server/leaderboard.mjs";
+const api = await createLeaderboard({
+  file: path.resolve(process.env.LEADERBOARD_FILE || "data/leaderboard.json"),
+});
 const root = path.resolve("game");
 const port = Number(process.env.PORT || 3001);
 const types = {
@@ -11,10 +15,12 @@ const types = {
   ".jpg": "image/jpeg",
   ".mp3": "audio/mpeg",
   ".json": "application/json",
+  ".svg": "image/svg+xml",
 };
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
+    if (await api(req, res, url)) return;
     const file = path.resolve(
       root,
       "." +
@@ -36,6 +42,7 @@ const server = http.createServer(async (req, res) => {
     res.end("Not found");
   }
 });
-server.listen(port, "127.0.0.1", () =>
+server.requestTimeout = 15000;
+server.listen(port, process.env.HOST || "127.0.0.1", () =>
   console.log(`Hungry for Trouble: http://localhost:${port}`),
 );

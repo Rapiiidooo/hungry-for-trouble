@@ -1,0 +1,17 @@
+{
+  "scope": "Expansion final source; browser receipts identify their own tested behavior and timings. The jam receipt explicitly uses the working-tree label.",
+  "sha256": {
+    "package.json": "a8885a320c1b866e7e9fa671954389e61e22adb56cb92a09991c884cc3aac15c",
+    "game/main.js": "1697839178cf30c7b0a949785772bf137d6c52e028feede49679ab411168f23d",
+    "game/index.html": "209f74cdd96de69d758a7a1f7603042a4c7ad05433da066e7fbf4a18e7dcf326",
+    "game/style.css": "2589bb14d624f8f93639e082dd01a68c4a47a7ab0b8f97c91eb7e6a3b568d051",
+    "game/arcade.css": "41374a41ff06ab975e9a84cfd27568102fa36da9cb714c9b3bb919f5cbb2ec0a",
+    "game/arcade.js": "3dd8d52fcdc32af6e2fa0bee87eb97e4b460db08d41251fcc5cb37671fd8b572",
+    "game/levels.js": "bf5fedd041c81055f8cd87a91dec66a073b98f99372f1e06ff3006fd0cdbbef9",
+    "game/sim.js": "5601bfc6e8ab31671f9539409c1af8cf56e55622a9741abcc8242ba849290688",
+    "game/daily.js": "b887a082f447f3a2258194036eebdd2d276e3216dfb4620bdcdb7dc1de7a97a1",
+    "game/audio.js": "62682cc3e2b6c8c10becac10a2dd017d9f9765bd4415e18ecf8429738cda796e",
+    "server/leaderboard.mjs": "756cd53811a72f9b3725fae8fbcce3334009d742bc798195cfa1faaab3566ff3",
+    "scripts/serve.mjs": "4695d5192e2f757859fb2a88bbc7f6d01e3485399d67b63b1569be44e9c5d100"
+  }
+}

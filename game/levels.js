@@ -76,6 +76,82 @@ const finale = [
   "#################",
 ];
 
+const foodCourt = [
+  "#################",
+  "#B.....R.......B#",
+  "#..##.....##....#",
+  "#..##..V..##..R.#",
+  "#...............#",
+  "#.##..###..##...#",
+  "#.....#.#.......#",
+  "#...##...##..##.#",
+  "#R..............#",
+  "#..##.....##....#",
+  "#..##..E..##....#",
+  "#S.....B.....X.B#",
+  "#################",
+];
+const dock = [
+  "#################",
+  "#B..R..#...T...B#",
+  "#..##..#..##....#",
+  "#..##..G..##..R.#",
+  "#......#........#",
+  "#.###..#..###...#",
+  "#...G..V..G.....#",
+  "#.###..#..###...#",
+  "#......#......T.#",
+  "#..##..G..##....#",
+  "#..##..#..##....#",
+  "#S.....#B.....X.#",
+  "#################",
+];
+const deepFreeze = [
+  "#################",
+  "#B....#..R.....B#",
+  "#..#..#..###....#",
+  "#..#.....#...#..#",
+  "#..###...#...#..#",
+  "#R.....V...#....#",
+  "#..###...###....#",
+  "#....#.......R..#",
+  "#..#...###...#..#",
+  "#..#.....#...#..#",
+  "#..###...#......#",
+  "#S....A..X..T..B#",
+  "#################",
+];
+const express = [
+  "#################",
+  "#B...R....R....B#",
+  "#..##..##..##...#",
+  "#>>>>>>>>>>>>>>>#",
+  "#..##..##..##...#",
+  "#T.............A#",
+  "#..##..V...##...#",
+  "#A.............T#",
+  "#..##..##..##...#",
+  "#<<<<<<<<<<<<<<<#",
+  "#..##..##..##...#",
+  "#S.....B...R..XB#",
+  "#################",
+];
+const director = [
+  "#################",
+  "#B.....X.......B#",
+  "#..##.......##..#",
+  "#..##.......##..#",
+  "#...............#",
+  "#.......M.......#",
+  "#...............#",
+  "#..##.......##..#",
+  "#..##..V.B..##..#",
+  "#R.............R#",
+  "#.....T...A.....#",
+  "#S.....B.......B#",
+  "#################",
+];
+
 export const LEVELS = [
   {
     name: "Cereal Situation",
@@ -127,7 +203,67 @@ export const LEVELS = [
     speed: 3.1,
     tagline: "Someone would like to speak to you.",
   },
+  {
+    name: "Food Fight",
+    department: "AISLE 06 · RECEIPTS WILL FLY",
+    theme: "food",
+    map: foodCourt,
+    quota: 62,
+    time: 150,
+    speed: 3.5,
+    tagline: "Drones print complaints. Duck behind the shelves.",
+  },
+  {
+    name: "Heavy Delivery",
+    department: "AISLE 07 · FRAGILE EGOS",
+    theme: "dock",
+    map: dock,
+    quota: 58,
+    time: 165,
+    speed: 3.65,
+    tagline: "Armoured trolleys. Moving shutters. No fragile stickers.",
+  },
+  {
+    name: "Brain Freeze",
+    department: "AISLE 08 · COLD CALLING",
+    theme: "ice",
+    map: deepFreeze,
+    quota: 64,
+    time: 165,
+    speed: 3.7,
+    tagline: "Brake before the corners. The drones certainly won't.",
+  },
+  {
+    name: "Express Distress",
+    department: "AISLE 09 · KEEP IT MOVING",
+    theme: "conveyor",
+    map: express,
+    quota: 70,
+    time: 170,
+    speed: 3.85,
+    tagline: "Ride the belts. Dodge the receipts. Almost free.",
+  },
+  {
+    name: "Exit Interview",
+    department: "AISLE 10 · THE DIRECTOR",
+    theme: "director",
+    map: director,
+    quota: 40,
+    time: 210,
+    speed: 3.6,
+    tagline: "Your resignation has been violently declined.",
+  },
 ];
+
+// Put the first visor on the route out of the starting corridor, before combat escalates.
+LEVELS[1] = {
+  ...LEVELS[1],
+  map: freezer.map((row, i) => (i === 9 ? "#V..#.......#...#" : row)),
+};
+LEVELS[3] = {
+  ...LEVELS[3],
+  map: rush.map((row, i) => (i === 6 ? "#.....VB.B......#" : row)),
+};
 
 export function layoutFor(index) {
   const level = LEVELS[index];
@@ -137,7 +273,9 @@ export function layoutFor(index) {
     crumbs = [],
     batteries = [],
     enemies = [],
-    gates = [];
+    gates = [],
+    visors = [],
+    belts = [];
   let start, exit, boss;
   for (let z = 0; z < height; z++)
     for (let x = 0; x < width; x++) {
@@ -149,15 +287,21 @@ export function layoutFor(index) {
         if (char === "X") exit = position;
         if (char === "B")
           batteries.push({ ...position, collected: false, respawn: 0 });
-        if (char === "E" || char === "A")
+        if (["E", "A", "R", "T"].includes(char))
           enemies.push({
             ...position,
-            kind: char === "E" ? "hunter" : "ambusher",
+            kind: { E: "hunter", A: "ambusher", R: "shooter", T: "armoured" }[
+              char
+            ],
           });
+        if (char === "V")
+          visors.push({ ...position, collected: false, respawn: 0 });
+        if (char === ">" || char === "<")
+          belts.push({ ...position, direction: char === ">" ? 1 : -1 });
         if (char === "G")
           gates.push({ ...position, col: x, row: z, phase: gates.length % 2 });
         if (char === "M") boss = position;
-        if (!["S", "X", "B", "G", "M"].includes(char))
+        if (!["S", "X", "B", "G", "M", "V"].includes(char))
           crumbs.push({ ...position, collected: false });
       }
     }
@@ -170,6 +314,8 @@ export function layoutFor(index) {
     batteries,
     enemies,
     gates,
+    visors,
+    belts,
     start,
     exit,
     boss,

@@ -39,7 +39,7 @@ The second fifteen candidates are retained in `candidates-second/`. Fourteen pas
 
 World scenery uses these selected assets through the official loader. The boss is an enlarged articulated trolley, and moving warehouse barriers reuse the freezer model. Ground rings, interface labels and particles are functional interface/effect geometry. No third-party mesh or trademarked character is included. The original soundtrack and effects are synthesized with Web Audio; no Atlas generation was needed for this first slice.
 
-## Verification state
+## Baseline verification
 
 Eleven simulation checks pass, including movement and wall collisions, projectile occlusion, overtime, death, connected layouts, progression, shutters, ice inertia, stacked upgrades, out-of-bounds ambush predictions, announced charges and boss shield phases. The official shipping checker passes all 19 modules and relative paths. The selected asset pack passes 9/9.
 
@@ -48,3 +48,32 @@ The browser playthrough uses real keyboard and mouse events with read-only telem
 The official phone gate was run against the local preview with a 390 × 844 viewport, 4G shaping and 2× CPU slowdown. It is an emulated-device result on an Apple M5 Max, not a physical phone or deployed-site verdict. Its full JSON records readiness, transfer size, draw calls, triangles, frame rate, actual touch movement and errors. Only Google Fonts is fetched externally; the game and Three.js come from the game folder.
 
 Visual review led to a quieter floor pattern, brighter crumbs, closer framing and separate baking of articulated actor parts. The first campaign run also exposed a trivial boss fight; the final build has protected shield phases, capped pellet damage and a denser second attack phase. Procedural shapes are intentionally simpler than the image references. Automated checks establish correctness; enjoyment and replay value still need the user's playtest.
+
+## Arcade expansion
+
+The user requested stronger health/ammunition feedback, illustrated upgrades, a longer escape route with boss milestones, tougher ranged enemies, a first-person pickup, a daily challenge and a real shared leaderboard. The original five-floor slice remains the baseline above; the current campaign has ten floors.
+
+The built-in ImageGen mode generated three new isolated references. Their exact prompts and saved paths are recorded in [reference-prompts-expansion.json](reference-prompts-expansion.json): [audit drone](references/audit_drone.png), [visor](references/visor.png), [Director](references/director.png). The main agent inspected these references before constructing the geometry. `scripts/generate-expansion.mjs` produced nine candidates using distinct shell constructions. All nine passed the official verifier; the five-view comparison is preserved in `candidates-expansion/_verify/`.
+
+| Object      | Selected | Visual reason                                                                                                   |
+| ----------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| Audit drone | A        | The rounded shell matches the reference, keeps the scanner eye prominent and has readable back vents.           |
+| Visor       | B        | Two rounded binocular housings match the reference more closely than the rectangular or chamfered alternatives. |
+| Director    | B        | The profiled kiosk shoulders and sloped lower tray read as an appliance from all five views.                    |
+
+The main agent made the visual choices, not an independent critic. Runtime files are byte-identical to their chosen candidate modules. The complete selected pack passes 12/12. Upgrade pictures are original native SVG, using the same palette and appliance motifs. No new Atlas key, mesh download or trademarked asset is used.
+
+### Expansion verification
+
+Reports and screenshots in `verification-expansion/` record:
+
+- Seventeen Node checks, including connected maps, ranged warnings and occlusion, conveyor movement, visor duration, upgrade effects, deterministic daily input replay and server persistence.
+- Server verification of two identities, a forged client score, invalid inputs, concurrent duplicate submissions, premature submissions, cross-origin requests, repeat best scores and the UTC daily reset.
+- A complete ten-floor campaign through real keyboard/mouse events, both bosses, death and retry. The Director took about 51 simulated seconds and the run finished with two hearts. This is a precise automated player, not an estimate of a human's play time.
+- A real 90-second Daily Rush survival (5,400 recorded ticks), accepted by server replay with 8,770 points. A separate lost run was also accepted, then read from an independent browser identity. These are test aliases and actual played scores, not prefilled sample leaderboard entries.
+- Mouse look/fire and simultaneous touch movement/look/fire in first person, the overhead toggle, persisted unlocks and practice launch after reload.
+- Touch controls in portrait and landscape, eight clean restarts with stable geometry counts, plus the official mobile jam gate and shipping check.
+
+The official gate passes locally: approximately 5.2-second readiness, 2.5 MB compressed transfer, 8.7 m of real touch movement, peak 289 draw calls and 574,344 triangles, median 60 fps, zero runtime errors and missing resources. This is Chrome phone emulation on an Apple M5 Max with simulated 4G and 2× CPU slowdown, not a physical-device or deployed-site guarantee. The gate covers the opening aisle; campaign, daily and FPS behavior have separate real-input checks.
+
+Visual inspection prompted a smaller first-person nozzle, lit ceiling panels, omission of the tile's raised directional inlay, prominent heart/ammo feedback and a connected serpentine escape route. Temporary test harness failures caused by switching Puppeteer's mobile profile mid-run were corrected by preserving the profile across viewport changes. Test results are scoped to the behavior each report actually exercises. No hosting or contest submission has been performed.

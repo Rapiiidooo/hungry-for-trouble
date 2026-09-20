@@ -2,6 +2,24 @@ import * as THREE from "three";
 import { ASSET, bakeStatic } from "./assetlib.js";
 import { newGame, stepGame, nextLevel, gateClosed, clamp } from "./sim.js";
 import { Sound } from "./audio.js";
+import { LEVELS } from "./levels.js";
+import {
+  TICK,
+  newDaily,
+  packInput,
+  unpackInput,
+  recordInput,
+} from "./daily.js";
+import {
+  art,
+  UPGRADES,
+  upgradeChoices,
+  readProgress,
+  unlock,
+  drawRoute,
+  api,
+  drawBoard,
+} from "./arcade.js";
 
 const $ = (id) => document.getElementById(id);
 const ui = Object.fromEntries(
@@ -15,6 +33,27 @@ const palette = {
   teal: 0x52c9c1,
 };
 let renderer, scene, camera, world, menuWorld, hero, bossModel, exitModel, halo;
+let fpsCamera,
+  weapon,
+  ceiling,
+  visorModels = [],
+  beltMeshes = [];
+let fpsYaw = Math.PI,
+  fpsPitch = 0,
+  viewOverhead = false,
+  wasFPS = false;
+let accumulator = 0,
+  runKind = "campaign",
+  practiceLevel = 0,
+  dailyAttempt = null,
+  dailyLog = [];
+let selectedStage = 0,
+  dailyConfig = null,
+  submitting = false,
+  requestingDaily = false;
+const progress = readProgress(),
+  floating = [];
+let lastAmmoPop = -1;
 let game = newGame(),
   mode = "menu",
   building = false,
@@ -76,7 +115,115 @@ const paths = [
   "battery",
   "snack",
   "floor",
+  "audit_drone",
+  "visor",
+  "director",
 ];
+
+const isFPS = () => mode === "playing" && game.fpsTime > 0 && !viewOverhead;
+const activeCamera = () => (isFPS() ? fpsCamera : camera);
+
+function releaseLook() {
+  if (document.pointerLockElement === ui.world) document.exitPointerLock();
+}
+
+function toggleView() {
+  if (game.fpsTime <= 0) return;
+  viewOverhead = !viewOverhead;
+  if (viewOverhead) releaseLook();
+  else fpsYaw = game.player.angle;
+  pointerFire = false;
+}
+
+function floatText(text, x, z, kind = "ammo") {
+  const el = document.createElement("span");
+  el.className = `world-pop ${kind}`;
+  el.textContent = text;
+  ui["floating-fx"].append(el);
+  floating.push({ el, x, z, start: clock, kind });
+}
+
+function chooseStage(index) {
+  selectedStage = index;
+  ui["stage-title"].textContent =
+    `AISLE ${String(index + 1).padStart(2, "0")} · ${LEVELS[index].name}`;
+  ui["stage-description"].textContent = LEVELS[index].tagline;
+  ui["practice-start"].disabled = index > progress.unlocked;
+  drawRoute(ui["route-map"], progress, index, chooseStage);
+}
+
+function openRoute() {
+  if (mode === "playing") pause(true);
+  ui["route-screen"].hidden = false;
+  chooseStage(mode === "playing" ? game.levelIndex : progress.unlocked);
+}
+
+async function refreshBoard() {
+  ui["daily-start"].disabled = true;
+  ui["daily-status"].textContent = "Connecting to today's board…";
+  try {
+    dailyConfig = await api("/api/daily");
+    const board = await api(`/api/leaderboard?day=${dailyConfig.day}`);
+    ui["daily-date"].textContent = dailyConfig.day;
+    ui["daily-status"].textContent =
+      `${LEVELS[dailyConfig.levelIndex].name} · Faster waves every 18 seconds · ${board.players} player${board.players === 1 ? "" : "s"}`;
+    drawBoard(ui.leaderboard, board.entries);
+    ui["daily-start"].disabled = false;
+  } catch (error) {
+    dailyConfig = null;
+    ui["daily-status"].textContent =
+      `${error.message} Campaign and practice are still available.`;
+    ui.leaderboard.replaceChildren();
+  }
+}
+
+async function startDaily() {
+  if (building || requestingDaily) return;
+  requestingDaily = true;
+  ui["daily-start"].disabled = true;
+  try {
+    const attempt = await api("/api/runs", {});
+    await start(true, null, { kind: "daily", attempt });
+  } catch (error) {
+    ui["daily-screen"].hidden = false;
+    ui["daily-status"].textContent = error.message;
+  } finally {
+    requestingDaily = false;
+    ui["daily-start"].disabled = false;
+  }
+}
+
+async function submitScore(event) {
+  event.preventDefault();
+  if (!dailyAttempt || submitting || game.state === "playing") return;
+  const attempt = dailyAttempt,
+    inputs = dailyLog;
+  submitting = true;
+  ui["submit-score"].disabled = true;
+  ui["score-status"].hidden = false;
+  ui["score-status"].textContent = "Verifying your run…";
+  try {
+    const name = ui["score-name"].value.trim();
+    const result = await api(`/api/runs/${attempt.id}/score`, { name, inputs });
+    if (dailyAttempt?.id !== attempt.id) return;
+    ui["score-status"].textContent =
+      `VERIFIED · Your best rank: #${result.rank} · ${result.score.toLocaleString("en-US")} points`;
+    ui["score-form"].hidden = true;
+    drawBoard(ui.leaderboard, result.entries);
+    try {
+      localStorage.setItem("hft-alias", name);
+    } catch {
+      /* Optional local alias. */
+    }
+    dailyAttempt = null;
+  } catch (error) {
+    if (dailyAttempt?.id === attempt.id)
+      ui["score-status"].textContent = error.message;
+  } finally {
+    submitting = false;
+    ui["submit-score"].disabled = false;
+  }
+}
 
 function reportError(error) {
   console.error(error);
@@ -358,6 +505,9 @@ async function buildWorld() {
   enemies = [];
   batteries = [];
   gates = [];
+  visorModels = [];
+  beltMeshes = [];
+  floating.splice(0).forEach((f) => f.el.remove());
   const theme = game.map.level.theme;
   const tiles = [],
     scale = 2 / prototypes.floor.userData.nativeSize.x;
@@ -370,6 +520,10 @@ async function buildWorld() {
     if (theme === "ice") return (p.col + p.row) % 2 ? 0xa9eced : 0xe8ffff;
     if (theme === "warehouse") return (p.col + p.row) % 2 ? 0x789999 : 0xa1b4a2;
     if (theme === "rush") return (p.col + p.row) % 2 ? 0x737e73 : 0x8d8c77;
+    if (theme === "food") return (p.col + p.row) % 2 ? 0xb6a075 : 0x638b80;
+    if (theme === "dock") return (p.col + p.row) % 2 ? 0x859695 : 0x587d7b;
+    if (theme === "conveyor") return (p.col + p.row) % 2 ? 0x98a981 : 0x617d7b;
+    if (theme === "director") return (p.col + p.row) % 2 ? 0x6f8f94 : 0x9ba687;
     return (p.col + p.row) % 2 ? 0x567a71 : 0x718b77;
   });
   const chunks = new Map();
@@ -411,21 +565,101 @@ async function buildWorld() {
     world.add(model, ring);
     batteries.push({ model, ring, i });
   }
+  for (const [i, item] of game.visors.entries()) {
+    const model = cloneAsset("visor"),
+      ring = makeRing(0.65, palette.teal);
+    model.position.set(item.x, 0.35, item.z);
+    ring.position.set(item.x, 0.03, item.z);
+    world.add(model, ring);
+    visorModels.push({ model, ring, i });
+  }
+  if (game.map.belts.length) {
+    // The conveyor reuses the verified floor module and moving crumb lights.
+    const beltTiles = instanceAsset(
+      "floor",
+      game.map.belts.map((b) => ({ ...b, y: -0.08, scale })),
+      world,
+    );
+    for (const { mesh } of beltTiles) {
+      mesh.material = mesh.material.clone();
+      mesh.userData.ownMaterial = true;
+      mesh.material.color.setHex(0x254852);
+    }
+    beltMeshes = instanceAsset(
+      "snack",
+      game.map.belts.flatMap((b) =>
+        [-0.6, 0, 0.6].map((offset) => ({
+          x: b.x + offset,
+          z: b.z,
+          y: 0.18,
+          scale: 0.7,
+          direction: b.direction,
+          origin: b.x + offset,
+        })),
+      ),
+      world,
+    );
+  }
+  ceiling = new THREE.Group();
+  const ceilingTiles = instanceAsset(
+    "floor",
+    tiles.map((t) => ({ ...t, y: 3.1 })),
+    ceiling,
+    () => 0x324b50,
+  );
+  const lamps = instanceAsset(
+    "floor",
+    [4, 16, 28].flatMap((x) =>
+      [4, 12, 20].map((z) => ({ x, z, y: 3.03, scale: 0.55 })),
+    ),
+    ceiling,
+  );
+  for (const { mesh } of [...ceilingTiles, ...lamps]) {
+    mesh.material = mesh.material.clone();
+    mesh.userData.ownMaterial = true;
+    mesh.material.emissive.setHex(
+      lamps.some((l) => l.mesh === mesh) ? 0xffe7b0 : 0x193940,
+    );
+    mesh.material.emissiveIntensity = lamps.some((l) => l.mesh === mesh)
+      ? 1.1
+      : 0.65;
+  }
+  ceiling.visible = false;
+  world.add(ceiling);
   hero = compactActor(await ASSET("assets/vacuum.js", { keepHierarchy: true }));
   hero.traverse((node) => {
     if (node.name === "wheel") node.userData.spinning = true;
   });
   world.add(hero);
+  weapon?.removeFromParent();
+  const gunSource = compactActor(
+    await ASSET("assets/vacuum.js", { keepHierarchy: true }),
+  );
+  const nozzle = gunSource.userData.joints.nozzle;
+  nozzle.removeFromParent();
+  nozzle.position.set(0, 0, 0);
+  nozzle.rotation.set(0, Math.PI, 0);
+  weapon = new THREE.Group();
+  weapon.add(nozzle);
+  weapon.scale.setScalar(0.38);
+  fpsCamera.add(weapon);
   halo = makeRing(0.52, palette.cream);
   world.add(halo);
   for (const enemy of game.enemies) {
     const model = compactActor(
       await ASSET(
-        `assets/${enemy.kind === "hunter" ? "security_trolley" : "polisher"}.js`,
+        `assets/${enemy.kind === "shooter" ? "audit_drone" : enemy.kind === "ambusher" ? "polisher" : "security_trolley"}.js`,
         { keepHierarchy: true },
       ),
     );
     markEmissive(model);
+    if (enemy.kind === "armoured") {
+      model.scale.setScalar(1.25);
+      model.traverse((n) => {
+        if (n.isMesh && n.material.color.getHex() === palette.red)
+          n.material.color.setHex(0xd99c4b);
+      });
+    }
     world.add(model);
     enemies.push(model);
   }
@@ -433,9 +667,11 @@ async function buildWorld() {
   exitModel.position.set(game.map.exit.x, 0, game.map.exit.z);
   exitModel.rotation.y = Math.PI;
   world.add(exitModel);
+  exitModel.visible = !game.daily;
   const checkoutLabel = label("CHECKOUT", "#f5e9c9", 2.5);
   checkoutLabel.position.set(game.map.exit.x, 2.05, game.map.exit.z);
   world.add(checkoutLabel);
+  checkoutLabel.visible = !game.daily;
   for (const gate of game.map.gates) {
     const model = cloneAsset("freezer");
     model.position.set(gate.x, 0, gate.z);
@@ -447,15 +683,22 @@ async function buildWorld() {
   bossModel = null;
   if (game.boss) {
     bossModel = compactActor(
-      await ASSET("assets/security_trolley.js", {
-        keepHierarchy: true,
-      }),
+      await ASSET(
+        `assets/${game.boss.director ? "director" : "security_trolley"}.js`,
+        {
+          keepHierarchy: true,
+        },
+      ),
     );
-    bossModel.scale.setScalar(2.9);
+    bossModel.scale.setScalar(game.boss.director ? 1.35 : 2.9);
     bossModel.position.set(game.boss.x, 0, game.boss.z);
     markEmissive(bossModel);
     world.add(bossModel);
-    const manager = label("THE MANAGER", "#f1533f", 3.5);
+    const manager = label(
+      game.boss.director ? "THE DIRECTOR" : "THE MANAGER",
+      "#f1533f",
+      3.5,
+    );
     manager.position.set(game.boss.x, 3.7, game.boss.z);
     world.add(manager);
   }
@@ -470,9 +713,22 @@ async function buildWorld() {
   follow.set(game.player.x, 0, game.player.z);
   lastState = "playing";
   lastOvertime = false;
-  ui.department.textContent = game.map.level.department;
+  ui.department.textContent = game.daily
+    ? `DAILY RUSH · ${game.daily.day}`
+    : game.map.level.department;
   ui["floor-name"].textContent = game.map.level.name;
-  ui.quota.textContent = ` / ${game.map.level.quota}`;
+  ui.quota.textContent = game.daily ? " CRUMBS" : ` / ${game.map.level.quota}`;
+  ui["clock-label"].textContent = game.daily
+    ? "SURVIVE THE RUSH"
+    : "STORE CLOSES";
+  ui["run-badge"].textContent = game.daily
+    ? "DAILY · SAME CHALLENGE FOR EVERYONE"
+    : runKind === "practice"
+      ? "PRACTICE · UNLOCKED AISLE"
+      : `ESCAPE ROUTE · ${game.levelIndex + 1} / ${LEVELS.length}`;
+  ui["boss-name"].textContent = game.boss?.director
+    ? "THE DIRECTOR"
+    : "THE MANAGER";
   updateModels(0);
   resize();
 }
@@ -487,13 +743,24 @@ function clearInput() {
     element.style.transform = "";
 }
 
-async function start(fresh = true, upgrade) {
+async function start(fresh = true, upgrade, options = {}) {
   if (building) return;
   building = true;
   clearInput();
+  releaseLook();
+  accumulator = 0;
+  viewOverhead = false;
+  wasFPS = false;
+  fpsPitch = 0;
   await sound.start();
   if (fresh) {
-    game = newGame();
+    runKind = options.kind || "campaign";
+    practiceLevel = options.level || 0;
+    dailyAttempt = options.attempt || null;
+    dailyLog = [];
+    game = dailyAttempt
+      ? newDaily(dailyAttempt.config)
+      : newGame(practiceLevel);
     runKills = 0;
     runCrumbs = 0;
     runShots = 0;
@@ -517,6 +784,8 @@ async function start(fresh = true, upgrade) {
     "pause-screen",
     "upgrade-screen",
     "result",
+    "route-screen",
+    "daily-screen",
   ])
     ui[id].hidden = true;
   mode = "playing";
@@ -527,7 +796,13 @@ async function start(fresh = true, upgrade) {
   ui.game.classList.add("playing");
   try {
     await buildWorld();
-    showMessage(game.map.level.name, game.map.level.tagline, 3);
+    showMessage(
+      game.daily ? "DAILY RUSH" : game.map.level.name,
+      game.daily
+        ? "90 seconds. Every crumb and takedown counts."
+        : game.map.level.tagline,
+      3,
+    );
   } catch (error) {
     reportError(error);
   }
@@ -537,6 +812,8 @@ async function start(fresh = true, upgrade) {
 function pause(value = !paused) {
   if (mode !== "playing" || game.state !== "playing" || building) return;
   paused = value;
+  if (value) releaseLook();
+  accumulator = 0;
   clearInput();
   ui["pause-screen"].hidden = !value;
   if (!value) sound.start();
@@ -546,10 +823,20 @@ function menu() {
   clearInput();
   mode = "menu";
   paused = false;
-  world.visible = false;
+  if (world) world.visible = false;
+  releaseLook();
+  if (weapon) weapon.visible = false;
   menuWorld.visible = true;
   for (const id of ["menu", "hero-label", "footer"]) ui[id].hidden = false;
-  for (const id of ["hud", "pause", "result", "pause-screen", "upgrade-screen"])
+  for (const id of [
+    "hud",
+    "pause",
+    "result",
+    "pause-screen",
+    "upgrade-screen",
+    "route-screen",
+    "daily-screen",
+  ])
     ui[id].hidden = true;
   ui.game.classList.remove("playing", "overtime");
   ui.message.classList.remove("show");
@@ -559,7 +846,32 @@ function menu() {
 function handleEvents(events) {
   for (const event of events) {
     sound.effect(event.type, game.collected);
-    if (event.type === "crumb") burst(event.x, event.z, palette.lime, 5, 1.3);
+    if (event.type === "crumb") {
+      burst(event.x, event.z, palette.lime, 5, 1.3);
+      if (clock - lastAmmoPop > 0.18) {
+        floatText("+2 AMMO", event.x, event.z);
+        lastAmmoPop = clock;
+      }
+    }
+    if (event.type === "visor") {
+      viewOverhead = false;
+      fpsYaw = game.player.angle;
+      fpsPitch = 0;
+      pointerFire = false;
+      burst(event.x, event.z, palette.teal, 50, 3);
+      showMessage(
+        "VAC CAM ONLINE",
+        "18 seconds of rapid fire. V switches your view.",
+        3,
+      );
+      floatText("+24 AMMO", event.x, event.z);
+    }
+    if (event.type === "wave")
+      showMessage(`WAVE ${event.wave}`, "Fresh crumbs. Faster colleagues.", 2);
+    if (event.type === "shield-save")
+      floatText("WARRANTY SAVED YOU", event.x, event.z, "shield-pop");
+    if (event.type === "drone-warning")
+      burst(event.x, event.z, palette.red, 8, 0.5);
     if (event.type === "shot") recoil = 1;
     if (event.type === "hit") burst(event.x, event.z, palette.cream, 6, 2.5);
     if (event.type === "shield") burst(event.x, event.z, palette.teal, 3, 1.5);
@@ -581,8 +893,17 @@ function handleEvents(events) {
     }
     if (event.type === "dash") burst(event.x, event.z, palette.teal, 15, 1.5);
     if (event.type === "damage") {
-      damageUntil = clock + 0.2;
+      damageUntil = clock + 0.5;
       burst(event.x, event.z, palette.red, 25, 3);
+      floatText("♥ −1", event.x, event.z, "heart-pop");
+      ui.health.animate(
+        [
+          { transform: "scale(1.2) translateX(-5px)" },
+          { transform: "translateX(5px)" },
+          { transform: "scale(1)" },
+        ],
+        { duration: 450 },
+      );
     }
     if (event.type === "empty")
       showMessage(
@@ -605,7 +926,7 @@ function handleEvents(events) {
           ? "QUOTA DONE. ONE COMPLAINT LEFT."
           : "TIME TO CHECK OUT!",
         game.boss?.hp > 0
-          ? "Defeat the Manager, then reach the checkout."
+          ? `Defeat the ${game.boss.director ? "Director" : "Manager"}, then reach the checkout.`
           : "Follow the lime marker to the checkout.",
         3,
       );
@@ -622,19 +943,32 @@ function handleEvents(events) {
   if (game.state === lastState) return;
   lastState = game.state;
   clearInput();
+  releaseLook();
+  if (!game.daily && ["cleared", "won"].includes(game.state))
+    unlock(progress, game.levelIndex);
   if (game.state === "cleared") {
     ui["upgrade-screen"].hidden = false;
-    document.querySelector('[data-upgrade="spread"] p').textContent =
-      `${3 + game.upgrades.spread * 2} shots for the price of one.`;
-    document.querySelector('[data-upgrade="rapid"] p').textContent =
-      `Fire ${Math.round(25 / (1 + game.upgrades.rapid * 0.25))}% faster.`;
+    drawRoute(ui["upgrade-route"], progress, game.levelIndex + 1);
+    ui["upgrade-options"].replaceChildren();
+    for (const key of upgradeChoices(game)) {
+      const data = UPGRADES[key],
+        button = document.createElement("button");
+      button.dataset.upgrade = key;
+      button.innerHTML = `<div class="upgrade-art">${art(key)}</div><small>${data.tag} · LV ${game.upgrades[key] + 1}</small><h3>${data.name}</h3><p>${data.description(game.upgrades[key])}</p><b>EQUIP & CONTINUE <span>▶</span></b>`;
+      button.onclick = () => start(false, key);
+      ui["upgrade-options"].append(button);
+    }
+    ui["next-aisle"].textContent =
+      `NEXT: ${LEVELS[game.levelIndex + 1].name.toUpperCase()} · ${LEVELS[game.levelIndex + 1].tagline}`;
     return;
   }
   if (!["lost", "won"].includes(game.state)) return;
   const won = game.state === "won",
     previousBest = best;
-  best = Math.max(best, game.score);
-  bestFloor = Math.max(bestFloor, game.levelIndex + 1);
+  if (runKind === "campaign") {
+    best = Math.max(best, game.score);
+    bestFloor = Math.max(bestFloor, game.levelIndex + 1);
+  }
   try {
     localStorage.setItem(
       "hft-record-v1",
@@ -643,23 +977,37 @@ function handleEvents(events) {
   } catch {
     /* Storage is optional in private browser modes. */
   }
-  ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${bestFloor}/5`;
-  ui["result-eyebrow"].textContent = won
-    ? "SHIFT COMPLETE"
-    : "PERFORMANCE REVIEW";
-  ui["result-title"].innerHTML = won
-    ? "Clean <em>getaway.</em>"
-    : game.time <= 0
-      ? "Clocked <em>out.</em>"
-      : "You <em>suck.</em>";
-  ui["result-comment"].textContent = won
-    ? "Five aisles. One vacuum. Still no pay rise."
-    : game.time <= 0
-      ? "Store closed. Your overtime was not approved."
-      : "Occupational hazard. No compensation.";
+  ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${bestFloor}/${LEVELS.length}`;
+  ui["result-eyebrow"].textContent = game.daily
+    ? `DAILY RUSH · ${game.daily.day}`
+    : won
+      ? "SHIFT COMPLETE"
+      : "PERFORMANCE REVIEW";
+  ui["result-title"].innerHTML =
+    game.daily && won
+      ? "Rush <em>survived.</em>"
+      : won
+        ? "Clean <em>getaway.</em>"
+        : game.time <= 0
+          ? "Clocked <em>out.</em>"
+          : "You <em>suck.</em>";
+  ui["result-comment"].textContent = game.daily
+    ? "Same challenge. Unlimited retries. Only your best score counts."
+    : won
+      ? "Ten aisles. Two bosses. Resignation accepted."
+      : game.time <= 0
+        ? "Store closed. Your overtime was not approved."
+        : "Occupational hazard. No compensation.";
   ui["final-score"].textContent = game.score.toLocaleString("en-US");
   ui["result-stats"].textContent =
-    `${game.score > previousBest ? "NEW PERSONAL BEST · " : ""}AISLE ${game.levelIndex + 1}/5 · ${runKills + game.kills} TAKEDOWNS · ${runCrumbs + game.collected} CRUMBS`;
+    `${runKind === "campaign" && game.score > previousBest ? "NEW PERSONAL BEST · " : ""}${game.daily ? `${game.elapsed.toFixed(1)}s` : `AISLE ${game.levelIndex + 1}/${LEVELS.length}`} · ${runKills + game.kills} TAKEDOWNS · ${runCrumbs + game.collected} CRUMBS`;
+  ui["score-form"].hidden = !game.daily;
+  ui["share-score"].hidden = !game.daily;
+  ui["score-status"].hidden = true;
+  ui["share-output"].hidden = true;
+  ui.retry.innerHTML = game.daily
+    ? "RETRY TODAY'S RUSH <span>▶</span>"
+    : "ONE MORE SHIFT <span>▶</span>";
   ui.result.hidden = false;
 }
 
@@ -680,7 +1028,17 @@ function updateModels(dt) {
     Math.cos(clock * 14) * moving * 0.004,
   );
   hero.scale.setScalar(scale);
-  hero.visible = true;
+  hero.visible = !isFPS();
+  halo.visible = !isFPS();
+  ceiling.visible = isFPS();
+  weapon.visible = isFPS();
+  const portraitFPS = innerWidth < 700 && innerHeight > innerWidth;
+  weapon.scale.setScalar(portraitFPS ? 0.32 : 0.38);
+  weapon.position.set(
+    (portraitFPS ? 0.05 : 0.19) + Math.sin(clock * 10) * moving * 0.001,
+    -0.23 - Math.abs(Math.sin(clock * 10)) * moving * 0.002,
+    -0.39 + recoil * 0.04,
+  );
   const joints = hero.userData.joints;
   if (joints?.nozzle) joints.nozzle.rotation.x = recoil * -0.22;
   if (joints?.lid)
@@ -703,7 +1061,8 @@ function updateModels(dt) {
     model.visible = enemy.respawn <= 0;
     model.position.set(
       enemy.x,
-      Math.abs(Math.sin(clock * 12 + i)) * 0.045,
+      (enemy.kind === "shooter" ? 0.25 : 0) +
+        Math.abs(Math.sin(clock * 12 + i)) * 0.045,
       enemy.z,
     );
     model.rotation.set(
@@ -716,7 +1075,7 @@ function updateModels(dt) {
         node.material.emissive.setHex(
           enemy.hit > 0
             ? 0xffffff
-            : enemy.windup > 0 || enemy.charge > 0
+            : enemy.windup > 0 || enemy.charge > 0 || enemy.tell > 0
               ? palette.red
               : overtime
                 ? palette.teal
@@ -725,7 +1084,7 @@ function updateModels(dt) {
         node.material.emissiveIntensity =
           enemy.hit > 0
             ? 0.7
-            : enemy.windup > 0
+            : enemy.windup > 0 || enemy.tell > 0
               ? 0.3 + Math.abs(Math.sin(clock * 24)) * 0.8
               : enemy.charge > 0
                 ? 0.5
@@ -741,6 +1100,28 @@ function updateModels(dt) {
     model.position.y = 0.18 + Math.sin(clock * 3 + i) * 0.12;
     model.rotation.y = clock * 0.8;
     ring.scale.setScalar(1 + Math.sin(clock * 4) * 0.08);
+  }
+  for (const { model, ring, i } of visorModels) {
+    const item = game.visors[i];
+    model.visible = ring.visible = !item.collected;
+    model.position.y = 0.28 + Math.sin(clock * 3) * 0.1;
+    model.rotation.y = clock * 0.7;
+  }
+  for (const { mesh, local } of beltMeshes) {
+    let i = 0;
+    for (const b of game.map.belts)
+      for (const offset of [-0.6, 0, 0.6]) {
+        transform.position.set(
+          b.x + ((clock * 2.3 * b.direction + offset + 1000) % 1.8) - 0.9,
+          0.16,
+          b.z,
+        );
+        transform.rotation.set(0, 0, 0);
+        transform.scale.set(0.9, 0.3, 5);
+        transform.updateMatrix();
+        mesh.setMatrixAt(i++, transform.matrix.clone().multiply(local));
+      }
+    mesh.instanceMatrix.needsUpdate = true;
   }
   for (const { model, ring, data } of gates) {
     const closed = gateClosed(game, data.col, data.row);
@@ -765,7 +1146,9 @@ function updateModels(dt) {
     mesh.instanceMatrix.needsUpdate = true;
   }
   const open =
-    game.collected >= game.map.level.quota && (!game.boss || game.boss.hp <= 0);
+    !game.daily &&
+    game.collected >= game.map.level.quota &&
+    (!game.boss || game.boss.hp <= 0);
   if (exitModel.userData.open !== open) {
     markEmissive(exitModel, open);
     exitModel.userData.open = open;
@@ -808,7 +1191,7 @@ function updateModels(dt) {
 }
 
 function screenPosition(x, y, z) {
-  const projected = new THREE.Vector3(x, y, z).project(camera);
+  const projected = new THREE.Vector3(x, y, z).project(activeCamera());
   return {
     x: (projected.x * 0.5 + 0.5) * innerWidth,
     y: (-projected.y * 0.5 + 0.5) * innerHeight,
@@ -834,6 +1217,21 @@ function updateCamera(dt) {
     camera.lookAt(follow);
   }
   camera.updateMatrixWorld();
+  if (isFPS()) {
+    const p = game.player;
+    fpsCamera.position.set(
+      p.x,
+      0.8 +
+        Math.sin(clock * 11) * Math.min(0.015, Math.hypot(p.vx, p.vz) * 0.003),
+      p.z,
+    );
+    fpsCamera.lookAt(
+      p.x + Math.sin(fpsYaw) * Math.cos(fpsPitch),
+      fpsCamera.position.y + Math.sin(fpsPitch),
+      p.z + Math.cos(fpsYaw) * Math.cos(fpsPitch),
+    );
+    fpsCamera.updateMatrixWorld();
+  }
 }
 
 function drawMap() {
@@ -853,6 +1251,11 @@ function drawMap() {
       mini.fillStyle = "#d5f65b";
       mini.fillRect(battery.x * 6 + 3, battery.z * 6 + 3, 6, 6);
     }
+  for (const visor of game.visors)
+    if (!visor.collected) {
+      mini.fillStyle = "#52c9c1";
+      mini.fillRect(visor.x * 6 + 2, visor.z * 6 + 4, 9, 4);
+    }
   for (const gate of game.map.gates) {
     mini.fillStyle = gateClosed(game, gate.col, gate.row)
       ? "#f1533f"
@@ -861,7 +1264,8 @@ function drawMap() {
   }
   mini.fillStyle =
     game.collected >= game.map.level.quota ? "#d5f65b" : "#52c9c1";
-  mini.fillRect(game.map.exit.x * 6 + 2, game.map.exit.z * 6 + 2, 8, 8);
+  if (!game.daily)
+    mini.fillRect(game.map.exit.x * 6 + 2, game.map.exit.z * 6 + 2, 8, 8);
   for (const enemy of game.enemies)
     if (enemy.respawn <= 0) {
       mini.fillStyle = game.overtime > 0 ? "#52c9c1" : "#f1533f";
@@ -880,23 +1284,59 @@ function drawMap() {
 function updateHud() {
   ui.collected.textContent = game.collected;
   ui["quota-fill"].style.width =
-    `${Math.min(100, (game.collected / game.map.level.quota) * 100)}%`;
-  ui["goal-label"].textContent =
-    game.collected >= game.map.level.quota
+    `${Math.min(100, (game.daily ? game.elapsed / 90 : game.collected / game.map.level.quota) * 100)}%`;
+  ui["goal-label"].textContent = game.daily
+    ? `WAVE ${game.wave} / 5 · KEEP MOVING`
+    : game.collected >= game.map.level.quota
       ? game.boss?.hp > 0
-        ? "DEFEAT THE MANAGER"
+        ? `DEFEAT THE ${game.boss.director ? "DIRECTOR" : "MANAGER"}`
         : "REACH THE CHECKOUT"
       : "CRUMBS TO COLLECT";
   const time = Math.ceil(game.time);
   ui.clock.textContent = `${String(Math.floor(time / 60)).padStart(2, "0")}:${String(time % 60).padStart(2, "0")}`;
   ui.clock.parentElement.classList.toggle("urgent", time < 20);
-  ui.health.textContent = Array.from(
-    { length: Math.max(3, game.player.hp) },
-    (_, i) => (i < game.player.hp ? "♥" : "♡"),
-  ).join(" ");
+  const healthKey = `${game.player.hp}/${game.player.maxHp}`;
+  if (ui.health.dataset.value !== healthKey) {
+    ui.health.dataset.value = healthKey;
+    ui.health.innerHTML = Array.from(
+      { length: game.player.maxHp },
+      (_, i) =>
+        `<span class="heart ${i < game.player.hp ? "full" : "empty"}"><svg viewBox="0 0 32 30" aria-hidden="true"><path d="M16 28 3 15C-5 6 8-4 16 6c8-10 21 0 13 9z"/></svg></span>`,
+    ).join("");
+  }
+  ui.health.classList.toggle("critical", game.player.hp === 1);
+  ui["shield-count"].textContent =
+    game.player.shield > 0
+      ? `◈ ${game.player.shield} BLOCK${game.player.shield === 1 ? "" : "S"}`
+      : "";
   ui.health.setAttribute("aria-label", `${game.player.hp} health`);
   ui.ammo.textContent =
-    game.overtime > 0 ? "∞ SHOTS · NO RESTRAINT" : `${game.ammo} SHOTS`;
+    game.overtime > 0 ? "∞" : String(game.ammo).padStart(2, "0");
+  ui["ammo-fill"].style.width =
+    `${game.overtime > 0 ? 100 : (game.ammo / 99) * 100}%`;
+  ui["ammo-panel"].classList.toggle(
+    "low-ammo",
+    game.ammo < 10 && game.overtime <= 0,
+  );
+  ui["ammo-hint"].textContent =
+    game.overtime > 0
+      ? "UNLIMITED FIREPOWER"
+      : game.ammo === 0
+        ? "EMPTY! GRAB CRUMBS"
+        : game.ammo < 10
+          ? "LOW AMMO · EAT CRUMBS"
+          : "CRUMBS REFILL AMMO";
+  ui["visor-hud"].hidden = game.fpsTime <= 0;
+  ui["crosshair"].hidden = !isFPS() || paused || game.state !== "playing";
+  ui["visor-time"].textContent = game.fpsTime.toFixed(1);
+  ui["view-toggle"].textContent = viewOverhead
+    ? "FIRST PERSON [V]"
+    : "OVERHEAD [V]";
+  ui["visor-hint"].textContent = matchMedia("(pointer: coarse)").matches
+    ? "Left stick moves · Right stick turns and fires"
+    : document.pointerLockElement
+      ? "Mouse aims · Click fires · V changes view"
+      : "Click to lock aim · Drag to aim if unavailable";
   ui["dash-status"].innerHTML =
     game.player.dashCooldown > 0
       ? "DASH RECHARGING"
@@ -918,16 +1358,26 @@ function updateHud() {
 }
 
 function readInput() {
-  const x =
+  let x =
     Number(keys.has("KeyD") || keys.has("ArrowRight")) -
     Number(keys.has("KeyA") || keys.has("ArrowLeft")) +
     stickMove.x;
-  const z =
+  let z =
     Number(keys.has("KeyS") || keys.has("ArrowDown")) -
     Number(keys.has("KeyW") || keys.has("ArrowUp")) +
     stickMove.z;
   let aim;
-  if (stickAim.active) aim = Math.atan2(stickAim.x, stickAim.z);
+  if (isFPS()) {
+    if (stickAim.active) {
+      fpsYaw -= stickAim.x * TICK * 2.7;
+      fpsPitch = clamp(fpsPitch - stickAim.z * TICK * 0.65, -0.4, 0.4);
+    }
+    aim = fpsYaw;
+    const lateral = x,
+      forward = -z;
+    x = forward * Math.sin(fpsYaw) - lateral * Math.cos(fpsYaw);
+    z = forward * Math.cos(fpsYaw) + lateral * Math.sin(fpsYaw);
+  } else if (stickAim.active) aim = Math.atan2(stickAim.x, stickAim.z);
   else if (pointerKnown) {
     ray.setFromCamera(pointer, camera);
     if (ray.ray.intersectPlane(aimPlane, aimPoint))
@@ -999,6 +1449,19 @@ function telemetry() {
       ? { ...game.boss, screen: screenPosition(game.boss.x, 0.4, game.boss.z) }
       : null,
     audio: { enabled: sound.enabled, state: sound.ctx?.state || "idle" },
+    firstPerson: isFPS(),
+    fpsTime: game.fpsTime,
+    fpsYaw,
+    fpsPitch,
+    pointerLocked: !!document.pointerLockElement,
+    runKind,
+    dailyDay: game.daily?.day,
+    dailyTicks: dailyLog.reduce((sum, row) => sum + row[0], 0),
+    visors: game.visors.map((v) => ({ ...v })),
+    wave: game.wave,
+    maxHp: game.player.maxHp,
+    shield: game.player.shield,
+    unlocked: progress.unlocked + 1,
   };
 }
 
@@ -1019,7 +1482,19 @@ function frame(now) {
   }
   const active =
     mode === "playing" && !paused && !building && game.state === "playing";
-  if (active) handleEvents(stepGame(game, readInput(), dt));
+  if (active) {
+    accumulator += dt;
+    while (accumulator >= TICK && game.state === "playing" && !building) {
+      const packed = packInput(readInput());
+      if (game.daily) recordInput(dailyLog, packed);
+      handleEvents(stepGame(game, unpackInput(packed), TICK));
+      accumulator -= TICK;
+    }
+  } else accumulator = 0;
+  if (wasFPS && !isFPS()) releaseLook();
+  wasFPS = isFPS();
+  ui.game.classList.toggle("first-person", isFPS());
+  ui.game.classList.toggle("visor-active", game.fpsTime > 0);
   sound.update(active, game.overtime, game.map.level.theme);
   if (mode === "playing" && !building) {
     if (!paused) updateModels(dt);
@@ -1030,6 +1505,7 @@ function frame(now) {
     }
     const pos = screenPosition(game.map.exit.x, 2.4, game.map.exit.z);
     const open =
+      !game.daily &&
       game.collected >= game.map.level.quota &&
       (!game.boss || game.boss.hp <= 0);
     ui["exit-label"].hidden = !open;
@@ -1070,7 +1546,22 @@ function frame(now) {
   if (clock > messageUntil) ui.message.classList.remove("show");
   ui["hit-flash"].classList.toggle("active", clock < damageUntil);
   updateCamera(dt);
-  renderer.render(scene, camera);
+  for (let i = floating.length - 1; i >= 0; i--) {
+    const f = floating[i],
+      age = clock - f.start;
+    if (age > 1.25) {
+      f.el.remove();
+      floating.splice(i, 1);
+      continue;
+    }
+    const pos = isFPS()
+      ? { x: innerWidth * 0.55, y: innerHeight * 0.61 }
+      : screenPosition(f.x, 0.85, f.z);
+    f.el.style.left = `${pos.x + age * (f.kind === "heart-pop" ? 25 : 6)}px`;
+    f.el.style.top = `${pos.y - age * 70}px`;
+    f.el.style.opacity = Math.min(1, (1.25 - age) * 3);
+  }
+  renderer.render(scene, activeCamera());
   telemetry();
 }
 
@@ -1083,6 +1574,8 @@ function resize() {
   camera.top = height / 2;
   camera.bottom = -height / 2;
   camera.updateProjectionMatrix();
+  fpsCamera.aspect = aspect;
+  fpsCamera.updateProjectionMatrix();
   renderer.setPixelRatio(Math.min(devicePixelRatio, portrait ? 1.5 : 2));
   renderer.setSize(innerWidth, innerHeight, false);
   updateCamera(1);
@@ -1131,11 +1624,47 @@ function bindStick(id, target, aiming) {
 
 function bindInput() {
   ui.start.onclick = () => start();
-  ui.retry.onclick = () => start();
-  ui["pause-retry"].onclick = () => start();
+  const retry = () =>
+    runKind === "daily"
+      ? startDaily()
+      : start(true, null, {
+          kind: runKind,
+          level: runKind === "practice" ? practiceLevel : 0,
+        });
+  ui.retry.onclick = retry;
+  ui["pause-retry"].onclick = retry;
   ui["back-menu"].onclick = menu;
   ui.pause.onclick = () => pause();
   ui.resume.onclick = () => pause(false);
+  ui["pause-menu"].onclick = menu;
+  ui["open-route"].onclick = ui["pause-route"].onclick = openRoute;
+  ui["route-close"].onclick = () => {
+    ui["route-screen"].hidden = true;
+  };
+  ui["practice-start"].onclick = () =>
+    start(true, null, { kind: "practice", level: selectedStage });
+  ui["open-daily"].onclick = () => {
+    ui["daily-screen"].hidden = false;
+    refreshBoard();
+  };
+  ui["daily-close"].onclick = () => {
+    ui["daily-screen"].hidden = true;
+  };
+  ui["refresh-board"].onclick = refreshBoard;
+  ui["daily-start"].onclick = startDaily;
+  ui["view-toggle"].onclick = toggleView;
+  ui["score-form"].onsubmit = submitScore;
+  ui["share-score"].onclick = async () => {
+    const result = `Hungry for Trouble · Daily Rush ${game.daily.day}\n${game.score.toLocaleString("en-US")} points · ${game.kills} takedowns · ${game.state === "won" ? "SURVIVED" : `${game.elapsed.toFixed(1)} seconds`}\nCan you clean up better? ${location.origin}${location.pathname}`;
+    try {
+      await navigator.clipboard.writeText(result);
+      ui["share-score"].textContent = "Copied! Challenge a friend.";
+    } catch {
+      ui["share-output"].value = result;
+      ui["share-output"].hidden = false;
+      ui["share-output"].select();
+    }
+  };
   ui.sound.onclick = () => {
     const enabled = sound.toggle();
     ui.sound.textContent = enabled ? "SOUND ON" : "SOUND OFF";
@@ -1145,13 +1674,19 @@ function bindInput() {
   for (const button of document.querySelectorAll("[data-upgrade]"))
     button.onclick = () => start(false, button.dataset.upgrade);
   addEventListener("keydown", (event) => {
+    if (["INPUT", "TEXTAREA"].includes(event.target.tagName)) return;
     if (
       ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(
         event.code,
       )
     )
       event.preventDefault();
-    if (event.code === "Escape" && !event.repeat) pause();
+    if (event.code === "Escape" && !event.repeat) {
+      if (!ui["route-screen"].hidden) ui["route-screen"].hidden = true;
+      else if (!ui["daily-screen"].hidden) ui["daily-screen"].hidden = true;
+      else pause();
+    }
+    if (event.code === "KeyV" && !event.repeat) toggleView();
     if (event.code === "Space" && !event.repeat) dashQueued = true;
     keys.add(event.code);
   });
@@ -1168,6 +1703,13 @@ function bindInput() {
   });
   ui.world.addEventListener("pointermove", (event) => {
     if (event.pointerType !== "mouse") return;
+    if (isFPS()) {
+      if (document.pointerLockElement === ui.world || pointerFire) {
+        fpsYaw -= event.movementX * 0.003;
+        fpsPitch = clamp(fpsPitch - event.movementY * 0.002, -0.45, 0.45);
+      }
+      return;
+    }
     pointer.set(
       (event.clientX / innerWidth) * 2 - 1,
       1 - (event.clientY / innerHeight) * 2,
@@ -1177,6 +1719,11 @@ function bindInput() {
   ui.world.addEventListener("pointerdown", (event) => {
     if (event.button === 0 && event.pointerType === "mouse") {
       pointerFire = true;
+      if (isFPS()) {
+        if (!document.pointerLockElement)
+          ui.world.requestPointerLock?.()?.catch(() => {});
+        return;
+      }
       pointerKnown = true;
       pointer.set(
         (event.clientX / innerWidth) * 2 - 1,
@@ -1187,6 +1734,10 @@ function bindInput() {
   });
   addEventListener("pointerup", () => {
     pointerFire = false;
+  });
+  document.addEventListener("pointerlockchange", () => {
+    if (!document.pointerLockElement && isFPS() && game.state === "playing")
+      pause(true);
   });
   ui.world.addEventListener("pointercancel", () => {
     pointerFire = false;
@@ -1215,6 +1766,13 @@ async function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x102c37);
   camera = new THREE.OrthographicCamera(-10, 10, 8, -8, 0.1, 100);
+  fpsCamera = new THREE.PerspectiveCamera(
+    76,
+    innerWidth / innerHeight,
+    0.035,
+    65,
+  );
+  scene.add(fpsCamera);
   keyLight = new THREE.DirectionalLight(0xffe2ac, 3.2);
   keyLight.position.set(5, 24, 14);
   keyLight.target.position.set(15, 0, 12);
@@ -1237,14 +1795,33 @@ async function init() {
   rim.position.set(0, 8, -15);
   scene.add(rim);
   const loaded = await Promise.all(
-    paths.map((name) => ASSET(`assets/${name}.js`)),
+    paths.map((name) =>
+      ASSET(
+        `assets/${name}.js`,
+        name === "floor" ? { keepHierarchy: true } : {},
+      ),
+    ),
   );
   prototypes = Object.fromEntries(paths.map((name, i) => [name, loaded[i]]));
+  const floorSize = prototypes.floor.userData.nativeSize;
+  const floorDecals = [];
+  prototypes.floor.traverse((node) => {
+    if (
+      node.isMesh &&
+      node.material.name === "metal" &&
+      node.material.color.getHex() === 0x203f49
+    )
+      floorDecals.push(node);
+  });
+  // Remove only the recipe tile's raised directional inlay; preserve its rim and grout.
+  for (const node of floorDecals) node.removeFromParent();
+  prototypes.floor = bakeStatic(prototypes.floor);
+  prototypes.floor.userData.nativeSize = floorSize;
   prototypes.floor.traverse((node) => {
     if (!node.isMesh) return;
     node.material = node.material.clone();
     if (node.material.color.getHex() === 0x203f49)
-      node.material.color.setHex(0xc4ccb0);
+      node.material.color.setHex(0xf5e9c9);
   });
   prototypes.snack.traverse((node) => {
     if (!node.isMesh) return;
@@ -1262,16 +1839,18 @@ async function init() {
     const record = JSON.parse(localStorage.getItem("hft-record-v1") || "null");
     if (record && Number.isFinite(record.score)) {
       best = record.score;
-      bestFloor = clamp(record.floor || 1, 1, 5);
-      ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${bestFloor}/5`;
+      bestFloor = clamp(record.floor || 1, 1, LEVELS.length);
+      ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${bestFloor}/${LEVELS.length}`;
     }
+    ui["score-name"].value = localStorage.getItem("hft-alias") || "";
   } catch {
     /* A disabled or damaged local score must not prevent play. */
   }
   bindInput();
   resize();
   ui.start.disabled = false;
-  ui.start.innerHTML = "START THE NIGHT SHIFT <span>↗</span>";
+  ui["open-route"].disabled = ui["open-daily"].disabled = false;
+  ui.start.innerHTML = "START THE NIGHT SHIFT <span>▶</span>";
   window.__READY__ = true;
   window.__START__ = () => start();
   requestAnimationFrame(frame);
