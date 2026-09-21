@@ -1,0 +1,8 @@
+{
+  "result": "PASS",
+  "score_survives_restart": true,
+  "backup_decompresses_to_expected_score": true,
+  "test_rows_removed": 1,
+  "service_recovered": true,
+  "clean_backup_created": true
+}
