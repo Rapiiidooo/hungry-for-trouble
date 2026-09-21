@@ -19,6 +19,8 @@ The user rejected the previous acid-green and petrol palette as generic and AI-s
 
 The employee badge uses a bottom rule, not a coloured left stripe. Campaign presentation keeps the basement secret until the Director rescue; first-time players see a ten-floor rescue mission. Story beats that explain a new objective must be readable before controls resume, rather than relying only on radio during combat.
 
+The locked wing stays hidden until the floor-20 escape. Its keys use muted red, green, blue and yellow enamel as functional lock codes, paired with triangle, diamond, circle and square symbols. This green is a key identifier, not a new menu theme. Keep the key ring compact below the minimap and absent on earlier floors. Keys are original 2D ticket sprites; doors reuse the selected freezer geometry and sink smoothly when unlocked. Reduced motion opens them immediately. Seeded rooms form doglegs, frozen branches, a cross and an outer circuit around a central vault.
+
 HUD damage uses brighter salmon `#ff8065` and shield feedback uses pale blue `#a4c0e0`, both readable against the dark HUD. White text and tomato buttons retain readable contrast. Concrete blue-grey floors and blue freezer aisles give the departments distinct moods. The user also rejected the cream treatment in the later theme review; neutral enamel white supersedes it.
 
 Verified asset modules and their original generation references retain their historical colours. `recolorEnamel()` in `game/main.js` maps their cached materials into this palette during assembly, before actor baking. Apply it to future scenery and articulated actors too; do not rewrite historical receipts. Native SVG upgrade illustrations use the same enamel colours.
@@ -85,4 +87,4 @@ For the contest build, the user chose to acknowledge inspirational mechanics onl
 
 The warranty is a translucent pale-blue hemisphere with an orbiting arc and a single impact flare, tied to actual charges. Boss health follows its world position in overhead and first person. Orange landing rings fill before lobbed impacts. A shockwave's visible opening must match its safe sector. Camera transit uses a short lift and easing, with no roll and a reduced-motion alternative.
 
-The final checkout stages a crew escape, character banter and a sunrise, then rewards the golden vacuum livery. The livery changes appearance only and retains the red trim. The favicon is an original compact vacuum silhouette. The employee badge keeps its bottom rule.
+The floor-20 checkout stages a crew escape, character banter and a sunrise, then rewards the golden vacuum livery and reveals the locked wing. The floor-25 finale confirms that the last backup is erased. The livery changes appearance only and retains the red trim. The favicon is an original compact vacuum silhouette. The employee badge keeps its bottom rule.

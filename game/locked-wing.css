@@ -1,0 +1,146 @@
+#key-ring {
+  position: absolute;
+  top: 220px;
+  right: 28px;
+  width: 126px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  pointer-events: none;
+}
+.key-slot {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 5px;
+  color: #9eabbc;
+  background: #18283cf0;
+  border-bottom: 2px solid #738197;
+  font: 800 7px var(--sans);
+}
+.key-slot svg {
+  width: 25px;
+  height: 20px;
+  opacity: 0.3;
+}
+.key-slot.held {
+  border-color: var(--key-color);
+  color: #f0f2f3;
+}
+.key-slot.held svg {
+  opacity: 1;
+}
+.key-slot.next {
+  border-style: dashed;
+  border-color: var(--key-color);
+}
+#vault-discovery {
+  align-items: safe center;
+}
+.vault-panel {
+  width: 680px;
+  max-width: 100%;
+}
+.vault-panel h2 {
+  font-size: clamp(36px, 6vw, 60px);
+  margin: 15px 0;
+}
+.vault-panel .story-card {
+  border-left: 0;
+  border-bottom: 3px solid #6c8fb8;
+}
+.vault-panel .story-card p {
+  margin: 0;
+  font-size: 14px;
+}
+.vault-keys {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 22px 0;
+}
+.vault-keys > span {
+  width: 90px;
+  padding: 9px;
+  background: #263650;
+  color: #f0f2f3;
+}
+.vault-keys svg {
+  display: block;
+  width: 55px;
+  height: 42px;
+  margin: auto;
+}
+.vault-keys b {
+  font: 800 9px var(--sans);
+}
+.vault-reward {
+  font-size: 10px;
+  color: #526073;
+  font-weight: 800;
+}
+.route-map .route-node[data-floor="25"] {
+  background: #263650;
+  color: #f0f2f3;
+  border-color: #efb546;
+}
+.route-map .route-node[data-floor="25"] small,
+.route-map .route-node[data-floor="25"] .node-number {
+  color: #ffe094;
+}
+@media (max-width: 700px) {
+  #key-ring {
+    top: 213px;
+    right: 12px;
+    width: 72px;
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+  .key-slot {
+    padding: 1px 4px;
+    font-size: 6px;
+  }
+  .key-slot svg {
+    width: 22px;
+    height: 17px;
+  }
+  .vault-panel {
+    padding: 22px 17px;
+  }
+  .vault-panel .story-card p {
+    font-size: 12px;
+  }
+  .vault-keys {
+    gap: 5px;
+    margin: 14px 0;
+  }
+  .vault-keys > span {
+    padding: 6px;
+    width: 65px;
+  }
+  .vault-keys svg {
+    width: 44px;
+    height: 34px;
+  }
+}
+@media (max-height: 560px) and (orientation: landscape) {
+  #key-ring {
+    top: 151px;
+    right: 24px;
+    width: 90px;
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .key-slot {
+    padding: 1px 4px;
+  }
+  .key-slot svg {
+    height: 16px;
+  }
+  .vault-panel {
+    padding: 20px;
+  }
+  .vault-panel h2 {
+    font-size: 34px;
+  }
+}

@@ -32,8 +32,8 @@ function quiet(index = 0) {
   return g;
 }
 
-test("twenty floors introduce new rules and preserve the act-one clear", () => {
-  assert.equal(LEVELS.length, 20);
+test("the twenty-floor rescue introduces new rules and preserves the act-one clear", () => {
+  assert.ok(LEVELS.length >= 20);
   const kinds = new Set();
   for (let i = 10; i < 20; i++) {
     const map = layoutFor(i);

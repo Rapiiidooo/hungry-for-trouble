@@ -1,0 +1,15 @@
+{
+  "fixture": "Only local route unlocks are preloaded. Gameplay uses real keyboard, pointer and touch input with read-only telemetry.",
+  "checks": [
+    "Routes reveal 10, then 20, then 25 floors; an existing floor-20 win unlocks 21 only",
+    "Key briefing freezes gameplay and starts with three hearts and ten shots",
+    "A real finger moves toward the red lock; the missing key blocks entry and names its color",
+    "Collecting the key fills its HUD slot; real touch opens and crosses the door without consuming it",
+    "Restart resets the key and door state",
+    "The four-key inventory and expanded route fit portrait, landscape and desktop without overlapping the map"
+  ],
+  "errors": [],
+  "peakDraws": 355,
+  "peakTriangles": 309740,
+  "result": "PASS"
+}

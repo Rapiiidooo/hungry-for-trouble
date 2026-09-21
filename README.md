@@ -1,6 +1,6 @@
 # Hungry for Trouble
 
-SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must rescue MOP-3, free the basement crew and unplug the store AI across twenty floors. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
+SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must rescue MOP-3, free the basement crew and unplug the store AI across twenty-five floors. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
 
 ## Play locally
 
@@ -44,8 +44,15 @@ Dash gives a short protected burst in your movement direction, or your aim direc
 18. **Dead Air:** long-range snipers lock their aim before firing fast receipts across a radio network.
 19. **Final Final Notice:** shutters, vents and the new enemies guard the last detour.
 20. **Shelf Destruction:** SHELF CONTROL alternates a cross of lobbed explosives with expanding shockwaves. Find the visible gap or dash through, then escape with the crew.
+21. **Key Cardio:** a red triangle key opens the first locked passage into the backup wing.
+22. **Key Exchange:** red and green keys open several matching doors, creating useful return routes.
+23. **Blue Detour:** frozen branches hide three keys; blue circle locks guard the northern exit.
+24. **Four On The Floor:** four coloured keys, steam traps and a transport shortcut connect a cross-shaped vault.
+25. **The Locksmith:** open four locks around the perimeter, enter the central vault and destroy the last backup. Rotating receipt fans alternate with staggered artillery and shockwaves.
 
 After the familiar first aisle, eighteen floors use seeded cover and supplies inside distinct silhouettes: rings, a clover, a crescent, joined islands, a figure eight and a spiral, with different boss arenas. Objectives remain reachable. New players see ten floors and two bosses. The first Director checkout rolls the credits, interrupted by the cleaning crew, and ends with **Made by Rapido**. **The adventure continues** then introduces the hidden service lift and a conversation that waits for the player before adding ten floors to the route. Each real clear is saved. Existing Director clears unlock floor 11. Level Select can start any reached aisle with three hearts, ten shots and no upgrades. That run keeps its three-heart baseline as you progress; heart upgrades add slots normally. Full campaign personal records remain separate from practice.
+
+After floor 20, the crew escape and golden vacuum reward lead to **The Locked Wing**. Five further floors appear only then, including for existing saves that already cleared the core. A short frozen briefing introduces the first key. Collect a key, then approach a matching door to open it automatically. Keys stay with you for that aisle and reset on restart or the next floor. Red triangles, green diamonds, blue circles and yellow squares appear on the pickups, doors, map and compact key ring. Closed doors block movement and shots. Explore the branches, collect every key and the crumb quota, then reach checkout; the final vault also requires defeating the Locksmith. Every key is reachable before its own lock, and transport pads cannot bypass the order.
 
 Act-two stock is interactive: dash into or shoot a yellow stock cart to launch it at enemies. Shoot a flour display to interrupt and blind nearby enemies for three seconds. Transport pads use matching A/B labels and colours; step off the destination before returning. A 720 ms camera transit and arrival pulse connect the pads visually; arrivals grant brief protection. Reduced motion uses a short dissolve.
 
@@ -87,6 +94,9 @@ node scripts/playthrough.mjs --daily
 node scripts/arcade-playtest.mjs
 node scripts/feel-playtest.mjs
 node scripts/act-two-playtest.mjs
+node scripts/locked-wing-playtest.mjs
+node scripts/locked-wing-ending-playtest.mjs
+node scripts/playthrough.mjs --from=21 --out=locked-wing
 node scripts/presentation-playtest.mjs
 node scripts/onboarding-playtest.mjs
 node scripts/leaderboard-playtest.mjs
@@ -96,10 +106,10 @@ node scripts/multiplayer-playtest.mjs
 node scripts/multiplayer-playtest.mjs --coop
 ```
 
-The simulation tests use Node's built-in test runner. The shipping and browser checks use the adjacent official `404-game-recipe` checkout; browser scripts expect local Google Chrome on macOS. Browser checks require the development server. `playthrough.mjs` finishes the campaign using real keyboard and pointer events with read-only telemetry. `touch-playtest.mjs` checks simultaneous movement, firing and dash, release, cancellation, pause and rotation.
+The simulation tests use Node's built-in test runner. The shipping and browser checks use the adjacent official `404-game-recipe` checkout; browser scripts expect local Google Chrome on macOS. Browser checks require the development server. `playthrough.mjs` attempts the campaign using real keyboard and pointer events with read-only telemetry; `--from` selects an unlocked practice floor and `--through` limits the last checkout to test. `locked-wing-ending-playtest.mjs` is an isolated presentation fixture, not a combat playthrough. `touch-playtest.mjs` checks simultaneous movement, firing and dash, release, cancellation, pause and rotation.
 
 The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits). The owner permits their workspace-catalog publication only after actual contest submission, so that download method is deferred and they are not yet used at runtime.
 
-The latest build passes 41 Node checks, the official 39-module shipping check and real desktop/phone navigation probes. [Leaderboard and credits evidence](receipts/verification-leaderboards/README.md) covers verified shared campaign scores, both boards, local reset, aligned menus, the staff roll and an actual Director victory followed by credits and aisle 11. [Onboarding evidence](receipts/verification-onboarding/README.md) covers briefing timing, initial ammunition and basic-gear restarts. The official local phone/4G gate passes for gameplay commit `d3cdd7a964fa2d48fc562b10248b1441d01ddba3`: 5.6-second readiness, 2.7 MB, real touch movement and no errors. Its [unedited verdict](receipts/verification-leaderboards/jam/verdict.txt) covers the opening aisle on Chrome phone emulation; a live-URL submission gate remains outstanding. Earlier campaign, finale and multiplayer evidence remains in [the preceding receipts](receipts/verification-reveal/README.md).
+The locked-wing build passes 48 Node checks, including 1,000 new seeded layouts and preservation of existing General scores under the new campaign replay version. [Locked-wing evidence](receipts/verification-locked-wing/README.md) records the new browser checks and their precise scope. [Leaderboard and credits evidence](receipts/verification-leaderboards/README.md) covers verified shared campaign scores, both boards, local reset, aligned menus, the staff roll and an actual Director victory followed by credits and aisle 11. [Onboarding evidence](receipts/verification-onboarding/README.md) covers briefing timing, initial ammunition and basic-gear restarts. Earlier campaign, finale and multiplayer evidence remains in [the preceding receipts](receipts/verification-reveal/README.md). A live-URL submission gate remains outstanding.
 
 For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. Hosting and contest submission have not been performed.

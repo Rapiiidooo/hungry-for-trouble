@@ -91,6 +91,15 @@ export class Sound {
   }
 
   effect(type, count = 1) {
+    if (type === "key-found") {
+      for (const [i, frequency] of [523, 784, 1046].entries())
+        this.note(frequency, 0.23, 0.15, "triangle", frequency, i * 0.09);
+    }
+    if (type === "door-open") {
+      this.noise(0.18, 0.11, 700);
+      this.note(160, 0.35, 0.1, "triangle", 440);
+    }
+    if (type === "door-locked") this.note(110, 0.09, 0.09, "square", 75);
     if (type === "escape") {
       for (const [i, interval] of [
         0, 4, 7, 12, 9, 7, 4, 7, 12, 16, 19, 24,

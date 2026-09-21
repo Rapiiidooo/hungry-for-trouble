@@ -1,6 +1,14 @@
 export const SPEAKERS = {
-  mop: { name: "MOP-3", role: "MAINTENANCE / YOUR FRIEND", color: "#81acd7" },
-  buff: { name: "BUFF-0", role: "BASEMENT / VERY CONCERNED", color: "#efb546" },
+  mop: {
+    name: "MOP-3",
+    role: "MAINTENANCE / YOUR FRIEND",
+    color: "#81acd7",
+  },
+  buff: {
+    name: "BUFF-0",
+    role: "BASEMENT / VERY CONCERNED",
+    color: "#efb546",
+  },
   shelf: {
     name: "SHELF CONTROL",
     role: "MANAGEMENT / UNINVITED",
@@ -90,6 +98,26 @@ export const RADIO = [
   [
     "buff",
     "That's SHELF CONTROL. Explosive parcels AND shockwaves. Dash through a wave or find its gap!",
+  ],
+  [
+    "mop",
+    "A backup in the locked wing? Of course. Grab the red triangle key, then walk up to its matching door.",
+  ],
+  [
+    "buff",
+    "Keep the red key! It opens every red lock here. Green diamonds protect the next section.",
+  ],
+  [
+    "mop",
+    "Blue circles point north. Grab each key, then come back to the junction. Try braking before the locks.",
+  ],
+  [
+    "buff",
+    "Four colors, four symbols. The yellow square opens the vault route. The transport pads help with the return trip.",
+  ],
+  [
+    "shelf",
+    "My backup has a Locksmith. You have a key ring and a questionable attitude. This feels unfair.",
   ],
 ].map(([speaker, text]) => ({ speaker, text }));
 export const MISSION =

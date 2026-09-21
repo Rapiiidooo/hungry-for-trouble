@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="./campaign.css" />
     <link rel="stylesheet" href="./presentation.css" />
     <link rel="stylesheet" href="./credits.css" />
+    <link rel="stylesheet" href="./locked-wing.css" />
     <script type="importmap">
       {
         "imports": {
@@ -108,7 +109,8 @@
             <small id="route-count">10 AISLES · 2 BOSSES</small>
           </button>
           <button id="open-daily" disabled>
-            <span>◷</span> DAILY RUSH <small>90 SECONDS · WORLD SCORES</small>
+            <span>◷</span> DAILY RUSH
+            <small>90 SECONDS · WORLD SCORES</small>
           </button>
           <button id="open-rooms" class="room-entry" disabled>
             <span>2P · MULTIPLAYER</span><small>CO-OP & VERSUS</small>
@@ -225,6 +227,7 @@
           </div>
         </aside>
         <div id="run-badge"></div>
+        <div id="key-ring" hidden aria-label="Keys for this aisle"></div>
         <div id="dash-lesson" hidden>
           <b>DASH TO DODGE INCOMING HITS</b
           ><span>Move + Space, or tap DODGE. Blue means protected.</span>
@@ -267,6 +270,36 @@
           </p>
           <button id="discovery-continue" class="primary">
             NOBODY LEFT BEHIND <span>↓</span>
+          </button>
+        </div>
+      </section>
+      <section
+        id="vault-discovery"
+        class="overlay"
+        hidden
+        aria-labelledby="vault-title"
+      >
+        <div class="panel vault-panel">
+          <div class="eyebrow">SHELF CONTROL DEFEATED · NEW CHAPTER</div>
+          <h2 id="vault-title">One last<br /><em>locked door.</em></h2>
+          <aside id="vault-mop" class="story-card"></aside>
+          <div
+            id="vault-keys"
+            class="vault-keys"
+            aria-label="Red triangle, green diamond, blue circle and yellow square keys"
+          ></div>
+          <p>
+            Collect keys, then approach matching locks. Keys stay with you for
+            the whole aisle.
+          </p>
+          <p class="vault-reward">
+            GOLD VACUUM UNLOCKED · AISLE 21 IS NOW IN LEVEL SELECT
+          </p>
+          <button id="vault-continue" class="primary">
+            ENTER THE LOCKED WING <span>▶</span>
+          </button>
+          <button id="vault-menu" class="text-button">
+            MAIN MENU · KEEP UNLOCKED AISLES
           </button>
         </div>
       </section>

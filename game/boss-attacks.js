@@ -23,11 +23,19 @@ export function updateBoss(game, dt, { hurt, canStand, launchHazard }) {
   if (boss.hp <= 0) {
     game.lobs = [];
     game.waves = [];
-    if (boss.kind === "core") {
+    if (["core", "locksmith"].includes(boss.kind)) {
       game.hazards = [];
       game.mines = [];
       for (const enemy of game.enemies) enemy.respawn = 999;
     }
+    return;
+  }
+  // The Locksmith stays asleep until the player opens the final vault door.
+  if (
+    boss.kind === "locksmith" &&
+    game.doors.some((door) => door.color === "yellow" && !door.open)
+  ) {
+    boss.exposed = false;
     return;
   }
   boss.hit = Math.max(0, boss.hit - dt);
@@ -39,7 +47,7 @@ export function updateBoss(game, dt, { hurt, canStand, launchHazard }) {
   const aim = Math.atan2(p.x - boss.x, p.z - boss.z);
   if (boss.director && boss.special <= 0) {
     boss.attack = (boss.attack || 0) + 1;
-    if (boss.kind === "core" && boss.attack % 2 === 0) {
+    if (["core", "locksmith"].includes(boss.kind) && boss.attack % 2 === 0) {
       game.waves.push({
         x: boss.x,
         z: boss.z,
@@ -52,7 +60,7 @@ export function updateBoss(game, dt, { hurt, canStand, launchHazard }) {
       game.events.push({ type: "pulse-warning", x: boss.x, z: boss.z });
     } else {
       lob(game, p, 1.55, boss.kind === "director" ? 1.55 : 1.8, canStand);
-      if (boss.kind === "foreman")
+      if (["foreman", "locksmith"].includes(boss.kind))
         for (const side of [-1, 1])
           lob(
             game,
@@ -92,6 +100,12 @@ export function updateBoss(game, dt, { hurt, canStand, launchHazard }) {
     if (boss.kind === "director") {
       angles = [-0.45, -0.22, 0, 0.22, 0.45].map((offset) => aim + offset);
       boss.fire = enraged ? 0.8 : 1.1;
+    } else if (boss.kind === "locksmith") {
+      // Two rotating fans leave clear escape lanes between the bursts.
+      angles = [-0.22, 0, 0.22, Math.PI - 0.22, Math.PI, Math.PI + 0.22].map(
+        (offset) => boss.phase * 0.55 + offset,
+      );
+      boss.fire = enraged ? 0.9 : 1.25;
     } else if (boss.kind === "foreman") {
       angles = [-0.18, 0, 0.18].map((offset) => aim + offset);
       boss.fire = enraged ? 1 : 1.4;

@@ -2,6 +2,7 @@ import { DEFAULT_SEED } from "./floorplans.js";
 import { CELL, LEVELS, layoutFor } from "./levels.js";
 import { updateMachines, hitStock, addMine } from "./machines.js";
 import { updateBoss } from "./boss-attacks.js";
+import { lockedDoorAt, updateLocks } from "./locks.js";
 
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const length = (x, z) => Math.hypot(x, z);
@@ -84,15 +85,20 @@ export function newGame(levelIndex = 0, carry = {}) {
     boss: map.boss
       ? {
           ...map.boss,
-          hp: { 9: 300, 14: 320, 19: 420 }[levelIndex] || 180,
-          maxHp: { 9: 300, 14: 320, 19: 420 }[levelIndex] || 180,
+          hp:
+            map.level.bossHp || { 9: 300, 14: 320, 19: 420 }[levelIndex] || 180,
+          maxHp:
+            map.level.bossHp || { 9: 300, 14: 320, 19: 420 }[levelIndex] || 180,
           director: levelIndex >= 9,
           kind:
             map.level.bossKind || (levelIndex === 9 ? "director" : "manager"),
           name:
-            { foreman: "THE FOREMAN", core: "SHELF CONTROL" }[
-              map.level.bossKind
-            ] || (levelIndex === 9 ? "THE DIRECTOR" : "THE MANAGER"),
+            {
+              foreman: "THE FOREMAN",
+              core: "SHELF CONTROL",
+              locksmith: "THE LOCKSMITH",
+            }[map.level.bossKind] ||
+            (levelIndex === 9 ? "THE DIRECTOR" : "THE MANAGER"),
           special: 4,
           phase: 0,
           fire: 1.5,
@@ -111,6 +117,10 @@ export function newGame(levelIndex = 0, carry = {}) {
     lobs: [],
     waves: [],
     stock: map.stock,
+    keycards: map.keycards,
+    keyring: [],
+    doors: map.doors,
+    lockHintCooldown: 0,
     collected: 0,
     score: carry.score || 0,
     ammo: carry.ammo ?? (levelIndex === 0 ? 10 : 24),
@@ -158,7 +168,8 @@ export function solid(game, col, row) {
     !game.map.level.map[row] ||
     game.map.level.map[row][col] === undefined ||
     ["#", " "].includes(game.map.level.map[row][col]) ||
-    gateClosed(game, col, row)
+    gateClosed(game, col, row) ||
+    !!lockedDoorAt(game, col, row)
   );
 }
 
@@ -376,6 +387,7 @@ export function stepGame(game, input, dt) {
   p.vx += (ix * speed - p.vx) * (p.dash > 0 ? 1 : Math.min(1, dt * grip));
   p.vz += (iz * speed - p.vz) * (p.dash > 0 ? 1 : Math.min(1, dt * grip));
   move(game, p, p.vx * dt, p.vz * dt);
+  updateLocks(game, dt, lineOfSight);
   const belt = game.map.belts.find(
     (b) => Math.abs(p.x - b.x) < 1 && Math.abs(p.z - b.z) < 0.85,
   );
@@ -715,7 +727,11 @@ export function stepGame(game, input, dt) {
       hazard.z += (hazard.vz * dt) / steps;
       if (!canStand(game, hazard.x, hazard.z, 0.15)) {
         hazard.life = 0;
-        game.events.push({ type: "receipt-impact", x: hazard.x, z: hazard.z });
+        game.events.push({
+          type: "receipt-impact",
+          x: hazard.x,
+          z: hazard.z,
+        });
         break;
       }
       if (distance(hazard, p) < 0.48) {
@@ -728,8 +744,7 @@ export function stepGame(game, input, dt) {
   if (
     game.state === "playing" &&
     !game.daily &&
-    game.collected >= game.map.level.quota &&
-    (!game.boss || game.boss.hp === 0) &&
+    checkoutReady(game) &&
     distance(p, game.map.exit) < 1
   ) {
     game.score += Math.round(game.time * 10);
@@ -739,6 +754,14 @@ export function stepGame(game, input, dt) {
   return game.events;
 }
 
+export function checkoutReady(game) {
+  return (
+    game.collected >= game.map.level.quota &&
+    (!game.boss || game.boss.hp <= 0) &&
+    game.keycards.every((card) => card.collected)
+  );
+}
+
 export function nextLevel(game, upgrade) {
   if (
     game.state !== "cleared" ||
@@ -746,7 +769,10 @@ export function nextLevel(game, upgrade) {
     game.upgrades[upgrade] >= UPGRADE_LIMITS[upgrade]
   )
     return null;
-  const upgrades = { ...game.upgrades, [upgrade]: game.upgrades[upgrade] + 1 };
+  const upgrades = {
+    ...game.upgrades,
+    [upgrade]: game.upgrades[upgrade] + 1,
+  };
   return newGame(game.levelIndex + 1, {
     baseHp: game.baseHp,
     hp: game.player.hp + (upgrade === "heart" ? 1 : 0),

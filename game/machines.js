@@ -1,13 +1,20 @@
 // Deterministic machinery state is shared by the client and daily replay verifier.
 const gap = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 export function ventPhase(game, vent) {
-  if (game.boss?.kind === "core" && game.boss.hp <= 0) return "safe";
+  if (["core", "locksmith"].includes(game.boss?.kind) && game.boss.hp <= 0)
+    return "safe";
   const phase = (game.elapsed + vent.phase) % 5.6;
   return phase < 3.4 ? "safe" : phase < 4.6 ? "warning" : "active";
 }
 export function addMine(game, point, delay = 1.4) {
   if (game.mines.length >= 20) return;
-  game.mines.push({ x: point.x, z: point.z, arm: delay, life: 9, blast: 0 });
+  game.mines.push({
+    x: point.x,
+    z: point.z,
+    arm: delay,
+    life: 9,
+    blast: 0,
+  });
   game.events.push({ type: "mine-warning", x: point.x, z: point.z });
 }
 export function hitStock(game, item, vx, vz, damage = 1) {
@@ -126,7 +133,11 @@ export function updateMachines(game, dt, { move, canStand, hurt, killEnemy }) {
     ) {
       item.hits.push("boss");
       game.boss.hp = Math.max(0, game.boss.hp - 12);
-      game.events.push({ type: "stock-hit", x: game.boss.x, z: game.boss.z });
+      game.events.push({
+        type: "stock-hit",
+        x: game.boss.x,
+        z: game.boss.z,
+      });
       if (game.boss.hp === 0) {
         game.score += 2500;
         game.events.push({ type: "boss-down" });

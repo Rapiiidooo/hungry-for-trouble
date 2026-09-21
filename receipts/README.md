@@ -2,7 +2,7 @@
 
 ## Intent
 
-The user requested the next original maze-chase/shooter game after rejecting the previous game's contract-heavy progression and similar-feeling districts. This build prioritizes the action loop before menus and progression. The initial checkpoint is commit `986b0b5`. Sections below preserve successive historical checkpoints; the current twenty-floor expansion is documented in [verification-act-two/README.md](verification-act-two/README.md).
+The user requested the next original maze-chase/shooter game after rejecting the previous game's contract-heavy progression and similar-feeling districts. This build prioritizes the action loop before menus and progression. The initial checkpoint is commit `986b0b5`. Sections below preserve successive historical checkpoints. The twenty-floor rescue is documented in [verification-act-two/README.md](verification-act-two/README.md); the subsequent five-floor key-and-lock chapter is in [verification-locked-wing/README.md](verification-locked-wing/README.md).
 
 ## Visual references
 

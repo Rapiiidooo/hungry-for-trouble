@@ -3,7 +3,11 @@ import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import path from "node:path";
 import { setImmediate } from "node:timers/promises";
 import { challengeFor, verifyReplay, RULESET } from "../game/daily.js";
-import { verifyCampaign, CAMPAIGN_RULESET } from "../game/campaign.js";
+import {
+  verifyCampaign,
+  CAMPAIGN_RULESET,
+  CAMPAIGN_BOARD,
+} from "../game/campaign.js";
 
 export async function createLeaderboard({ file, now = Date.now } = {}) {
   let boards = {};
@@ -17,7 +21,7 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
   let writes = Promise.resolve();
   const today = () => new Date(now()).toISOString().slice(0, 10);
   const dailyKey = (day) => `${RULESET}:${day}`;
-  const generalKey = `${CAMPAIGN_RULESET}:all`;
+  const generalKey = CAMPAIGN_BOARD;
   const rows = (key) =>
     (boards[key] || []).sort(
       (a, b) => b.score - a.score || a.ticks - b.ticks || a.created - b.created,
@@ -111,7 +115,9 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
       const limit = limits.get(ip) || { start: now(), count: 0 };
       limits.set(ip, limit);
       if (++limit.count > 30 || attempts.size >= 2000) {
-        send(res, 429, { error: "Too many attempts. Try again in a minute." });
+        send(res, 429, {
+          error: "Too many attempts. Try again in a minute.",
+        });
         return true;
       }
       let player = /(?:^|;\s*)hft_player=([a-f0-9-]{36})(?:;|$)/.exec(

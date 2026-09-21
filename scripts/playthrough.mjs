@@ -11,10 +11,19 @@ const creditsOnly = process.argv.includes("--credits");
 const fromFloor = Math.max(
   1,
   Math.min(
-    20,
+    25,
     Number(
       process.argv.find((arg) => arg.startsWith("--from="))?.split("=")[1],
     ) || 1,
+  ),
+);
+const throughFloor = Math.max(
+  fromFloor,
+  Math.min(
+    25,
+    Number(
+      process.argv.find((arg) => arg.startsWith("--through="))?.split("=")[1],
+    ) || 25,
   ),
 );
 const outName = process.argv
@@ -88,6 +97,13 @@ function routes(g) {
       if (
         !g.map[next[1]]?.[next[0]] ||
         ["#", " ", "P"].includes(g.map[next[1]][next[0]]) ||
+        g.doors.some(
+          (door) =>
+            !door.open &&
+            door.col === next[0] &&
+            door.row === next[1] &&
+            !g.keyring.includes(door.color),
+        ) ||
         found.has(key)
       )
         continue;
@@ -106,24 +122,39 @@ function lineOfSight(g, target) {
   for (let i = 1; i < d * 5; i++) {
     const x = g.pos[0] + ((target.x - g.pos[0]) * i) / (d * 5);
     const z = g.pos[1] + ((target.z - g.pos[1]) * i) / (d * 5);
-    if (["#", " "].includes(g.map[Math.round(z / 2)]?.[Math.round(x / 2)]))
+    if (
+      ["#", " "].includes(g.map[Math.round(z / 2)]?.[Math.round(x / 2)]) ||
+      g.doors.some(
+        (door) =>
+          !door.open &&
+          door.col === Math.round(x / 2) &&
+          door.row === Math.round(z / 2),
+      )
+    )
       return false;
   }
   return true;
 }
 function choosePath(g) {
   const found = routes(g);
+  const inVaultFight =
+    g.boss?.kind === "locksmith" &&
+    g.boss.hp > 0 &&
+    g.doors.every((door) => door.open);
+  const usefulSupply = (supply) =>
+    !inVaultFight || distance([supply.x, supply.z], [g.boss.x, g.boss.z]) < 11;
   const pathFor = (point) =>
     found.get(point.map((n) => Math.round(n / 2)).join(","))?.path;
   if (
     g.runKind !== "daily" &&
     g.collected >= g.quota &&
+    g.keycards.every((card) => card.collected) &&
     (!g.boss || g.boss.hp <= 0)
   )
     return pathFor([g.exit.x, g.exit.z]) || [];
   if (g.hp <= 2) {
     const repairs = g.repairs
-      .filter((r) => !r.collected)
+      .filter((r) => !r.collected && usefulSupply(r))
       .map((r) => pathFor([r.x, r.z]))
       .filter((p) => p?.length)
       .sort((a, b) => a.length - b.length);
@@ -133,11 +164,18 @@ function choosePath(g) {
     const visor = g.visors.find((v) => !v.collected);
     return pathFor([visor.x, visor.z]) || [];
   }
+  const key = g.keycards.find(
+    (card) => !card.collected && pathFor([card.x, card.z]),
+  );
+  if (key)
+    return pathFor([key.x, key.z]).length
+      ? pathFor([key.x, key.z])
+      : [[key.x, key.z]];
   const candidates = g.crumbs
     .map((point) => ({ point, path: pathFor(point) }))
     .filter((c) => c.path);
   const batteries = g.batteries
-    .filter((b) => !b.collected)
+    .filter((b) => !b.collected && usefulSupply(b))
     .map((b) => ({ point: [b.x, b.z], path: pathFor([b.x, b.z]) }))
     .filter((c) => c.path);
   const nearestBattery = batteries.sort(
@@ -146,12 +184,17 @@ function choosePath(g) {
   if (
     g.overtime < 0.5 &&
     nearestBattery &&
-    (nearestBattery.path.length <= 7 || g.boss?.hp > 0)
+    (nearestBattery.path.length <= 7 ||
+      (g.boss?.hp > 0 && g.keycards.every((card) => card.collected)))
   )
     return nearestBattery.path.length
       ? nearestBattery.path
       : [nearestBattery.point];
-  if (g.boss?.hp > 0 && g.collected >= g.quota) {
+  if (
+    g.boss?.hp > 0 &&
+    g.collected >= g.quota &&
+    g.keycards.every((card) => card.collected)
+  ) {
     const targets = [
       [g.boss.x - 6, g.boss.z],
       [g.boss.x + 6, g.boss.z],
@@ -180,7 +223,10 @@ try {
       if (localStorage.getItem("hft-route-v1")) return;
       localStorage.setItem(
         "hft-route-v1",
-        JSON.stringify({ unlocked: floor - 1, cleared: [] }),
+        JSON.stringify({
+          unlocked: floor - 1,
+          cleared: floor > 20 ? [19] : [],
+        }),
       );
     }, fromFloor);
   page.on("pageerror", (e) => report.errors.push(e.stack));
@@ -350,7 +396,11 @@ try {
           const points = await page.evaluate(() =>
             ["move-stick", "aim-stick"].map((id, i) => {
               const r = document.getElementById(id).getBoundingClientRect();
-              return { id: i + 1, x: r.x + r.width / 2, y: r.y + r.height / 2 };
+              return {
+                id: i + 1,
+                x: r.x + r.width / 2,
+                y: r.y + r.height / 2,
+              };
             }),
           );
           const beforeTouch = await read();
@@ -485,6 +535,26 @@ try {
           "Director rescue reveals the basement while gameplay waits for the reader",
         );
       }
+      if (g.floor === 20) {
+        await page.waitForSelector("#cinema", { visible: true });
+        await page.waitForFunction(() => window.__GAME__.endingTime >= 3.5);
+        await page.screenshot({
+          path: new URL("crew-escape.png", output).pathname,
+        });
+        await page.waitForSelector("#vault-discovery", { visible: true });
+        const discovery = await read();
+        assert.equal(discovery.visibleFloors, 25);
+        assert.equal(discovery.goldEnabled, true);
+        await sleep(500);
+        assert.equal((await read()).elapsed, discovery.elapsed);
+        await page.screenshot({
+          path: new URL("locked-wing-discovered.png", output).pathname,
+        });
+        await page.click("#vault-continue");
+        report.checks.push(
+          "Core checkout keeps the crew escape and gold reward, then reveals five locked floors and waits for the reader",
+        );
+      }
       await page.waitForSelector("#upgrade-screen", { visible: true });
       const choices = await page.$$eval("#upgrade-options button", (buttons) =>
         buttons.map((b) => b.dataset.upgrade),
@@ -513,6 +583,7 @@ try {
       previous = null;
       lastFloor = g.floor + 1;
       if (creditsOnly && g.floor === 10) break;
+      if (g.floor === throughFloor) break;
       continue;
     }
     if (g.overtime > 0) sawOvertime = true;
@@ -587,9 +658,7 @@ try {
       )
       .sort(
         (a, b) =>
-          (g.boss?.hp < 40
-            ? Number(b === g.boss) - Number(a === g.boss)
-            : 0) ||
+          (g.boss?.hp < 40 ? Number(b === g.boss) - Number(a === g.boss) : 0) ||
           distance(g.pos, [a.x, a.z]) - distance(g.pos, [b.x, b.z]),
       )[0];
     if (target) await page.mouse.move(target.screen.x, target.screen.y);
@@ -605,6 +674,8 @@ try {
         kills: g.kills,
         overtime: +g.overtime.toFixed(1),
         boss: g.boss?.hp,
+        keys: g.keyring,
+        doors: g.doors.filter((door) => door.open).length,
         fps: g.fps,
         draws: g.draws,
       };
@@ -624,6 +695,13 @@ try {
     assert.ok(Object.values(end.upgrades).some((level) => level > 0));
     report.checks.push(
       "Discovery preserves the earned upgrade and continues into aisle 11 with the twenty-floor route unlocked",
+    );
+  } else if (throughFloor < 25 && !fpsOnly && !dailyOnly) {
+    assert.equal(end.floor, throughFloor + 1);
+    assert.equal(end.state, "playing");
+    assert.equal(report.floors.length, throughFloor - fromFloor + 1);
+    report.checks.push(
+      `Floors ${fromFloor} through ${throughFloor} cleared with real inputs; entered aisle ${end.floor}`,
     );
   } else if (dailyOnly) {
     assert.equal(end.state, "won");
@@ -649,29 +727,29 @@ try {
       "won",
       "Campaign must end through its real checkout",
     );
-    assert.equal(report.floors.length, 21 - fromFloor);
+    assert.equal(report.floors.length, 26 - fromFloor);
     assert.ok(sawOvertime);
     assert.ok(report.floors.some((f) => f.kills > 0));
     report.checks.push(
-      `Floors ${fromFloor} to 20 cleared through actual movement and firing`,
+      `Floors ${fromFloor} to 25 cleared through actual movement and firing`,
       "Overtime collected through movement",
       "Shots defeat pursuing enemies",
-      ...(fromFloor < 20 ? ["Between-floor upgrades change the arsenal"] : []),
+      ...(fromFloor < 25 ? ["Between-floor upgrades change the arsenal"] : []),
       "Final boss defeated before checkout",
     );
     await page.waitForSelector("#result", { visible: true });
-    assert.ok(await page.$eval("#gold-reward", (el) => !el.hidden));
-    assert.equal((await read()).goldEnabled, true);
     assert.ok(
       await page.evaluate(() =>
-        JSON.parse(localStorage.getItem("hft-route-v1")).cleared.includes(19),
+        JSON.parse(localStorage.getItem("hft-route-v1")).cleared.includes(24),
       ),
     );
     report.checks.push(
-      "Real completion unlocks and equips the saved golden vacuum",
+      "Final vault checkout persists the twenty-fifth floor completion",
     );
     if (fromFloor > 1) {
-      await page.screenshot({ path: new URL("ending.png", output).pathname });
+      await page.screenshot({
+        path: new URL("ending.png", output).pathname,
+      });
       await page.click("#back-menu");
       assert.equal(await page.$eval("#gold-toggle", (el) => el.hidden), false);
       await page.click("#gold-toggle");

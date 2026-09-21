@@ -21,6 +21,26 @@ export const ESCAPE_LINES = [
     text: "First sunrise off the clock. Come on, hero. Breakfast is on me.",
   },
 ];
+export const VAULT_ESCAPE_LINES = [
+  {
+    at: 0,
+    speaker: "shelf",
+    title: "NO BACKUPS FOUND.",
+    text: "Recovery failed. Please contact an employee. Oh.",
+  },
+  {
+    at: 2.5,
+    speaker: "buff",
+    title: "KEYS UNDER THE MAT.",
+    text: "All four keys returned. I have hidden them somewhere management will never look. The staff room.",
+  },
+  {
+    at: 5.5,
+    speaker: "mop",
+    title: "NOW WE'RE OFF THE CLOCK.",
+    text: "Store shut. Backup gone. Breakfast is still on me. You can stop collecting crumbs now.",
+  },
+];
 
 export function escapeScene({
   world,

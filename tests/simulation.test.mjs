@@ -145,7 +145,8 @@ test("exit requires the quota and final boss, upgrades transfer between floors",
   assert.equal(last.state, "playing");
   last.boss.hp = 0;
   stepGame(last, {}, 1 / 120);
-  assert.equal(last.state, "won");
+  assert.equal(last.state, "cleared");
+  assert.equal(nextLevel(last, "rapid").levelIndex, 20);
 });
 
 test("a selected aisle starts with basic gear and preserves its three-heart baseline", () => {

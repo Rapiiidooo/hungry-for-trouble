@@ -3,7 +3,9 @@ import { LEVELS } from "./levels.js";
 import { TICK, unpackInput, validateInputs } from "./daily.js";
 import { upgradeChoices } from "./arcade.js";
 
-export const CAMPAIGN_RULESET = "campaign-1";
+export const CAMPAIGN_RULESET = "campaign-2";
+// Replay versions change; the all-time board keeps its existing records.
+export const CAMPAIGN_BOARD = "campaign-1:all";
 
 export async function verifyCampaign(
   config,

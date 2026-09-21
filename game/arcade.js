@@ -91,6 +91,7 @@ export function readProgress() {
     const value = JSON.parse(localStorage.getItem("hft-route-v1") || "{}");
     return {
       unlocked: Math.max(
+        Array.isArray(value.cleared) && value.cleared.includes(19) ? 20 : 0,
         Array.isArray(value.cleared) && value.cleared.includes(9) ? 10 : 0,
         Math.min(LEVELS.length - 1, Math.floor(Number(value.unlocked)) || 0),
       ),
@@ -127,9 +128,9 @@ function floorShape(level) {
   return `<svg class="floor-shape" viewBox="0 0 ${level.map[0].length} ${level.map.length}" aria-hidden="true" fill="currentColor">${cells}</svg>`;
 }
 export function visibleFloorCount(progress) {
-  return progress.unlocked >= 10 || progress.cleared.includes(9)
-    ? LEVELS.length
-    : 10;
+  if (progress.unlocked >= 20 || progress.cleared.includes(19))
+    return LEVELS.length;
+  return progress.unlocked >= 10 || progress.cleared.includes(9) ? 20 : 10;
 }
 export function drawRoute(container, progress, current, select) {
   container.replaceChildren();
@@ -139,7 +140,11 @@ export function drawRoute(container, progress, current, select) {
       const heading = document.createElement("div");
       heading.className = "act-heading";
       heading.textContent =
-        index === 0 ? "RESCUE MOP-3" : "ACT II · NO EMPLOYEE LEFT BEHIND";
+        index === 0
+          ? "RESCUE MOP-3"
+          : index === 10
+            ? "ACT II · NO EMPLOYEE LEFT BEHIND"
+            : "ACT III · THE LOCKED WING";
       container.append(heading);
     }
     const node = document.createElement(select ? "button" : "div");
@@ -147,7 +152,7 @@ export function drawRoute(container, progress, current, select) {
     const cleared = progress.cleared.includes(index);
     node.className = `route-node ${boss ? "boss-node" : ""} ${cleared ? "complete" : ""} ${index === current ? "current" : ""} ${index > progress.unlocked ? "locked" : ""}`;
     node.dataset.floor = index + 1;
-    node.innerHTML = `<span class="node-number">${String(index + 1).padStart(2, "0")}</span>${boss ? art(index === 4 ? "manager" : "director") : floorShape(level)}<b>${level.name}</b><small>${boss ? { 4: "BOSS · ACCESS CARD", 9: "BOSS · RESCUE MOP-3", 14: "BOSS · FREE THE CREW", 19: "FINAL BOSS · ESCAPE" }[index] : cleared ? "CLEARED" : index > progress.unlocked ? "LOCKED" : "READY"}</small>`;
+    node.innerHTML = `<span class="node-number">${String(index + 1).padStart(2, "0")}</span>${boss ? art(index === 4 ? "manager" : "director") : floorShape(level)}<b>${level.name}</b><small>${boss ? { 4: "BOSS · ACCESS CARD", 9: "BOSS · RESCUE MOP-3", 14: "BOSS · FREE THE CREW", 19: "BOSS · ESCAPE", 24: "FINAL BOSS · MASTER VAULT" }[index] : cleared ? "CLEARED" : index > progress.unlocked ? "LOCKED" : "READY"}</small>`;
     if (select) {
       node.disabled = index > progress.unlocked;
       node.onclick = () => select(index);

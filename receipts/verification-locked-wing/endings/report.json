@@ -1,0 +1,11 @@
+{
+  "fixture": "Isolated presentation test. This browser intercepts main.js to place practice floors 20 and 25 at completed checkout conditions. It tests real scene/UI transitions, not a combat victory. No game files or leaderboard records are modified.",
+  "checks": [
+    "Fixture checkout 20 keeps the nine-second crew escape, equips gold, saves aisle 21 and reveals 25 floors in a frozen readable discovery",
+    "Continue equips the actual offered upgrade, opens the key briefing and starts aisle 21 with a fresh key ring",
+    "The new unlock and golden preference survive reload",
+    "Fixture checkout 25 uses the new ending, persists completion and returns to the completed route"
+  ],
+  "errors": [],
+  "result": "PASS"
+}

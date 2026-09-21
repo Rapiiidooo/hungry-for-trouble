@@ -7,6 +7,7 @@ import {
   gateClosed,
   clamp,
   canStand,
+  checkoutReady,
 } from "./sim.js";
 import { Sound } from "./audio.js";
 import { LEVELS } from "./levels.js";
@@ -15,7 +16,14 @@ import { receiptEffects } from "./combat-fx.js";
 import { RADIO, SPEAKERS, MISSION, portrait, storyCard } from "./story.js";
 import { campaignEffects } from "./campaign-fx.js";
 import { presentationEffects } from "./presentation-fx.js";
-import { escapeScene, ESCAPE_SECONDS, ESCAPE_LINES } from "./escape-scene.js";
+import {
+  escapeScene,
+  ESCAPE_SECONDS,
+  ESCAPE_LINES,
+  VAULT_ESCAPE_LINES,
+} from "./escape-scene.js";
+import { KEY_TYPES, keyType, keyIcon } from "./locks.js";
+import { lockEffects } from "./lock-effects.js";
 import { createCredits } from "./credits.js";
 import { ventPhase } from "./machines.js";
 import { RoomClient } from "./room-client.js";
@@ -94,7 +102,9 @@ let viewRig,
 let damageBearing = 0,
   radioUntil = 0;
 let presentationFX,
+  lockFX,
   ending = null,
+  endingDestination = "result",
   endingAt = 0,
   endingFinished = false,
   endingLine = -1;
@@ -374,13 +384,17 @@ function refreshProgressUI() {
   ui["route-floors"].textContent = `${count} FLOORS`;
   ui["route-bosses"].textContent = `${count / 5} BOSS SHOWDOWNS`;
   ui["route-mission"].textContent = discovered
-    ? "MOP-3 is free. Rescue the basement crew and shut down SHELF CONTROL."
+    ? count > 20
+      ? "The crew is free. Find the keys and erase SHELF CONTROL's last backup."
+      : "MOP-3 is free. Rescue the basement crew and shut down SHELF CONTROL."
     : "Reach the Director's checkout and rescue MOP-3.";
   ui.best.textContent = best
     ? `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${Math.min(bestFloor, count)}/${count}`
-    : discovered
-      ? "THE BASEMENT IS OPEN. NOBODY LEFT BEHIND."
-      : "TEN AISLES. ONE FRIEND TO RESCUE.";
+    : count > 20
+      ? "THE LOCKED WING IS OPEN. FIND THE FOUR KEYS."
+      : discovered
+        ? "THE BASEMENT IS OPEN. NOBODY LEFT BEHIND."
+        : "TEN AISLES. ONE FRIEND TO RESCUE.";
   ui["gold-toggle"].hidden = !progress.cleared.includes(19);
   ui["gold-toggle"].textContent = `GOLD VACUUM: ${goldEnabled ? "ON" : "OFF"}`;
   ui["gold-toggle"].setAttribute("aria-pressed", String(goldEnabled));
@@ -391,7 +405,41 @@ function finishEnding() {
   endingFinished = true;
   ending.update(ESCAPE_SECONDS, reducedMotion.matches);
   ui.cinema.hidden = true;
-  ui.result.hidden = false;
+  ui[endingDestination].hidden = false;
+  if (endingDestination === "vault-discovery")
+    ui["vault-continue"].focus({ preventScroll: true });
+}
+
+function beginEscape(destination = "result") {
+  endingDestination = destination;
+  ending = escapeScene({
+    world,
+    game,
+    cloneAsset,
+    markEmissive,
+    instanceAsset,
+    label,
+    fromCamera: activeCamera(),
+    scene,
+    keyLight,
+    fillLight,
+  });
+  endingAt = clock;
+  ending.update(0, reducedMotion.matches);
+  ui.result.hidden =
+    ui["upgrade-screen"].hidden =
+    ui.hud.hidden =
+    ui.pause.hidden =
+      true;
+  ui.cinema.hidden = false;
+  ui["skip-ending"].textContent =
+    destination === "vault-discovery"
+      ? "CONTINUE THE STORY"
+      : "SKIP TO RESULTS";
+  ui.message.classList.remove("show");
+  particles.length = 0;
+  weapon.visible = false;
+  sound.effect("escape");
 }
 
 function updateBossBar() {
@@ -724,7 +772,10 @@ function pool(color, count) {
   const source = prototypes.snack.children[0].children.find(
     (node) => node.isMesh,
   );
-  const material = new THREE.MeshBasicMaterial({ color, toneMapped: false });
+  const material = new THREE.MeshBasicMaterial({
+    color,
+    toneMapped: false,
+  });
   const batch = new THREE.InstancedMesh(source.geometry, material, count);
   batch.userData.ownMaterial = true;
   batch.count = 0;
@@ -881,13 +932,21 @@ async function buildWorld() {
     packing: 0xc6a052,
     security: 0xa49cbd,
     core: 0x7ea8c1,
+    vault: 0xb49b70,
   }[theme];
   const tiles = [],
     scale = 2 / prototypes.floor.userData.nativeSize.x;
   for (let row = 0; row < game.map.height; row++)
     for (let col = 0; col < game.map.width; col++) {
       if (game.map.level.map[row][col] === " ") continue;
-      tiles.push({ x: col * 2, z: row * 2, col, row, scale, y: -0.12 * scale });
+      tiles.push({
+        x: col * 2,
+        z: row * 2,
+        col,
+        row,
+        scale,
+        y: -0.12 * scale,
+      });
     }
   instanceAsset("floor", tiles, world, (p) => {
     if (game.map.level.map[p.row][p.col] === "#") return 0x8a8490;
@@ -1114,9 +1173,11 @@ async function buildWorld() {
       });
       if (enemy.kind !== "armoured") {
         const tag = label(
-          { sniper: "SNIPER", layer: "MINE LAYER", shieldcart: "FRONT SHIELD" }[
-            enemy.kind
-          ],
+          {
+            sniper: "SNIPER",
+            layer: "MINE LAYER",
+            shieldcart: "FRONT SHIELD",
+          }[enemy.kind],
           "#f0f2f3",
           2,
         );
@@ -1184,11 +1245,13 @@ async function buildWorld() {
     bossModel.position.set(game.boss.x, 0, game.boss.z);
     markEmissive(bossModel);
     const bossTint =
-      game.boss.kind === "foreman"
-        ? palette.brass
-        : game.boss.kind === "core"
-          ? palette.blue
-          : null;
+      game.boss.kind === "locksmith"
+        ? palette.gold
+        : game.boss.kind === "foreman"
+          ? palette.brass
+          : game.boss.kind === "core"
+            ? palette.blue
+            : null;
     if (bossTint)
       bossModel.traverse((node) => {
         if (node.isMesh && node.material.color.getHex() === palette.red)
@@ -1210,6 +1273,23 @@ async function buildWorld() {
     label,
     markEmissive,
   });
+  lockFX = lockEffects({
+    world,
+    game,
+    cloneAsset,
+    markEmissive,
+    makeRing,
+    label,
+  });
+  ui["key-ring"].hidden = !game.keycards.length;
+  ui["key-ring"].innerHTML = KEY_TYPES.filter((key) =>
+    game.keycards.some((card) => card.color === key.id),
+  )
+    .map(
+      (key) =>
+        `<span class="key-slot" data-key="${key.id}" style="--key-color:${key.color}" aria-label="${key.label} key missing">${keyIcon(key.id)}<b>${key.label}</b></span>`,
+    )
+    .join("");
   presentationFX = presentationEffects({
     world,
     game,
@@ -1346,6 +1426,7 @@ async function start(fresh = true, upgrade, options = {}) {
     "settings-screen",
     "room-screen",
     "discovery-screen",
+    "vault-discovery",
     "cinema",
     "briefing",
   ])
@@ -1381,7 +1462,11 @@ async function start(fresh = true, upgrade, options = {}) {
       ui["run-badge"].textContent =
         `${game.multiplayer.kind === "coop" ? "SHARED SHIFT" : "SNACKDOWN"} · ROOM ${options.room.code}`;
     }
-    if (options.briefing && !game.daily && !game.multiplayer) {
+    if (
+      (options.briefing || game.levelIndex === 20) &&
+      !game.daily &&
+      !game.multiplayer
+    ) {
       briefingRemaining = 6;
       ui.briefing.hidden = false;
       ui["briefing-countdown"].textContent = "Starting in 6…";
@@ -1389,7 +1474,14 @@ async function start(fresh = true, upgrade, options = {}) {
       ui.pause.hidden = true;
       ui.message.classList.remove("show");
       radioUntil = 0;
-      ui["radio-log"].innerHTML = storyCard("mop", MISSION);
+      const mission =
+        game.levelIndex === 20
+          ? "Find the red triangle key, then approach a red lock. You keep each key for the whole aisle. The last backup is in the vault."
+          : MISSION;
+      ui["briefing-mop"].innerHTML = ui["radio-log"].innerHTML = storyCard(
+        "mop",
+        mission,
+      );
     } else
       showMessage(
         game.daily ? "DAILY RUSH" : game.map.level.name,
@@ -1410,7 +1502,13 @@ function finishBriefing() {
   ui.briefing.hidden = true;
   ui.game.classList.remove("briefing");
   ui.pause.hidden = false;
-  showMessage("AISLE 01", "Eat crumbs to reload. Reach the checkout.", 2.5);
+  showMessage(
+    `AISLE ${String(game.levelIndex + 1).padStart(2, "0")}`,
+    game.levelIndex >= 20
+      ? game.map.level.tagline
+      : "Eat crumbs to reload. Reach the checkout.",
+    2.5,
+  );
 }
 
 function pause(value = !paused) {
@@ -1461,6 +1559,7 @@ function menu() {
     "settings-screen",
     "room-screen",
     "discovery-screen",
+    "vault-discovery",
     "cinema",
     "shield-visor",
     "briefing",
@@ -1474,6 +1573,31 @@ function menu() {
 function handleEvents(events) {
   for (const event of events) {
     sound.effect(event.type, game.collected);
+    if (["key-found", "door-open", "door-locked"].includes(event.type)) {
+      const key = keyType(event.color);
+      if (event.type === "key-found") {
+        burst(event.x, event.z, key.enamel, 28, 2.5);
+        floatText(
+          `${key.symbol} ${key.label} KEY!`,
+          event.x,
+          event.z,
+          "shield-pop",
+        );
+        showMessage(
+          `${key.label} KEY ACQUIRED`,
+          `Approach a ${key.label.toLowerCase()} ${key.symbol} lock. You keep the key.`,
+          2.4,
+        );
+      } else if (event.type === "door-open") {
+        burst(event.x, event.z, key.enamel, 18, 1.4);
+        floatText(`${key.symbol} ACCESS OPEN`, event.x, event.z, "shield-pop");
+      } else
+        showMessage(
+          `${key.symbol} ${key.label} KEY NEEDED`,
+          "Find the matching key on your map, then come back.",
+          1.6,
+        );
+    }
     if (event.type === "crumb") {
       burst(event.x, event.z, palette.gold, 5, 1.3);
       if (clock - lastAmmoPop > 0.18) {
@@ -1615,12 +1739,16 @@ function handleEvents(events) {
     }
     if (event.type === "exit-open")
       showMessage(
-        game.boss?.hp > 0
-          ? "QUOTA DONE. ONE COMPLAINT LEFT."
-          : "TIME TO CHECK OUT!",
-        game.boss?.hp > 0
-          ? `Defeat ${game.boss.name || "the Manager"}, then reach the checkout.`
-          : "Follow the gold marker to the checkout.",
+        game.keycards.some((card) => !card.collected)
+          ? "CRUMBS READY. KEYS STILL MISSING."
+          : game.boss?.hp > 0
+            ? "QUOTA DONE. ONE COMPLAINT LEFT."
+            : "TIME TO CHECK OUT!",
+        game.keycards.some((card) => !card.collected)
+          ? "Explore the branches and collect the marked keys."
+          : game.boss?.hp > 0
+            ? `Defeat ${game.boss.name || "the Manager"}, then reach the checkout.`
+            : "Follow the gold marker to the checkout.",
         3,
       );
     if (event.type === "boss-down") {
@@ -1630,11 +1758,13 @@ function handleEvents(events) {
         "MANAGEMENT HAS LEFT THE BUILDING.",
         game.levelIndex === 19
           ? "SHELF CONTROL is offline. Get the crew to the checkout!"
-          : game.levelIndex === 14
-            ? "The basement crew is free. Find the core!"
-            : game.boss.director
-              ? "MOP-3 is free. Reach the checkout and get your friend out!"
-              : "Access card acquired. MOP-3 is in the control wing.",
+          : game.levelIndex === 24
+            ? "The last backup is gone. Every door leads out now!"
+            : game.levelIndex === 14
+              ? "The basement crew is free. Find the core!"
+              : game.boss.director
+                ? "MOP-3 is free. Reach the checkout and get your friend out!"
+                : "Access card acquired. MOP-3 is in the control wing.",
         3,
       );
     }
@@ -1696,6 +1826,16 @@ function handleEvents(events) {
         : "♥ HEALTH FULL · CHECKOUT REPAIRS 1 HEART WHEN NEEDED";
     ui["next-aisle"].textContent =
       `NEXT: ${LEVELS[game.levelIndex + 1].name.toUpperCase()} · ${LEVELS[game.levelIndex + 1].tagline}`;
+    if (game.levelIndex === 19) {
+      goldEnabled = true;
+      try {
+        localStorage.setItem("hft-gold-v1", "on");
+      } catch {
+        /* Optional cosmetic preference. */
+      }
+      refreshProgressUI();
+      beginEscape("vault-discovery");
+    }
     return;
   }
   if (!["lost", "won"].includes(game.state)) return;
@@ -1723,14 +1863,14 @@ function handleEvents(events) {
     game.daily && won
       ? "Rush <em>survived.</em>"
       : won
-        ? "Clean <em>getaway.</em>"
+        ? "Locks <em>broken.</em>"
         : game.time <= 0
           ? "Clocked <em>out.</em>"
           : "You <em>suck.</em>";
   ui["result-comment"].textContent = game.daily
     ? "Same challenge. Unlimited retries. Only your best score counts."
     : won
-      ? "SHELF CONTROL unplugged. Every colleague rescued. Four resignations, zero notice."
+      ? "The Locksmith scrapped. Last backup erased. Every colleague is finally off the clock."
       : game.time <= 0
         ? "Store closed. Your overtime was not approved."
         : "Occupational hazard. No compensation.";
@@ -1751,42 +1891,15 @@ function handleEvents(events) {
     : "ONE MORE SHIFT <span>▶</span>";
   ui.result.hidden = false;
   ui["ending-crew"].hidden = !won || !!game.daily;
-  ui["gold-reward"].hidden = !won || !!game.daily;
+  ui["gold-reward"].hidden = true;
   if (won && !game.daily) {
     ui["ending-crew"].innerHTML = ["mop", "buff", "mop"]
       .map((id) => portrait(id))
       .join("");
-    goldEnabled = true;
-    try {
-      localStorage.setItem("hft-gold-v1", "on");
-    } catch {
-      /* Optional cosmetic preference. */
-    }
     refreshProgressUI();
     ui["gold-icon"].innerHTML =
       '<img src="./favicon.svg" alt="Golden vacuum reward">';
-    ending = escapeScene({
-      world,
-      game,
-      cloneAsset,
-      markEmissive,
-      instanceAsset,
-      label,
-      fromCamera: activeCamera(),
-      scene,
-      keyLight,
-      fillLight,
-    });
-    endingAt = clock;
-    ending.update(0, reducedMotion.matches);
-    ui.result.hidden = true;
-    ui.hud.hidden = true;
-    ui.pause.hidden = true;
-    ui.cinema.hidden = false;
-    ui.message.classList.remove("show");
-    particles.length = 0;
-    weapon.visible = false;
-    sound.effect("escape");
+    beginEscape();
   }
 }
 
@@ -2017,10 +2130,7 @@ function updateModels(dt) {
     mesh.instanceMatrix.needsUpdate = true;
   }
   const open =
-    !game.daily &&
-    game.multiplayer?.kind !== "versus" &&
-    game.collected >= game.map.level.quota &&
-    (!game.boss || game.boss.hp <= 0);
+    !game.daily && game.multiplayer?.kind !== "versus" && checkoutReady(game);
   if (exitModel.userData.open !== open) {
     markEmissive(exitModel, open);
     exitModel.userData.open = open;
@@ -2066,6 +2176,7 @@ function updateModels(dt) {
     if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
   }
   floorEffects?.update(game, clock, reducedMotion.matches);
+  lockFX?.update(clock, reducedMotion.matches);
   presentationFX?.update(game, clock, viewRig.blend, reducedMotion.matches);
 }
 
@@ -2157,6 +2268,24 @@ function drawMap() {
       mark(c, "#ff8065", 6);
       mark(c, "#fff", 2);
     }
+  for (const door of game.doors) {
+    if (door.open) continue;
+    mark(door, keyType(door.color).color, Math.max(5, size));
+    mark(door, "#18283c", 2);
+  }
+  for (const card of game.keycards) {
+    if (card.collected) continue;
+    const key = keyType(card.color);
+    mark(card, "#18283c", 11);
+    mini.fillStyle = key.color;
+    mini.font = "bold 11px sans-serif";
+    mini.textAlign = "center";
+    mini.fillText(
+      key.symbol,
+      ox + (card.x / 2 + 0.5) * size,
+      oz + (card.z / 2 + 0.5) * size + 4,
+    );
+  }
   for (const g of game.map.gates)
     mark(g, gateClosed(game, g.col, g.row) ? "#ff8065" : "#a4c0e0", 5);
   for (const p of game.map.portals)
@@ -2179,16 +2308,30 @@ function drawMap() {
 }
 
 function updateHud() {
+  const nextKey = KEY_TYPES.find((key) =>
+    game.keycards.some((card) => card.color === key.id && !card.collected),
+  );
+  for (const slot of ui["key-ring"].children) {
+    const held = game.keyring.includes(slot.dataset.key);
+    slot.classList.toggle("held", held);
+    slot.classList.toggle("next", slot.dataset.key === nextKey?.id);
+    slot.setAttribute(
+      "aria-label",
+      `${slot.dataset.key} key ${held ? "collected" : "missing"}`,
+    );
+  }
   ui.collected.textContent = game.collected;
   ui["quota-fill"].style.width =
     `${Math.min(100, (game.daily ? game.elapsed / 90 : game.collected / game.map.level.quota) * 100)}%`;
   ui["goal-label"].textContent = game.daily
     ? `WAVE ${game.wave} / 5 · KEEP MOVING`
-    : game.collected >= game.map.level.quota
-      ? game.boss?.hp > 0
-        ? `DEFEAT ${game.boss.name || "THE MANAGER"}`
-        : "REACH THE CHECKOUT"
-      : "CRUMBS TO COLLECT";
+    : nextKey
+      ? `FIND ${nextKey.label} ${nextKey.symbol} KEY`
+      : game.collected >= game.map.level.quota
+        ? game.boss?.hp > 0
+          ? `DEFEAT ${game.boss.name || "THE MANAGER"}`
+          : "REACH THE CHECKOUT"
+        : "CRUMBS TO COLLECT";
   const time = Math.ceil(game.time);
   ui.clock.textContent = `${String(Math.floor(time / 60)).padStart(2, "0")}:${String(time % 60).padStart(2, "0")}`;
   ui.clock.parentElement.classList.toggle("urgent", time < 20);
@@ -2442,8 +2585,20 @@ function telemetry() {
       closed: gateClosed(game, g.col, g.row),
     })),
     boss: game.boss
-      ? { ...game.boss, screen: screenPosition(game.boss.x, 0.4, game.boss.z) }
+      ? {
+          ...game.boss,
+          screen: screenPosition(game.boss.x, 0.4, game.boss.z),
+        }
       : null,
+    keyring: [...game.keyring],
+    keycards: game.keycards.map((card) => ({
+      ...card,
+      screen: screenPosition(card.x, 1.2, card.z),
+    })),
+    doors: game.doors.map((door) => ({
+      ...door,
+      screen: screenPosition(door.x, 1, door.z),
+    })),
     audio: {
       enabled: sound.enabled,
       state: sound.ctx?.state || "idle",
@@ -2565,13 +2720,14 @@ function frame(now) {
     !active || game.player.shield <= 0 || viewRig.blend < 0.8;
   if (ending && !endingFinished) {
     const age = clock - endingAt;
-    const line = ESCAPE_LINES.findLastIndex((entry) => age >= entry.at);
+    const lines = game.levelIndex >= 20 ? VAULT_ESCAPE_LINES : ESCAPE_LINES;
+    const line = lines.findLastIndex((entry) => age >= entry.at);
     if (line !== endingLine) {
       endingLine = line;
-      ui["cinema-title"].textContent = ESCAPE_LINES[line].title;
+      ui["cinema-title"].textContent = lines[line].title;
       ui["cinema-line"].innerHTML = storyCard(
-        ESCAPE_LINES[line].speaker,
-        ESCAPE_LINES[line].text,
+        lines[line].speaker,
+        lines[line].text,
       );
     }
     if (age >= ESCAPE_SECONDS) finishEnding();
@@ -2588,10 +2744,7 @@ function frame(now) {
     }
     const pos = screenPosition(game.map.exit.x, 2.4, game.map.exit.z);
     const open =
-      !game.daily &&
-      game.multiplayer?.kind !== "versus" &&
-      game.collected >= game.map.level.quota &&
-      (!game.boss || game.boss.hp <= 0);
+      !game.daily && game.multiplayer?.kind !== "versus" && checkoutReady(game);
     ui["exit-label"].hidden = !open;
     ui["exit-label"].style.left = `${clamp(pos.x, 65, innerWidth - 65)}px`;
     ui["exit-label"].style.top = `${clamp(pos.y, 155, innerHeight - 150)}px`;
@@ -2768,6 +2921,11 @@ function bindInput() {
     ui["upgrade-screen"].hidden = false;
   };
   ui["skip-ending"].onclick = finishEnding;
+  ui["vault-continue"].onclick = () => {
+    ui["vault-discovery"].hidden = true;
+    ui["upgrade-screen"].hidden = false;
+  };
+  ui["vault-menu"].onclick = menu;
   ui["gold-toggle"].onclick = () => {
     goldEnabled = !goldEnabled;
     try {
@@ -3075,6 +3233,13 @@ async function init() {
     /* A disabled or damaged local score must not prevent play. */
   }
   ui["briefing-mop"].innerHTML = storyCard("mop", MISSION);
+  ui["vault-mop"].innerHTML = storyCard(
+    "mop",
+    "We got everyone out! But the Locksmith is restoring SHELF CONTROL from a backup. Five sealed aisles. Four keys. Let's pull the plug properly.",
+  );
+  ui["vault-keys"].innerHTML = KEY_TYPES.map(
+    (key) => `<span>${keyIcon(key.id)}<b>${key.symbol} ${key.label}</b></span>`,
+  ).join("");
   ui["discovery-mop"].innerHTML = storyCard(
     "mop",
     "You did it! Wait… this checkout has a service lift. I thought we only had ten floors.",

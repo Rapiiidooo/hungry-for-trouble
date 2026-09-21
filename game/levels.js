@@ -1,4 +1,6 @@
 import { floorplan, DEFAULT_SEED } from "./floorplans.js";
+import { lockedFloorplan } from "./locked-wing.js";
+import { KEY_TYPES } from "./locks.js";
 
 export const CELL = 2;
 
@@ -352,10 +354,59 @@ export const LEVELS = [
     tagline:
       "Unplug the real boss. Get every robot out. No employee left behind.",
   },
+  {
+    name: "Key Cardio",
+    department: "AISLE 21 · THE LOCKED WING",
+    theme: "security",
+    quota: 30,
+    time: 200,
+    speed: 3.6,
+    tagline:
+      "Find the red triangle key. Matching doors open when you approach.",
+  },
+  {
+    name: "Key Exchange",
+    department: "AISLE 22 · RED & GREEN RETURNS",
+    theme: "packing",
+    quota: 42,
+    time: 230,
+    speed: 3.7,
+    tagline: "Keep your keys. One key can open several matching doors.",
+  },
+  {
+    name: "Blue Detour",
+    department: "AISLE 23 · FROZEN LOCKS",
+    theme: "ice",
+    quota: 50,
+    time: 250,
+    speed: 3.75,
+    tagline: "Explore each branch. The blue circle key opens the way north.",
+  },
+  {
+    name: "Four On The Floor",
+    department: "AISLE 24 · ALL ACCESS",
+    theme: "transit",
+    quota: 56,
+    time: 270,
+    speed: 3.8,
+    tagline: "Four keys. One vault. Yellow squares mark the final access.",
+  },
+  {
+    name: "The Locksmith",
+    department: "AISLE 25 · NO MORE BACKUPS",
+    theme: "vault",
+    quota: 44,
+    time: 330,
+    speed: 3.8,
+    bossKind: "locksmith",
+    bossHp: 360,
+    tagline:
+      "Open the master vault. Scrap the Locksmith and erase the last backup.",
+  },
 ];
 
 for (let index = 0; index < LEVELS.length; index++) {
-  const generated = floorplan(index);
+  const generated = lockedFloorplan(index, DEFAULT_SEED) || floorplan(index);
   if (generated) LEVELS[index] = { ...LEVELS[index], ...generated };
 }
 LEVELS[4].map = finale.map((row, z) =>
@@ -365,7 +416,7 @@ LEVELS[0].shape = "FIRST SHIFT";
 LEVELS[4].shape = "MANAGER'S OFFICE";
 
 export function layoutFor(index, seed = DEFAULT_SEED) {
-  const generated = floorplan(index, seed);
+  const generated = lockedFloorplan(index, seed) || floorplan(index, seed);
   const level = { ...LEVELS[index], ...generated };
   const width = level.map[0].length,
     height = level.map.length;
@@ -379,7 +430,9 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
     repairs = [],
     portals = [],
     vents = [],
-    stock = [];
+    stock = [],
+    keycards = [],
+    doors = [];
   let start, exit, boss;
   for (let z = 0; z < height; z++)
     for (let x = 0; x < width; x++) {
@@ -387,6 +440,21 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
       const position = { x: x * CELL, z: z * CELL };
       if (char === "#") walls.push({ ...position, col: x, row: z });
       else if (char !== " ") {
+        const card = KEY_TYPES.find((key) => key.tile === char);
+        const lock = KEY_TYPES.find((key) => key.door === char);
+        if (card)
+          keycards.push({ ...position, color: card.id, collected: false });
+        if (lock)
+          doors.push({
+            ...position,
+            color: lock.id,
+            col: x,
+            row: z,
+            open: false,
+            axis: ["#", " ", undefined].includes(level.map[z]?.[x - 1])
+              ? "z"
+              : "x",
+          });
         if (char === "S") start = position;
         if (char === "X") exit = position;
         if (char === "B")
@@ -411,7 +479,12 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
         if (char === ">" || char === "<")
           belts.push({ ...position, direction: char === ">" ? 1 : -1 });
         if (char === "G")
-          gates.push({ ...position, col: x, row: z, phase: gates.length % 2 });
+          gates.push({
+            ...position,
+            col: x,
+            row: z,
+            phase: gates.length % 2,
+          });
         if (char === "M") boss = position;
         if (char === "P") portals.push({ ...position });
         if (char === "!")
@@ -429,6 +502,8 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
             hits: [],
           });
         if (
+          !card &&
+          !lock &&
           !["S", "X", "B", "G", "M", "V", "H", "P", "!", "C", "F"].includes(
             char,
           )
@@ -455,6 +530,8 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
     })),
     vents,
     stock,
+    keycards,
+    doors,
     start,
     exit,
     boss,

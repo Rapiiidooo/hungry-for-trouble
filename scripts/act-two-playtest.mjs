@@ -112,12 +112,14 @@ try {
   await page.reload({ waitUntil: "networkidle0" });
   await page.waitForFunction(() => window.__READY__);
   await page.click("#open-route");
-  await page.screenshot({ path: new URL("route-desktop.png", out).pathname });
+  await page.screenshot({
+    path: new URL("route-desktop.png", out).pathname,
+  });
   assert.equal(
     await page.$$eval("#route-map .route-node", (n) => n.length),
-    20,
+    25,
   );
-  assert.equal(await page.$$eval("#route-map .boss-node", (n) => n.length), 4);
+  assert.equal(await page.$$eval("#route-map .boss-node", (n) => n.length), 5);
   await page.click("#route-close");
   let pushed = false,
     flour = false,
@@ -246,7 +248,9 @@ try {
       deviceScaleFactor: 1,
     });
     await page.click("#open-route");
-    await page.screenshot({ path: new URL(`route-${name}.png`, out).pathname });
+    await page.screenshot({
+      path: new URL(`route-${name}.png`, out).pathname,
+    });
     assert.ok(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= innerWidth,
@@ -254,7 +258,9 @@ try {
     );
     await page.click("#route-close");
   }
-  report.checks.push("Twenty-floor map fits phone widths in both orientations");
+  report.checks.push(
+    "Completed rescue reveals the expanded map at phone widths in both orientations",
+  );
   assert.ok(report.peakDraws < 900);
   assert.ok(report.peakTriangles < 1500000);
   assert.deepEqual(report.errors, []);

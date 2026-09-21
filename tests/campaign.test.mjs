@@ -134,7 +134,24 @@ test("general records verify inputs, stay separate from daily scores and survive
       [],
     ]),
   );
-  await writeFile(file, JSON.stringify(oldDays));
+  await writeFile(
+    file,
+    JSON.stringify({
+      ...oldDays,
+      "campaign-1:all": [
+        {
+          player: "legacy-player",
+          name: "LEGACY",
+          score: 90000,
+          ticks: 60000,
+          kills: 120,
+          floor: 20,
+          survived: true,
+          created: clock - 86400000,
+        },
+      ],
+    }),
+  );
   let api = await createLeaderboard({ file, now: () => clock });
   const server = http.createServer((req, res) =>
     api(req, res, new URL(req.url, "http://localhost")),
@@ -158,6 +175,11 @@ test("general records verify inputs, stay separate from daily scores and survive
   }
   const general = () => request("/api/leaderboard?scope=general");
   try {
+    assert.equal(
+      (await general()).data.entries[0].name,
+      "LEGACY",
+      "The previous campaign's all-time records remain visible",
+    );
     assert.equal(
       (await request("/api/campaign/runs", { seed: -1 })).status,
       400,
@@ -197,9 +219,9 @@ test("general records verify inputs, stay separate from daily scores and survive
     let board = (await general()).data;
     assert.deepEqual(
       board.entries.map((r) => r.name),
-      ["ALICE", "BOB"],
+      ["LEGACY", "ALICE", "BOB"],
     );
-    assert.equal(board.players, 2);
+    assert.equal(board.players, 3);
     assert.ok(!JSON.stringify(board.entries).includes('"player":'));
     assert.equal((await request("/api/leaderboard")).data.players, 0);
     const daily = await request("/api/runs", {}, a.cookie);
