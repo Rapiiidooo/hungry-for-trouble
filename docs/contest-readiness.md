@@ -37,4 +37,6 @@ The user retains ownership. The supplied terms include a non-exclusive promotion
 
 ## Remaining delivery work
 
-Integrate and declare the Atlas files after the pending access decision. Prepare the entry metadata and playable deployment once authorized, run the exact-commit live gate, and attach its original verdict. Keep margin before the deadline. No public play link, PR, demo post or wallet submission exists at this checkpoint.
+The user authorized Atlas workspace-catalog publication only after actual contest submission. Keep that project private before submission and declare only media actually included in the entry; the three generated Atlas outputs are not yet used. Their catalog download cannot be a prerequisite for submitting. Preserve the submitted game commit and check entry-update rules before any later media integration.
+
+Prepare the entry metadata and playable deployment once authorized, run the exact-commit live gate, and attach its original verdict. Keep margin before the deadline. No public play link, PR, demo post or wallet submission exists at this checkpoint. The conditional Atlas permission does not authorize any of those actions now.

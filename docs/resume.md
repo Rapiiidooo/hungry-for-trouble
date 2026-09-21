@@ -2,7 +2,7 @@
 
 ## Current state
 
-The ten-floor campaign, feel/story pass, Daily Rush leaderboard and two-player co-op/versus rooms are implemented and verified locally. The remaining active request is Atlas media integration, awaiting the user's workspace-access decision in `tasks/atlas-assets.md`. Public hosting, push and submission are not authorized yet.
+The ten-floor campaign, feel/story pass, Daily Rush leaderboard and two-player co-op/versus rooms are implemented and verified locally. Atlas catalog publication is authorized **only after actual contest submission**; keep the Atlas project private until then. Its catalog download and integration remain deferred as recorded in `tasks/atlas-assets.md`. Public hosting, push and submission are not authorized yet.
 
 Local preview: `http://localhost:3001`. Current server tool session: `7123`, command `npm run dev` / `node scripts/serve.mjs`. Identify its exact PID before restarting only this server. The abandoned coffin game and its port 3000 process remain separate. Game and repository text are English; conversation is French.
 
@@ -41,6 +41,6 @@ Useful scripts: `npm test`, `npm run check`, `scripts/playthrough.mjs` (full cam
 
 ## Remaining work
 
-Atlas reports three generated outputs: Lyria music and Gemini portraits for MOP-3/SHELF CONTROL. They have not been downloaded, inspected or included at runtime. Automatic review rejected permanent workspace-catalog publication; the exact pending approval, file IDs, costs and integration steps are in `tasks/atlas-assets.md`. Do not retry the access mutation without the user's answer. The shared environment is documented in `../../WORKSPACE.md`; the key never belongs in browser code or commits.
+Atlas reports three generated outputs: Lyria music and Gemini portraits for MOP-3/SHELF CONTROL. They have not been downloaded, inspected or included at runtime. After the automatic review rejection, the user authorized permanent workspace-catalog publication on 21 September 2026, but only once the game has actually been submitted. Record the entry PR URL and commit before applying that permission; no further approval for that same scoped action is needed after the condition is met. See `tasks/atlas-assets.md` for file IDs, costs and integration steps. Do not make catalog publication a prerequisite for submission or automatically replace the submitted build afterward. The shared environment is documented in `../../WORKSPACE.md`; the key never belongs in browser code or commits.
 
 The local first commit is `986b0b5`, authored 20 September 2026 at 00:37 UTC, inside the supplied jam window. No Git remote exists. `docs/contest-readiness.md` preserves deadlines, prizes, originality wording and submission requirements. Local phone emulation is not a physical-device or live-URL verdict. After an authorized deployment, run the official exact-commit gate on that URL and preserve its verdict unedited.
