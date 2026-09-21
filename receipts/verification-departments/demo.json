@@ -1,0 +1,51 @@
+{
+  "scope": "Silent desktop gameplay clips, edited only between practice aisles. Route unlocks preloaded in a disposable profile. Real keyboard/mouse actions and visor pickups; no combat injection or score submission.",
+  "clips": [
+    {
+      "floor": 1,
+      "file": "aisle-1.webm",
+      "elapsed": 9.083333333333364,
+      "hp": 2,
+      "state": "playing",
+      "shots": 35,
+      "kills": 1,
+      "collected": 13,
+      "visorCollected": false
+    },
+    {
+      "floor": 2,
+      "file": "aisle-2.webm",
+      "elapsed": 6.3166666666666496,
+      "hp": 2,
+      "state": "playing",
+      "shots": 9,
+      "kills": 1,
+      "collected": 2,
+      "visorCollected": true
+    },
+    {
+      "floor": 3,
+      "file": "aisle-3.webm",
+      "elapsed": 5.549999999999986,
+      "hp": 3,
+      "state": "playing",
+      "shots": 8,
+      "kills": 1,
+      "collected": 4,
+      "visorCollected": false
+    },
+    {
+      "floor": 5,
+      "file": "aisle-5.webm",
+      "elapsed": 7.416666666666646,
+      "hp": 3,
+      "state": "playing",
+      "shots": 25,
+      "kills": 2,
+      "collected": 7,
+      "visorCollected": false
+    }
+  ],
+  "errors": [],
+  "result": "PASS"
+}

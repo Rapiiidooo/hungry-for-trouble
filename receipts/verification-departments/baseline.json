@@ -1,0 +1,92 @@
+{
+  "scope": "Only route unlocks are preloaded. Real level-selection clicks/taps and real movement. Read-only telemetry. No combat-state injection or score submission. Phone viewport emulation, not physical hardware.",
+  "baseline": true,
+  "errors": [],
+  "snapshots": [
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1.png",
+      "fps": 60,
+      "draws": 268,
+      "triangles": 711882,
+      "geometries": 215,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2.png",
+      "fps": 60,
+      "draws": 273,
+      "triangles": 172680,
+      "geometries": 198,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3.png",
+      "fps": 60,
+      "draws": 356,
+      "triangles": 279516,
+      "geometries": 262,
+      "position": [
+        4,
+        25.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1.png",
+      "fps": 58,
+      "draws": 235,
+      "triangles": 564176,
+      "geometries": 215,
+      "position": [
+        2,
+        19.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2.png",
+      "fps": 60,
+      "draws": 218,
+      "triangles": 155586,
+      "geometries": 181,
+      "position": [
+        4,
+        22.066453748465243
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3.png",
+      "fps": 60,
+      "draws": 313,
+      "triangles": 251788,
+      "geometries": 262,
+      "position": [
+        4,
+        25.496897499955388
+      ],
+      "firstPerson": false
+    }
+  ],
+  "result": "PASS"
+}

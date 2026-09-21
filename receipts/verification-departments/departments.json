@@ -1,0 +1,548 @@
+{
+  "scope": "Only route unlocks are preloaded. Real level-selection clicks/taps and real movement. Read-only telemetry. No combat-state injection or score submission. Phone viewport emulation, not physical hardware.",
+  "baseline": false,
+  "errors": [],
+  "snapshots": [
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 60,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 216,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 265,
+      "triangles": 174764,
+      "geometries": 199,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 352,
+      "triangles": 288080,
+      "geometries": 264,
+      "position": [
+        4,
+        25.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 4,
+      "image": "desktop-aisle-4.png",
+      "style": "PANIC BUY",
+      "fps": 58,
+      "draws": 373,
+      "triangles": 318446,
+      "geometries": 285,
+      "position": [
+        20,
+        29.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 5,
+      "image": "desktop-aisle-5.png",
+      "style": "COMPLAINTS",
+      "fps": 58,
+      "draws": 319,
+      "triangles": 362098,
+      "geometries": 220,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 6,
+      "image": "desktop-aisle-6.png",
+      "style": "FOOD FIGHT",
+      "fps": 60,
+      "draws": 282,
+      "triangles": 296654,
+      "geometries": 240,
+      "position": [
+        4,
+        25.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 7,
+      "image": "desktop-aisle-7.png",
+      "style": "LOADING BAY",
+      "fps": 58,
+      "draws": 305,
+      "triangles": 281308,
+      "geometries": 267,
+      "position": [
+        4,
+        1.3444999979800922
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 9,
+      "image": "desktop-aisle-9.png",
+      "style": "EXPRESS DISTRESS",
+      "fps": 54,
+      "draws": 365,
+      "triangles": 769290,
+      "geometries": 303,
+      "position": [
+        4.804999999999995,
+        27.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 10,
+      "image": "desktop-aisle-10.png",
+      "style": "MANAGEMENT",
+      "fps": 58,
+      "draws": 329,
+      "triangles": 354386,
+      "geometries": 267,
+      "position": [
+        4,
+        29.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 11,
+      "image": "desktop-aisle-11.png",
+      "style": "UNDER PRESSURE",
+      "fps": 56,
+      "draws": 370,
+      "triangles": 525810,
+      "geometries": 257,
+      "position": [
+        4,
+        25.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 12,
+      "image": "desktop-aisle-12.png",
+      "style": "LOST & FOUND",
+      "fps": 56,
+      "draws": 364,
+      "triangles": 358086,
+      "geometries": 270,
+      "position": [
+        4,
+        29.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 13,
+      "image": "desktop-aisle-13.png",
+      "style": "BAD PACKAGES",
+      "fps": 60,
+      "draws": 404,
+      "triangles": 939914,
+      "geometries": 296,
+      "position": [
+        4,
+        27.34449999798008
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 14,
+      "image": "desktop-aisle-14.png",
+      "style": "SECURITY",
+      "fps": 60,
+      "draws": 380,
+      "triangles": 451040,
+      "geometries": 296,
+      "position": [
+        4,
+        31.140833332897024
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 20,
+      "image": "desktop-aisle-20.png",
+      "style": "SHELF CONTROL",
+      "fps": 60,
+      "draws": 404,
+      "triangles": 431182,
+      "geometries": 300,
+      "position": [
+        4,
+        33.062499999738215
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 25,
+      "image": "desktop-aisle-25.png",
+      "style": "FINAL NOTICE",
+      "fps": 60,
+      "draws": 382,
+      "triangles": 597072,
+      "geometries": 342,
+      "position": [
+        10,
+        47.062499999738215
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1-repeat-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 234,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2-repeat-1.png",
+      "style": "DEEP FREEZE",
+      "fps": 58,
+      "draws": 275,
+      "triangles": 171780,
+      "geometries": 217,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3-repeat-1.png",
+      "style": "RETURN TO SENDER",
+      "fps": 58,
+      "draws": 339,
+      "triangles": 281244,
+      "geometries": 274,
+      "position": [
+        4,
+        25.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 216,
+      "position": [
+        2,
+        19.558702499925644
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 228,
+      "triangles": 159286,
+      "geometries": 197,
+      "position": [
+        4,
+        22.066453748465243
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 316,
+      "triangles": 256140,
+      "geometries": 262,
+      "position": [
+        4,
+        25.435092499973234
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 4,
+      "image": "phone-aisle-4.png",
+      "style": "PANIC BUY",
+      "fps": 58,
+      "draws": 375,
+      "triangles": 309534,
+      "geometries": 286,
+      "position": [
+        20,
+        29.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 5,
+      "image": "phone-aisle-5.png",
+      "style": "COMPLAINTS",
+      "fps": 60,
+      "draws": 252,
+      "triangles": 325490,
+      "geometries": 218,
+      "position": [
+        2,
+        19.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 6,
+      "image": "phone-aisle-6.png",
+      "style": "FOOD FIGHT",
+      "fps": 60,
+      "draws": 264,
+      "triangles": 283760,
+      "geometries": 244,
+      "position": [
+        4,
+        25.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 7,
+      "image": "phone-aisle-7.png",
+      "style": "LOADING BAY",
+      "fps": 60,
+      "draws": 305,
+      "triangles": 304206,
+      "geometries": 266,
+      "position": [
+        4,
+        1.496897499955387
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 9,
+      "image": "phone-aisle-9.png",
+      "style": "EXPRESS DISTRESS",
+      "fps": 54,
+      "draws": 344,
+      "triangles": 762600,
+      "geometries": 302,
+      "position": [
+        4.843333333333328,
+        27.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 10,
+      "image": "phone-aisle-10.png",
+      "style": "MANAGEMENT",
+      "fps": 60,
+      "draws": 288,
+      "triangles": 307778,
+      "geometries": 260,
+      "position": [
+        4,
+        29.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 11,
+      "image": "phone-aisle-11.png",
+      "style": "UNDER PRESSURE",
+      "fps": 60,
+      "draws": 323,
+      "triangles": 424292,
+      "geometries": 256,
+      "position": [
+        4,
+        25.558702499925644
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 12,
+      "image": "phone-aisle-12.png",
+      "style": "LOST & FOUND",
+      "fps": 60,
+      "draws": 338,
+      "triangles": 339796,
+      "geometries": 268,
+      "position": [
+        4,
+        29.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 13,
+      "image": "phone-aisle-13.png",
+      "style": "BAD PACKAGES",
+      "fps": 54,
+      "draws": 380,
+      "triangles": 890580,
+      "geometries": 293,
+      "position": [
+        4,
+        27.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 14,
+      "image": "phone-aisle-14.png",
+      "style": "SECURITY",
+      "fps": 60,
+      "draws": 342,
+      "triangles": 413572,
+      "geometries": 294,
+      "position": [
+        4,
+        31.558702499925644
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 20,
+      "image": "phone-aisle-20.png",
+      "style": "SHELF CONTROL",
+      "fps": 60,
+      "draws": 360,
+      "triangles": 344556,
+      "geometries": 290,
+      "position": [
+        4,
+        33.43509249997323
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 25,
+      "image": "phone-aisle-25.png",
+      "style": "FINAL NOTICE",
+      "fps": 52,
+      "draws": 400,
+      "triangles": 542284,
+      "geometries": 330,
+      "position": [
+        10,
+        47.49689749995539
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1-repeat-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 60,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 234,
+      "position": [
+        2,
+        19.435092499973234
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2-repeat-1.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 226,
+      "triangles": 156210,
+      "geometries": 215,
+      "position": [
+        4,
+        22.066453748465243
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3-repeat-1.png",
+      "style": "RETURN TO SENDER",
+      "fps": 58,
+      "draws": 313,
+      "triangles": 282892,
+      "geometries": 276,
+      "position": [
+        4,
+        25.558702499925644
+      ],
+      "firstPerson": false
+    }
+  ],
+  "result": "PASS"
+}

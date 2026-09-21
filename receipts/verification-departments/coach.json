@@ -1,0 +1,11 @@
+{
+  "scope": "Fresh disposable browser profiles. Real clicks, keys and touchscreen gestures. Read-only game snapshots; no gameplay state injection or score submission. Emulated phones, not physical hardware.",
+  "checks": [
+    "desktop: briefing waits, ammo prompt fits without covering controls, actual shots and crumbs teach reload, actual dodge teaches protection, pause clears cues, learning persists and Settings resets it",
+    "portrait: briefing waits, ammo prompt fits without covering controls, actual shots and crumbs teach reload, actual dodge teaches protection, pause clears cues, learning persists and Settings resets it",
+    "landscape: briefing waits, ammo prompt fits without covering controls, actual shots and crumbs teach reload, actual dodge teaches protection, pause clears cues, learning persists and Settings resets it, reduced motion enabled",
+    "narrow: briefing waits, ammo prompt fits without covering controls, actual shots and crumbs teach reload, actual dodge teaches protection, pause clears cues, learning persists and Settings resets it"
+  ],
+  "errors": [],
+  "result": "PASS"
+}

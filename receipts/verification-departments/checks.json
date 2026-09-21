@@ -1,0 +1,51 @@
+{
+  "candidate": "a26485367a1b4525e31c337b4f180b8e34f29fea",
+  "published_gameplay": "c2cf443402a7e5e91207d92809aae00e5d59be21",
+  "node_tests": {
+    "passed": 56,
+    "failed": 0
+  },
+  "ship": {
+    "modules": 47,
+    "pages": 1,
+    "result": "PASS"
+  },
+  "selected_recipe_assets_unchanged": 12,
+  "atlas_media_unchanged": true,
+  "source_sha256": {
+    "game/main.js": "e39d574da07e6d40df33f2ede83d4534010acf53ccedb7f1df62efde0ee50955",
+    "game/index.html": "a2164e228275d30dddac23862abac6ba54bc3ad8e3c0235e9f5a1b4a5fbc7af6",
+    "game/departments.js": "239e24bcfddfe180215638805b2276583d2568eafa0446dfa1304172f0d1a10c",
+    "game/field-coach.js": "dbe85df7145c0889882ce5b1fcb38b4cc108036f07da5a0e0f86ff12faa1ceca",
+    "game/field-coach.css": "fcd65acb647b378c6ae2a86c9221f5bb0b5356cd0f7a517085a6786dd3d20e56",
+    "game/assets/audit_drone.js": "b9ce1918ece1baee2b15a4de5400a1df207bdc8d35a89dae60ef6280a02000c9",
+    "game/assets/battery.js": "eca2d7e8ee729c6d5c1e409e91e61fea535b05001452f443dbbfde169f27d29c",
+    "game/assets/checkout.js": "19d0e359a5381f1ebbd0be493e6a8e5b33870e5e4a81e595408319d88d7bcdd1",
+    "game/assets/director.js": "de8124243a1565a4add79e5ec1e3b886c11ecbc495bb37ffd10a279ba8ade1e5",
+    "game/assets/floor.js": "4b00dd9ee4f26bfcb92a9a1835a0d96a3a9d0d5ec36db60d05f630a7b74eb671",
+    "game/assets/freezer.js": "07d106a0db0830e434e262134c974a7eaa784ead4e2cc5ab2d667dcb775a64b1",
+    "game/assets/polisher.js": "be6ed23fbfcde79fd7c0efef866dcaeb8101d40f50d44f4cbc34b0e2a875b961",
+    "game/assets/security_trolley.js": "b9048cbd9d15f81715b4a4e6c76ed070b4d72b02ba1da04df2236cb86176b982",
+    "game/assets/shelf.js": "dfd1e95419ec640e6dd00f09ecd51ddb38d479de35eb62af9e07d8434eab134f",
+    "game/assets/snack.js": "60f1fb64bcfb6616b5bd182243df8b5b307be20bb0e0c6d015dfff0e70aa3a15",
+    "game/assets/vacuum.js": "e543e43864c2c407c5b290dbc6a5a38af0e1559b4cc5fcc8b9f073b69fb95cb4",
+    "game/assets/visor.js": "19f4039b2ed0cdd6d68490bde57096f1d69912a8033a768959ee9daa4890ce20"
+  },
+  "video": {
+    "path": "outputs/department-demo/hungry-for-trouble-departments.mp4",
+    "bytes": 11232562,
+    "sha256": "d07f25b048120c6ffa39bd4fe83e4f792d29f0a08f3c2e42bf6125def83143b5",
+    "duration_seconds": 28.133333,
+    "width": 1360,
+    "height": 900,
+    "fps": 30,
+    "codec": "h264",
+    "audio": false
+  },
+  "limitations": [
+    "Local candidate only; no push, production promotion or entry update.",
+    "Chrome emulation is not a physical phone benchmark.",
+    "No unfamiliar-human playtest or complete campaign run is claimed."
+  ],
+  "initial_implementation": "495c6cae886d3b660a75360dc6463e9a86088b33"
+}

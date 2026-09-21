@@ -1,0 +1,488 @@
+{
+  "scope": "Only route unlocks are preloaded. Real level-selection clicks/taps and real movement. Read-only telemetry. No combat-state injection or score submission. Phone viewport emulation, not physical hardware.",
+  "baseline": false,
+  "errors": [],
+  "snapshots": [
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 58,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 216,
+      "textures": 8,
+      "position": [
+        2,
+        19.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 282,
+      "triangles": 171936,
+      "geometries": 199,
+      "textures": 9,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 348,
+      "triangles": 268670,
+      "geometries": 261,
+      "textures": 8,
+      "position": [
+        4,
+        25.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1-repeat-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 60,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 222,
+      "textures": 7,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2-repeat-1.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 273,
+      "triangles": 172680,
+      "geometries": 205,
+      "textures": 8,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3-repeat-1.png",
+      "style": "RETURN TO SENDER",
+      "fps": 58,
+      "draws": 358,
+      "triangles": 274580,
+      "geometries": 263,
+      "textures": 9,
+      "position": [
+        4,
+        25.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1-repeat-2.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 222,
+      "textures": 7,
+      "position": [
+        2,
+        19.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2-repeat-2.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 282,
+      "triangles": 170274,
+      "geometries": 205,
+      "textures": 8,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3-repeat-2.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 348,
+      "triangles": 264432,
+      "geometries": 261,
+      "textures": 9,
+      "position": [
+        4,
+        25.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1-repeat-3.png",
+      "style": "CRUNCH TIME",
+      "fps": 60,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 222,
+      "textures": 7,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2-repeat-3.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 290,
+      "triangles": 176862,
+      "geometries": 205,
+      "textures": 9,
+      "position": [
+        4,
+        21.777720875932072
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3-repeat-3.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 341,
+      "triangles": 271212,
+      "geometries": 263,
+      "textures": 9,
+      "position": [
+        4,
+        25.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 1,
+      "image": "desktop-aisle-1-repeat-4.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 269,
+      "triangles": 711884,
+      "geometries": 222,
+      "textures": 7,
+      "position": [
+        2,
+        19.062499999738208
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 2,
+      "image": "desktop-aisle-2-repeat-4.png",
+      "style": "DEEP FREEZE",
+      "fps": 58,
+      "draws": 290,
+      "triangles": 173154,
+      "geometries": 205,
+      "textures": 8,
+      "position": [
+        4,
+        21.85342277374408
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "desktop",
+      "floor": 3,
+      "image": "desktop-aisle-3-repeat-4.png",
+      "style": "RETURN TO SENDER",
+      "fps": 58,
+      "draws": 340,
+      "triangles": 271212,
+      "geometries": 263,
+      "textures": 9,
+      "position": [
+        4,
+        25.14083333289702
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 60,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 216,
+      "textures": 7,
+      "position": [
+        2,
+        19.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 226,
+      "triangles": 151418,
+      "geometries": 197,
+      "textures": 6,
+      "position": [
+        4,
+        22.066453748465243
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 306,
+      "triangles": 268524,
+      "geometries": 262,
+      "textures": 7,
+      "position": [
+        4,
+        25.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1-repeat-1.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 222,
+      "textures": 6,
+      "position": [
+        2,
+        19.435092499973234
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2-repeat-1.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 221,
+      "triangles": 159474,
+      "geometries": 202,
+      "textures": 8,
+      "position": [
+        4,
+        22.126659543780267
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3-repeat-1.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 300,
+      "triangles": 247204,
+      "geometries": 259,
+      "textures": 7,
+      "position": [
+        4,
+        25.558702499925644
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1-repeat-2.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 222,
+      "textures": 6,
+      "position": [
+        2,
+        19.558702499925644
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2-repeat-2.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 228,
+      "triangles": 155398,
+      "geometries": 203,
+      "textures": 8,
+      "position": [
+        4,
+        22.066453748465243
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3-repeat-2.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 291,
+      "triangles": 249376,
+      "geometries": 260,
+      "textures": 7,
+      "position": [
+        4,
+        25.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1-repeat-3.png",
+      "style": "CRUNCH TIME",
+      "fps": 58,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 222,
+      "textures": 6,
+      "position": [
+        2,
+        19.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2-repeat-3.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 227,
+      "triangles": 157296,
+      "geometries": 203,
+      "textures": 7,
+      "position": [
+        4,
+        22.066453748465243
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3-repeat-3.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 314,
+      "triangles": 267862,
+      "geometries": 262,
+      "textures": 8,
+      "position": [
+        4,
+        25.496897499955388
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 1,
+      "image": "phone-aisle-1-repeat-4.png",
+      "style": "CRUNCH TIME",
+      "fps": 56,
+      "draws": 236,
+      "triangles": 564178,
+      "geometries": 222,
+      "textures": 6,
+      "position": [
+        2,
+        19.558702499925644
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 2,
+      "image": "phone-aisle-2-repeat-4.png",
+      "style": "DEEP FREEZE",
+      "fps": 60,
+      "draws": 226,
+      "triangles": 157268,
+      "geometries": 203,
+      "textures": 7,
+      "position": [
+        4,
+        22.126659543780267
+      ],
+      "firstPerson": false
+    },
+    {
+      "profile": "phone",
+      "floor": 3,
+      "image": "phone-aisle-3-repeat-4.png",
+      "style": "RETURN TO SENDER",
+      "fps": 60,
+      "draws": 306,
+      "triangles": 263432,
+      "geometries": 262,
+      "textures": 7,
+      "position": [
+        4,
+        25.435092499973234
+      ],
+      "firstPerson": false
+    }
+  ],
+  "result": "PASS"
+}
