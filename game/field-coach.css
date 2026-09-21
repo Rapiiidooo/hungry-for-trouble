@@ -56,7 +56,7 @@
 }
 @media (max-height: 500px) and (orientation: landscape) {
   #field-tip {
-    bottom: 58px;
+    bottom: 134px;
     max-width: calc(100vw - 300px);
     font-size: 11px;
   }

@@ -186,7 +186,8 @@ try {
     );
     assert.ok(after.shots > before.shots);
     const dash = { ...(await centre("#dash-button")), id: 3 };
-    await send("touchStart", [moving, turned, dash]);
+    // Retreat during the protection check; a forward burst runs into the next patrol.
+    await send("touchStart", [{ ...move, y: move.y + 31 }, turned, dash]);
     await sleep(100);
     assert.ok((await read()).dashCooldown > 0.7);
     await send("touchEnd", []);
@@ -219,6 +220,28 @@ try {
     assert.ok(after.shots > before.shots);
     assert.equal(after.fpsPitch, 0);
     await send("touchEnd", []);
+    await page.waitForFunction(() => window.__GAME__.coach.visible, {
+      timeout: 4000,
+    });
+    const coachLayout = await page.evaluate(() => {
+      const rect = (id) =>
+        document.getElementById(id).getBoundingClientRect().toJSON();
+      return {
+        tip: rect("field-tip"),
+        controls: ["move-stick", "aim-stick", "dash-button", "visor-hud"].map(
+          rect,
+        ),
+      };
+    });
+    for (const control of coachLayout.controls)
+      assert.ok(
+        Math.min(control.right, coachLayout.tip.right) <=
+          Math.max(control.x, coachLayout.tip.x) ||
+          Math.min(control.bottom, coachLayout.tip.bottom) <=
+            Math.max(control.y, coachLayout.tip.y),
+        `${name}: visible coaching must leave FPS and movement controls unobstructed`,
+      );
+    await page.screenshot({ path: new URL(`${name}-coach.png`, out).pathname });
     await tap("#map-toggle");
     assert.equal(
       await page.$eval("#map-toggle", (el) => el.getAttribute("aria-expanded")),
