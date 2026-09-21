@@ -4,7 +4,7 @@
 
 Daily/general boards, campaign replay validation, trophy access, aligned home labels and local-save Settings reset were verified at gameplay commit `d3cdd7a964fa2d48fc562b10248b1441d01ddba3`, including the official local phone/4G gate. Credits now run for 60 seconds, with separate braking, turning and reversing vacuum gags beneath the text; pause also freezes the wheels, eyes, captions and dust. The new focused browser check and 39-module ship check pass; evidence is in `receipts/verification-credits-motion/`. This presentation-only follow-up does not claim a fresh campaign or official gate run.
 
-The credits' new Inspirations section describes maze chases, frantic firefights, survival arenas and power-ups. The user also requested exact game names. Their choice is pending in `tasks/inspirations.md`: the official jam README still forbids trademarked names without clarifying credit acknowledgements. No exception is assumed. The first Director checkout still ends with Made by Rapido and The adventure continues before the basement discovery.
+The user confirmed that the contest build's Inspirations section should credit mechanics only: maze chases, frantic firefights, survival arenas and power-ups. The existing wording already matches this choice; do not add trademarked game names. This decision is settled. The first Director checkout still ends with Made by Rapido and The adventure continues before the basement discovery.
 
 Atlas catalogue publication remains authorized **only after actual contest submission**. Keep the generated Atlas project private; its deferred integration is tracked in `tasks/atlas-assets.md`. No deployment, push or contest entry is authorized in this pass.
 

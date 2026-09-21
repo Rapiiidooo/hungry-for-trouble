@@ -81,6 +81,8 @@ The header uses compact trophy and Settings icons with the exact same opaque ena
 
 Credits are a playful dark-blue film roll with warm gold accents and short production jokes. The user prefers a slightly slower pace: use a 60-second roll. Stage native SVG vacuums below the reading area, one at a time, with braking, a hesitant turn and backwards driving instead of identical straight crossings. Their captions, wheels, blinking eyes and dust share the paused clock. Honour skip and reduced motion. End with Made by Rapido. The first Director checkout adds The adventure continues before the basement discovery; manual playback from Settings must not spoil it. Attribute tools truthfully, including Atlas studies that are not yet runtime assets.
 
+For the contest build, the user chose to acknowledge inspirational mechanics only: maze chases, frantic firefights, survival arenas and power-ups. Keep the Inspirations section free of trademarked game names.
+
 The warranty is a translucent pale-blue hemisphere with an orbiting arc and a single impact flare, tied to actual charges. Boss health follows its world position in overhead and first person. Orange landing rings fill before lobbed impacts. A shockwave's visible opening must match its safe sector. Camera transit uses a short lift and easing, with no roll and a reduced-motion alternative.
 
 The final checkout stages a crew escape, character banter and a sunrise, then rewards the golden vacuum livery. The livery changes appearance only and retains the red trim. The favicon is an original compact vacuum silhouette. The employee badge keeps its bottom rule.
