@@ -1,13 +1,13 @@
 # 404 Game Jam readiness
 
-This records the rules supplied by the user, not a submitted entry or a claim of eligibility. Recheck the official repository before preparing the final public entry. Publishing, pushing and submitting have not been authorized.
+This records the rules supplied by the user, not a submitted entry or a claim of eligibility. Recheck the official repository before preparing the final public entry. Dedicated VM hosting is authorized and the verified build is deployed over public HTTPS. The owner also authorized public source publication and direct submission after implementation and verification, and confirmed eligibility.
 
 ## Entry and receipts
 
 - Submit before **25 September 2026, 23:59 UTC**. Teams have one to four people, with one entry per person.
 - The source repository must be public, with genuine work in commits and a first commit on or after **11 September, 00:00 UTC**. Preserve the existing local history; do not squash it into an end-of-jam upload or fabricate dates.
 - Every 3D object must build geometry from Three.js constructors and operations through the 404 recipe. No downloaded meshes, hand modelling, embedded vertex blobs or copied reference-game code/assets. The selected geometry and candidate receipts are retained here.
-- File-based textures, sprites, skies, music and sound are allowed and must be declared, along with agents/models/generators. Atlas is optional under the supplied rules but explicitly requested by this user. New Atlas outputs await integration; see `tasks/atlas-assets.md`.
+- File-based textures, sprites, skies, music and sound are allowed and must be declared, along with agents/models/generators. Atlas is optional under the supplied rules but explicitly requested by this user. The three existing Atlas creations are integrated; see `receipts/verification-atlas/README.md`.
 - Keep all IP original. Hungry for Trouble uses its own appliances and names. The abandoned coffin game remains in a separate sibling repository and is excluded from this entry.
 
 The final public URL and exact commit must pass the unmodified recipe's `harness/jam.mjs` on a phone viewport under its 4G profile. It requires readiness within the limit, less than 10 MB, a real tap to start and finger movement, fewer than 900 draw calls and 1.5 million triangles, no console errors and no missing resources. Save and paste the verdict block without editing it. The organizers rerun the same URL and commit. Existing local results do not replace this live-URL gate.
@@ -37,6 +37,6 @@ The user retains ownership. The supplied terms include a non-exclusive promotion
 
 ## Remaining delivery work
 
-The user authorized Atlas workspace-catalog publication only after actual contest submission. Keep that project private before submission and declare only media actually included in the entry; the three generated Atlas outputs are not yet used. Their catalog download cannot be a prerequisite for submitting. Preserve the submitted game commit and check entry-update rules before any later media integration.
+The owner superseded the earlier Atlas timing condition with immediate permission for the three existing creations. They are now integrated and declared in `receipts/atlas/runtime-assets.json`, with focused evidence in `receipts/verification-atlas/`. The graph is private again; the three published catalog assets remain available without any public project link.
 
-Prepare the entry metadata and playable deployment once authorized, run the exact-commit live gate, and attach its original verdict. Keep margin before the deadline. No public play link, PR, demo post or wallet submission exists at this checkpoint. The conditional Atlas permission does not authorize any of those actions now.
+The dedicated VM and HTTPS address are live. DNS, TLS and a certificate-renewal dry run pass. The owner confirmed eligibility and authorized direct submission after the final checks. Publish the audited source with its real history, deploy the exact gameplay commit, run its official public-URL gate and attach the unedited verdict to the entry PR. Use the authenticated GitHub handle, its public X contact and `wallet: "later"`; no private wallet or contact details need to be guessed. Keep the submitted commit stable after opening the entry.

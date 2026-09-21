@@ -1,4 +1,4 @@
-// Original synthesised score and effects, started only by a player gesture.
+// Atlas shift music and original synthesised cues start only after a player gesture.
 export class Sound {
   constructor() {
     this.enabled = true;
@@ -6,6 +6,9 @@ export class Sound {
     this.beat = 0;
     this.nextBeat = 0;
     this.mode = "idle";
+    this.trackState = "idle";
+    this.trackOffset = 0;
+    this.trackVoice = null;
   }
 
   async start() {
@@ -23,6 +26,75 @@ export class Sound {
     }
     await this.ctx.resume();
     this.nextBeat = this.ctx.currentTime;
+    if (this.enabled && this.trackState === "idle") void this.loadTrack();
+  }
+
+  async loadTrack() {
+    this.trackState = "loading";
+    try {
+      const response = await fetch(
+        new URL("./media/night-shift.mp3", import.meta.url),
+        {
+          signal: AbortSignal.timeout(15000),
+        },
+      );
+      if (!response.ok) throw new Error("Music unavailable");
+      const original = await this.ctx.decodeAudioData(
+        await response.arrayBuffer(),
+      );
+      const fade = Math.min(
+        Math.round(original.sampleRate * 0.35),
+        Math.floor(original.length / 4),
+      );
+      const length = original.length - fade;
+      const loop = this.ctx.createBuffer(
+        original.numberOfChannels,
+        length,
+        original.sampleRate,
+      );
+      for (let channel = 0; channel < original.numberOfChannels; channel++) {
+        const input = original.getChannelData(channel),
+          output = loop.getChannelData(channel);
+        output.set(input.subarray(fade));
+        // Blend the tail into the omitted intro, then continue seamlessly at the loop start.
+        for (let i = 0; i < fade; i++) {
+          const mix = i / (fade - 1);
+          output[length - fade + i] =
+            input[original.length - fade + i] * (1 - mix) + input[i] * mix;
+        }
+      }
+      this.trackBuffer = loop;
+      this.trackState = "ready";
+    } catch {
+      this.trackState = "fallback";
+    }
+  }
+
+  playTrack(active) {
+    const time = this.ctx.currentTime;
+    if (active && !this.trackVoice) {
+      const source = this.ctx.createBufferSource(),
+        gain = this.ctx.createGain();
+      source.buffer = this.trackBuffer;
+      source.loop = true;
+      gain.gain.setValueAtTime(0, time);
+      gain.gain.linearRampToValueAtTime(0.22, time + 0.18);
+      source.connect(gain).connect(this.master);
+      source.start(time, this.trackOffset);
+      source.onended = () => {
+        source.disconnect();
+        gain.disconnect();
+      };
+      this.trackVoice = { source, gain, started: time };
+    } else if (!active && this.trackVoice) {
+      const { source, gain, started } = this.trackVoice;
+      this.trackOffset =
+        (this.trackOffset + time - started) % this.trackBuffer.duration;
+      gain.gain.cancelScheduledValues(time);
+      gain.gain.setTargetAtTime(0, time, 0.025);
+      source.stop(time + 0.15);
+      this.trackVoice = null;
+    }
   }
 
   toggle() {
@@ -188,6 +260,8 @@ export class Sound {
   update(playing, overtime, theme) {
     if (!this.ctx) return;
     const time = this.ctx.currentTime;
+    const recorded = this.trackState === "ready" && overtime <= 0;
+    this.playTrack(playing && this.enabled && recorded);
     if (!playing) {
       this.nextBeat = time;
       this.mode = "idle";
@@ -199,6 +273,7 @@ export class Sound {
       this.beat = 0;
       this.nextBeat = time;
     }
+    if (recorded) return;
     if (time < this.nextBeat) return;
     if (mode === "overtime") {
       // An original major-key 158 BPM sprint, independent of the normal shift melody.

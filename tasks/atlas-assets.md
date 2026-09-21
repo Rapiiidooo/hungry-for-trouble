@@ -12,22 +12,16 @@ Project: `adcf8ed1-9469-4796-8d09-299fe978aead`, **Hungry for Trouble · Radio, 
 | MOP-3 portrait         | Gemini 3.1 Flash Lite Image | `06e7c09d-6dfc-4ad7-8427-44e046209e6b` |
 | SHELF CONTROL portrait | Gemini 3.1 Flash Lite Image | `15d2d769-e152-4a85-82c8-b067b4a9ee02` |
 
-Exact prompts, graph identifiers and generation status are in `receipts/atlas/generation-assets.json`. The successful turn cost 56 Atlas credits, including 13 reported node-generation credits. The earlier aborted turn cost 2 credits. Audio is reported as a 30-second MP3; image nodes used 1K square output despite the prompts asking for 512 px. Actual media dimensions, duration and appearance remain unverified because the files are not downloaded. None is used by the game yet.
+Exact prompts, graph identifiers and generation status are in `receipts/atlas/generation-assets.json`. The successful turn cost 56 Atlas credits, including 13 reported node-generation credits. The earlier aborted turn cost 2 credits. Audio is reported as a 30-second MP3; image nodes used 1K square output despite the prompts asking for 512 px. All three files are now downloaded, inspected, optimized and integrated. Exact properties and checksums are in `receipts/atlas/runtime-assets.json`.
 
-## Conditional authorization
+## Authorization and progress
 
-Automatic approval review rejected `set_project_team_access` with `access_level: "workspace_read"`. The operation permanently publishes the project's generated files to all members of the named workspace, even if the project is later made private or deleted. Public-link sharing is separate. No access change was executed.
+On 21 September 2026, the owner explicitly superseded the earlier after-submission condition and authorized immediate catalog publication of these three creations. The exact project was set to `workspace_read`; no public-link sharing was enabled. All three files are downloaded and their byte counts and SHA-256 checksums verified. Originals remain in ignored `work/atlas/`. Runtime WebP portraits and the original MP3 are integrated with a gesture-started loop and synthesized combat/Overtime cues. The project graph is private again; the three authorized catalog files remain accessible, and public-link sharing remains off.
 
-On 21 September 2026, the user approved this project's three creations for the named workspace catalog **only after the game has actually been submitted to the competition**. Keep the Atlas project private until that condition is met. A local commit, deploy, planned entry or prepared PR is not submission. Record the submitted entry PR URL and commit before executing the access change. This decision does not authorize submitting, pushing or deploying the game now. Once the condition is satisfied, the scoped workspace publication is already authorized; do not ask again for the same action.
+The owner also selected `trouble.rapidoai.dev` and authorized publishing the source and submitting the contest entry as soon as implementation and verification are complete. DNS and HTTPS are active, the certificate-renewal dry run passes, and the owner confirmed eligibility. No permission or information remains pending.
 
-The standard MCP download method requires catalog publication, so retrieval through that method is also deferred. Do not bypass the timing condition through another sharing route. The private web editor has a queued ZIP card, download ID `8005f076-7e6c-46b3-929f-85c4c0f7f150`; no available signed-in browser binding was found. A genuinely private export would not change workspace access, but no such automated download path is established. Catalog publication must not become a prerequisite for submission.
+## Remaining work
 
-## Resume after actual submission
-
-1. Verify and record the actual contest submission, then call `set_project_team_access` with `access_level: "workspace_read"` for the exact project above under the user's conditional authorization. Do not enable public-link sharing or publish unrelated projects.
-2. Resolve each known file with `get_workspace_asset`, then download through the returned authenticated Atlas URL. Load the existing shared environment directly into Node; never inspect or print the environment file or key. `scripts/atlas.mjs` implements the MCP bridge.
-3. Inspect both portraits, measure and audition the music, and compress the images for phone delivery. Keep originals and exact receipts outside the browser build. Store only selected runtime media under `game/media/`.
-4. Preserve the submitted game commit and recheck the entry-update rules before changing that build. For an allowed update or later version, use MOP-3 in the radio, SHELF CONTROL on the final-boss story/route, and the music through the existing sound toggle with a clean fallback. Credit Atlas and its reported generators only for files actually used.
-5. Verify sound gestures, mute/pause, image readability and missing requests. Rerun the official local phone/4G gate against the resulting gameplay commit, update asset declarations and `docs/resume.md`, then remove this completed tracker.
+The 51 Node checks, 43-module shipping check and focused Atlas browser probe pass. Evidence is saved in `receipts/verification-atlas/`. Finish the final public-URL gate against the release commit, then remove this completed tracker with the delivery tracker. Audio playback was measured technically; subjective listening is not claimed.
 
 Every world object must remain recipe-generated Three.js geometry. Atlas files are audio or flat interface illustrations, never downloaded meshes. The old coffin game's music and files stay separate.

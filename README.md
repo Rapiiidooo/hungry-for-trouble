@@ -2,6 +2,8 @@
 
 SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must rescue MOP-3, free the basement crew and unplug the store AI across twenty-five floors. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
 
+Play at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/).
+
 ## Play locally
 
 ```bash
@@ -60,7 +62,7 @@ Act-two stock is interactive: dash into or shoot a yellow stock cart to launch i
 
 Eight capped upgrade types support different builds: faster firing, spread, piercing, a warranty shield, crumb attraction, extra health, wall ricochets and freezing shots that interrupt attacks. Ricochet, spread, piercing and frost combine. Original robot portraits identify MOP-3, BUFF-0 and SHELF CONTROL; the current radio message can be reread in the pause menu. The title keeps one short objective. Pressing Play opens a six-second exchange with MOP-3 before the timer and enemies move; Start Now skips it. The mission remains available under Mission & Controls in pause. Rescues at floors 10 and 15 lead into the next chapter. Completing floor 20 powers down the store and stages a nine-second crew escape at sunrise, with an original musical payoff and a skippable conversation. It unlocks a saved golden vacuum livery, switchable on the title screen without affecting combat. Boss health follows the boss in both camera views. Warranty charges create a visible shield dome, with an impact flash and break effect; Vac Cam uses a matching visor indicator.
 
-The title's Settings gear includes replayable **Credits** and **Reset local save**. Reset requires confirmation and clears this browser's saved campaign, route, personal record and gold livery; shared scores and the player alias remain. Credits can be paused or skipped, honour reduced motion and attribute Atlas exploration separately from the media actually used in the game. Opening them from Settings does not reveal the hidden route.
+The title's Settings gear includes replayable **Credits** and **Reset local save**. Reset requires confirmation and clears this browser's saved campaign, route, personal record and gold livery; shared scores and the player alias remain. Credits can be paused or skipped, honour reduced motion and credit Atlas, its soundtrack/portrait generators and the original code-native effects. Opening them from Settings does not reveal the hidden route.
 
 ## Daily Rush and shared scores
 
@@ -103,6 +105,7 @@ node scripts/presentation-playtest.mjs
 node scripts/onboarding-playtest.mjs
 node scripts/leaderboard-playtest.mjs
 node scripts/continue-playtest.mjs
+node scripts/atlas-playtest.mjs
 node scripts/credits-playtest.mjs
 node scripts/playthrough.mjs --from=10 --credits --out=credits-director
 node scripts/multiplayer-playtest.mjs
@@ -111,10 +114,10 @@ node scripts/multiplayer-playtest.mjs --coop
 
 The simulation tests use Node's built-in test runner. The shipping and browser checks use the adjacent official `404-game-recipe` checkout; browser scripts expect local Google Chrome on macOS. Browser checks require the development server. `playthrough.mjs` attempts the campaign using real keyboard and pointer events with read-only telemetry; `--from` selects an unlocked practice floor and `--through` limits the last checkout to test. `locked-wing-ending-playtest.mjs` is an isolated presentation fixture, not a combat playthrough. `touch-playtest.mjs` checks simultaneous movement, firing and dash, release, cancellation, pause and rotation.
 
-The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits). The owner permits their workspace-catalog publication only after actual contest submission, so that download method is deferred and they are not yet used at runtime.
+The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Atlas supplies the original Lyria 3 Clip soundtrack and Gemini 3.1 Flash Lite Image portraits for MOP-3 and SHELF CONTROL. The optimized media total 771 KB. Original Web Audio combat cues, Overtime, the ending phrase and a synthesized fallback remain. [Atlas provenance and verification](receipts/verification-atlas/README.md) name every shipped file, generator, processing step and checksum. The game does not call Atlas or use an API key at runtime.
 
-The locked-wing build passes 48 Node checks, including 1,000 new seeded layouts and preservation of existing General scores under the new campaign replay version. [Locked-wing evidence](receipts/verification-locked-wing/README.md) records the new browser checks and their precise scope. [Leaderboard and credits evidence](receipts/verification-leaderboards/README.md) covers verified shared campaign scores, both boards, local reset, aligned menus, the staff roll and an actual Director victory followed by credits and aisle 11. [Onboarding evidence](receipts/verification-onboarding/README.md) covers briefing timing, initial ammunition and basic-gear restarts. Earlier campaign, finale and multiplayer evidence remains in [the preceding receipts](receipts/verification-reveal/README.md). A live-URL submission gate remains outstanding.
+The current build passes 51 Node checks, including 1,000 new seeded layouts and preservation of existing General scores under the new campaign replay version. [Locked-wing evidence](receipts/verification-locked-wing/README.md) records the new browser checks and their precise scope. [Leaderboard and credits evidence](receipts/verification-leaderboards/README.md) covers verified shared campaign scores, both boards, local reset, aligned menus, the staff roll and an actual Director victory followed by credits and aisle 11. [Onboarding evidence](receipts/verification-onboarding/README.md) covers briefing timing, initial ammunition and basic-gear restarts. Earlier campaign, finale and multiplayer evidence remains in [the preceding receipts](receipts/verification-reveal/README.md). [Continue verification](receipts/verification-continue/README.md) also covers earned equipment, replay renewal, reset, remote room smoke checks and persistent scores. The final public-URL gate is retained separately before submission.
 
 The [official local phone/4G verdict](receipts/verification-locked-wing/jam/verdict.txt) passes for implementation commit `2445aeb86b29f60998c52b69deacf7b63685d443`: 5.7-second readiness, 2.7 MB, real touch movement and no errors. It covers the opening aisle in Chrome phone emulation, with separate new-floor evidence above.
 
-For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. Hosting and contest submission have not been performed.
+For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. The dedicated server is live over HTTPS; the entry PR is prepared after the final exact-commit public gate.

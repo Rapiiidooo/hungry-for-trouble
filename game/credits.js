@@ -26,24 +26,24 @@ const ROLES = [
     "Original visual studies. The meshes are still made of code.",
   ],
   [
-    "MUSIC & SOUND EFFECTS",
+    "COMBAT CUES & OVERTIME",
     "Web Audio & Codex",
-    "Original elevator music with unresolved anger issues.",
+    "Every hit, repair and invincible sprint has its own voice.",
   ],
   [
-    "ASSET EXPLORATION",
+    "SOUNDTRACK & PORTRAITS",
     "Atlas",
-    "Portrait and soundtrack studies generated for this project.",
+    "Original music and two very opinionated robot portraits.",
   ],
   [
-    "MUSIC GENERATOR STUDIES",
+    "MUSIC GENERATOR",
     "Google Lyria 3 Clip",
-    "Generated on Atlas. Study track, not used in this build.",
+    "Generated on Atlas. Now playing in a supermarket near you.",
   ],
   [
-    "PORTRAIT GENERATOR STUDIES",
+    "PORTRAIT GENERATOR",
     "Gemini 3.1 Flash Lite Image",
-    "MOP-3 and SHELF CONTROL studies on Atlas, not used in this build.",
+    "MOP-3 and SHELF CONTROL, generated on Atlas. Neither approved the photo.",
   ],
   [
     "STUNT COORDINATOR",

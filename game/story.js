@@ -15,8 +15,12 @@ export const SPEAKERS = {
     color: "#ef725e",
   },
 };
-// Original code-native radio portraits; the private Atlas portraits are not shipped.
+// Atlas portraits are flat UI art; world characters still use the recipe geometry.
 export function portrait(id) {
+  if (id === "mop" || id === "shelf") {
+    const file = id === "mop" ? "mop-3" : "shelf-control";
+    return `<img class="atlas-portrait" src="./media/${file}.webp" width="256" height="256" alt="${SPEAKERS[id].name}" decoding="async">`;
+  }
   const color = SPEAKERS[id]?.color || SPEAKERS.mop.color;
   const body =
     id === "shelf"

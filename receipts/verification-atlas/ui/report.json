@@ -1,0 +1,52 @@
+{
+  "checks": [
+    "No audio before a gesture; real Play starts the Atlas track; real pause and mute silence output and Resume/unmute restore it",
+    "Atlas MOP-3 loads in desktop and touch briefings; SHELF CONTROL appears in actual aisle-three radio; credits identify the shipped generators",
+    "A full real-time Atlas loop remains audible without restarting its source; Overtime switches to the original synth cue and restores the music afterward",
+    "A deliberately undecodable music response falls back to the original synthesized score without blocking play"
+  ],
+  "errors": [],
+  "scope": "Disposable server and browser. Real briefing, pause, mute and practice controls; practice unlocks are a disclosed local fixture. A separate Sound component fixture measures actual Web Audio output, a full loop, Overtime and decode-failure fallback. No subjective listening or complete combat run is claimed.",
+  "loop": {
+    "duration": 30.422244897959185,
+    "samplingWindowMs": 400,
+    "minimumWindowPeakRms": 0.00845511734938849,
+    "samples": [
+      0.024818329979096533,
+      0.02115032241602432,
+      0.022429428854459896,
+      0.023586854321550454,
+      0.022464303614325932,
+      0.02335082711555475,
+      0.021339541822725048,
+      0.023132560116090776,
+      0.02213769461467035,
+      0.02339278314642071,
+      0.02156018794742588,
+      0.02214326413509728,
+      0.02142008928365302,
+      0.017864507428718063,
+      0.02293688103731906,
+      0.020963940565873886,
+      0.02196592114041168,
+      0.020338433836420925,
+      0.024900879225192706,
+      0.012918979888408002,
+      0.00845511734938849,
+      0.019891350385855166,
+      0.02646204840902642,
+      0.023921398229362366,
+      0.022482911773532333,
+      0.023128038847322157,
+      0.021628078442264824,
+      0.019437786867565587,
+      0.024513705882620165,
+      0.02145533353566363,
+      0.0236718107822749,
+      0.01896148930540753,
+      0.022538656953118182
+    ],
+    "sourceRestarted": false
+  },
+  "result": "PASS"
+}

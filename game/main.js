@@ -1640,7 +1640,10 @@ function finishBriefing() {
 function pause(value = !paused) {
   if (mode !== "playing" || game.state !== "playing" || building) return;
   paused = value;
-  if (value) releaseLook();
+  if (value) {
+    releaseLook();
+    sound.update(false, 0, game.map.level.theme);
+  }
   accumulator = 0;
   clearInput();
   ui["pause-screen"].hidden = !value;
@@ -3225,6 +3228,7 @@ function bindInput() {
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
+      sound.update(false, 0, game.map.level.theme);
       clearInput();
       if (!game.multiplayer) pause(true);
     }

@@ -1,0 +1,68 @@
+{
+  "project": "adcf8ed1-9469-4796-8d09-299fe978aead",
+  "catalogPublication": "Explicitly authorized and completed on 2026-09-21 for these three existing outputs. The graph was then returned to private to prevent automatic publication of future outputs; no public project link was enabled.",
+  "generationCredits": {
+    "successfulTurn": 56,
+    "nodeGenerationIncludedInTurn": 13,
+    "earlierAbortedTurn": 2,
+    "additionalGenerationThisPass": 0
+  },
+  "audio": {
+    "durationSeconds": 30.772167,
+    "codec": "mp3",
+    "sampleRate": 44100,
+    "channels": 2,
+    "meanDb": -14.3,
+    "peakDb": -0.1,
+    "loopSeconds": 30.422244897959185
+  },
+  "assets": [
+    {
+      "name": "music",
+      "fid": "33a924d2-b8a7-43ba-8716-b765c99ec0b8",
+      "originalBytes": 744609,
+      "sha256": "777f6302cd48f827c4f5d34a663bd750e348004ce3543001d5aec40fac8879ca",
+      "mimeType": "audio/mpeg",
+      "platform": "Atlas",
+      "model": "Google Lyria 3 Clip",
+      "runtimeFile": "game/media/night-shift.mp3",
+      "runtimeBytes": 744609,
+      "runtimeSha256": "777f6302cd48f827c4f5d34a663bd750e348004ce3543001d5aec40fac8879ca",
+      "processing": "Original MP3, byte-identical to the Atlas download; a 350 ms crossfade is applied in the Web Audio loop buffer."
+    },
+    {
+      "name": "mop",
+      "fid": "06e7c09d-6dfc-4ad7-8427-44e046209e6b",
+      "originalBytes": 1624648,
+      "sha256": "762c95164357b974c30f034262c99ffe292884dfad73562ba344930230679875",
+      "mimeType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "platform": "Atlas",
+      "model": "Gemini 3.1 Flash Lite Image",
+      "runtimeFile": "game/media/mop-3.webp",
+      "runtimeBytes": 14678,
+      "runtimeSha256": "c26cbb56e579379117bdcb0ca379909d8fd55b4f0b31790fbfb7f82f24103285",
+      "processing": "cwebp quality 84, resized from 1024 square to 256 square."
+    },
+    {
+      "name": "shelf",
+      "fid": "15d2d769-e152-4a85-82c8-b067b4a9ee02",
+      "originalBytes": 1351772,
+      "sha256": "b26f2c774a6b33ccd66316da9ccef4d5d234fcda59be0e2c1f4c75124c12d203",
+      "mimeType": "image/png",
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "platform": "Atlas",
+      "model": "Gemini 3.1 Flash Lite Image",
+      "runtimeFile": "game/media/shelf-control.webp",
+      "runtimeBytes": 12042,
+      "runtimeSha256": "fd2955cdf1963738c5a2783e089fd0812c328cdf430edd003c19c9a2a9404958",
+      "processing": "cwebp quality 84, resized from 1024 square to 256 square."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "scope": "Dedicated remote VM through an SSH tunnel. Disposable browser identities, real controls and shared API responses. This does not test public DNS or TLS.",
+  "checks": [
+    "Remote campaign resumes its saved seed and kit after reload, paused, with a replay-verified server attempt",
+    "Real resumed campaign score is accepted and visible to a separate phone browser in General, absent from Daily",
+    "coop: two independent clients create/join/start; keyboard movement propagates, phone reconnects and moves/fires with two fingers, leaving ends the shared match",
+    "versus: two independent clients create/join/start; keyboard movement propagates, phone reconnects and moves/fires with two fingers, leaving ends the shared match"
+  ],
+  "errors": [],
+  "score": {
+    "name": "QA_DEPLOY_0921",
+    "score": 40,
+    "floor": 1,
+    "seconds": 11.116666666666799
+  },
+  "result": "PASS"
+}
