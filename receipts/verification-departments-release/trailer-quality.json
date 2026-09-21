@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "decode": "Full MP4 video and stereo audio decoded without errors.",
+  "frames": 1312,
+  "duration_seconds": 43.733333,
+  "audio_mean_db": -18.1,
+  "audio_peak_db": -2.7,
+  "visual_review": "Reviewed one frame per shot, including FPS combat, transit arrival, boss attacks, key pickup and matching door, upgrade selection and the end card. Gameplay excerpts retain real speed.",
+  "capture_errors": [],
+  "public_scores_submitted": 0
+}

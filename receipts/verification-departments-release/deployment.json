@@ -1,0 +1,66 @@
+{
+  "result": "PASS",
+  "url": "https://trouble.rapidoai.dev/",
+  "commit": "53def44f599b46edf8722b58b954896a6187b0dc",
+  "utc": "2026-09-21T22:59:15.060872+00:00",
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 25206,
+      "sha256": "a2164e228275d30dddac23862abac6ba54bc3ad8e3c0235e9f5a1b4a5fbc7af6",
+      "matches_commit": true
+    },
+    {
+      "path": "main.js",
+      "bytes": 118492,
+      "sha256": "e39d574da07e6d40df33f2ede83d4534010acf53ccedb7f1df62efde0ee50955",
+      "matches_commit": true
+    },
+    {
+      "path": "departments.js",
+      "bytes": 12891,
+      "sha256": "239e24bcfddfe180215638805b2276583d2568eafa0446dfa1304172f0d1a10c",
+      "matches_commit": true
+    },
+    {
+      "path": "field-coach.js",
+      "bytes": 5069,
+      "sha256": "dbe85df7145c0889882ce5b1fcb38b4cc108036f07da5a0e0f86ff12faa1ceca",
+      "matches_commit": true
+    },
+    {
+      "path": "field-coach.css",
+      "bytes": 1266,
+      "sha256": "fcd65acb647b378c6ae2a86c9221f5bb0b5356cd0f7a517085a6786dd3d20e56",
+      "matches_commit": true
+    },
+    {
+      "path": "media/night-shift.mp3",
+      "bytes": 744609,
+      "sha256": "777f6302cd48f827c4f5d34a663bd750e348004ce3543001d5aec40fac8879ca",
+      "matches_commit": true
+    }
+  ],
+  "checks": [
+    {
+      "path": "healthz",
+      "status": 200
+    },
+    {
+      "path": "analytics/script.js",
+      "status": 200
+    },
+    {
+      "path": "api/leaderboard?scope=general",
+      "status": 200,
+      "response_shape_valid": true
+    },
+    {
+      "path": "api/leaderboard?scope=daily",
+      "status": 200,
+      "response_shape_valid": true
+    }
+  ],
+  "score_store_preserved_on_restart": true,
+  "score_submissions_created": 0
+}

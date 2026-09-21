@@ -1,0 +1,464 @@
+{
+  "url": "https://trouble.rapidoai.dev/",
+  "utc": "2026-09-21T22:55:50.013Z",
+  "commit": "53def44f599b46edf8722b58b954896a6187b0dc",
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 3,
+    "isMobile": true,
+    "hasTouch": true
+  },
+  "desktop": false,
+  "network": {
+    "name": "4G",
+    "downMbps": 4,
+    "upMbps": 1,
+    "latencyMs": 60,
+    "cpuSlowdown": 2
+  },
+  "budgets": {
+    "READY_S": 20,
+    "MB": 10,
+    "DRAWS": 900,
+    "TRIS": 1500000,
+    "MOVE_M": 1
+  },
+  "ready_s": 2.2,
+  "load_note": null,
+  "body_bytes": 3534556,
+  "wire_bytes": 1493117,
+  "mb": 3.53,
+  "mb_note": "body bytes over 1e6; wire_bytes is the compressed transfer",
+  "start_control": "#start",
+  "tapped": true,
+  "started": true,
+  "start_gone_after_tap": true,
+  "start_note": null,
+  "held": "#move-stick",
+  "hold_ms": 6000,
+  "pos_before": [
+    2,
+    22
+  ],
+  "pos_after": [
+    2,
+    13.344166666666663
+  ],
+  "moved_m": 8.66,
+  "path_m": 8.66,
+  "peak_draws": 263,
+  "peak_tris": 568178,
+  "median_fps": 60,
+  "software": false,
+  "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version)",
+  "webgpu": true,
+  "errors": [],
+  "missing": [],
+  "requests": 70,
+  "external_hosts": [],
+  "cdn_hosts": [
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+  ],
+  "outside_folder": [],
+  "screenshots": {
+    "loaded": "loaded.png",
+    "started": "started.png",
+    "moving": "moving.png"
+  },
+  "samples": [
+    {
+      "t": 4745,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 4997,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 5248,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 5501,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 5752,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 6003,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 6255,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 6507,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 6759,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 7010,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 7261,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 7512,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 7764,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 8017,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 8301,
+      "g": {
+        "fps": 60,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 8551,
+      "g": {
+        "fps": 58,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          22
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 8802,
+      "g": {
+        "fps": 58,
+        "draws": 246,
+        "tris": 566586,
+        "pos": [
+          2,
+          21.488859784533332
+        ],
+        "speed": 4.621058048
+      }
+    },
+    {
+      "t": 9054,
+      "g": {
+        "fps": 60,
+        "draws": 243,
+        "tris": 566346,
+        "pos": [
+          2,
+          20.31583240540031
+        ],
+        "speed": 4.699962882679517
+      }
+    },
+    {
+      "t": 9304,
+      "g": {
+        "fps": 60,
+        "draws": 238,
+        "tris": 565266,
+        "pos": [
+          2,
+          19.219166665939486
+        ],
+        "speed": 4.699999970913322
+      }
+    },
+    {
+      "t": 9556,
+      "g": {
+        "fps": 60,
+        "draws": 237,
+        "tris": 564298,
+        "pos": [
+          2,
+          18.044166666666314
+        ],
+        "speed": 4.699999999986324
+      }
+    },
+    {
+      "t": 9808,
+      "g": {
+        "fps": 60,
+        "draws": 237,
+        "tris": 564298,
+        "pos": [
+          2,
+          16.869166666666654
+        ],
+        "speed": 4.699999999999994
+      }
+    },
+    {
+      "t": 10059,
+      "g": {
+        "fps": 60,
+        "draws": 243,
+        "tris": 564802,
+        "pos": [
+          2,
+          15.694166666666657
+        ],
+        "speed": 4.699999999999999
+      }
+    },
+    {
+      "t": 10311,
+      "g": {
+        "fps": 60,
+        "draws": 245,
+        "tris": 564962,
+        "pos": [
+          2,
+          14.51916666666666
+        ],
+        "speed": 4.699999999999999
+      }
+    },
+    {
+      "t": 10562,
+      "g": {
+        "fps": 60,
+        "draws": 245,
+        "tris": 564962,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 4.699999999999999
+      }
+    },
+    {
+      "t": 10814,
+      "g": {
+        "fps": 60,
+        "draws": 245,
+        "tris": 564962,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 11068,
+      "g": {
+        "fps": 60,
+        "draws": 249,
+        "tris": 566890,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 11319,
+      "g": {
+        "fps": 60,
+        "draws": 260,
+        "tris": 567938,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 11571,
+      "g": {
+        "fps": 60,
+        "draws": 263,
+        "tris": 568178,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 11822,
+      "g": {
+        "fps": 60,
+        "draws": 263,
+        "tris": 568178,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 0
+      }
+    },
+    {
+      "t": 12074,
+      "g": {
+        "fps": 60,
+        "draws": 263,
+        "tris": 568178,
+        "pos": [
+          2,
+          13.344166666666663
+        ],
+        "speed": 0
+      }
+    }
+  ],
+  "fails": [],
+  "result": "PASS"
+}
