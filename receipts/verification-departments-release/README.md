@@ -8,6 +8,8 @@ The unmodified recipe gate passes against that HTTPS URL and commit. The [exact 
 
 [Deployment checks](deployment.json) compare the five changed runtime files and the Atlas music file with the committed bytes fetched through public HTTPS. Health, distinct Daily and General leaderboard contracts, and the existing analytics script respond successfully. The score store checksum is unchanged across the dedicated service restart. No test score was submitted. Private operational details remain outside this repository.
 
+[Submission verification](submission.json) confirms that PR #6 retains the supplied wallet and five declarations, names the deployed commit, includes the unedited verdict and links the trailer. The PR is open and mergeable; organizer review and their own gate rerun remain pending. [Video publication verification](video-publication.json) confirms that an unauthenticated MP4 download matches the local export checksum.
+
 [Earlier polish verification](../verification-departments/README.md) covers all fifteen department themes, four coaching layouts, three touch FPS runs, five repeated rebuild cycles, 56 passing Node checks and the 47-module ship check. The shipping check was repeated after the formatter was moved; no runtime code changed during publishing. The selected recipe models, simulation rules, scoring, saves and three Atlas assets are unchanged.
 
 ## Gameplay trailer
