@@ -1,0 +1,19 @@
+{
+  "input": "Isolated credits component with reveal=true. Main game module blocked; no combat, save or progression changes. Real skip/continue clicks and wheel scrolling.",
+  "checks": [
+    "The vacuum delivery settles into a portrait receipt, continuation message and reachable button without clipping.",
+    "The landscape finale scrolls to its continuation button and exits with reveal=true; this is component evidence, not a Director gameplay clear."
+  ],
+  "errors": [],
+  "smallPortrait": {
+    "x": 22,
+    "y": 82,
+    "width": 276,
+    "height": 288.78125,
+    "top": 82,
+    "right": 298,
+    "bottom": 370.78125,
+    "left": 22
+  },
+  "result": "PASS"
+}

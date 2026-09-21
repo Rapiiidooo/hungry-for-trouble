@@ -1,0 +1,2 @@
+514c2928bb5dc44b3c3890eabdc29ae1ebdfb3cef4fa2cbfb202c7c457606461  game/credits.js
+03a1b62ef2400acd3fbf595893cae037eca417877df8440c611fbba1b02988ff  game/credits.css

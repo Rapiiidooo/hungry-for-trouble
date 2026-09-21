@@ -460,6 +460,7 @@ try {
           path: new URL("act-one-credits.png", output).pathname,
         });
         await page.click("#credits-skip");
+        await page.waitForFunction(() => window.__GAME__.credits.finished);
         assert.equal(
           await page.$eval("#credits-twist", (el) => el.hidden),
           false,

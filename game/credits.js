@@ -68,6 +68,12 @@ const ROLES = [
 ];
 
 const ROLL_SECONDS = 60;
+const DELIVERY_SECONDS = 4.4;
+const clamp = (value) => Math.max(0, Math.min(1, value));
+const smooth = (value) => {
+  const t = clamp(value);
+  return t * t * (3 - 2 * t);
+};
 const GAGS = [
   ["brake", "#c94732", "BRAKES. MOSTLY OPTIONAL."],
   ["peek", "#6c8fb8", "NOPE. WRONG CREDITS."],
@@ -112,8 +118,15 @@ export function createCredits(root, { reducedMotion, onExit }) {
       ([gag, color, line]) =>
         `<div class="credit-vacuum" data-gag="${gag}"><span class="credit-caption">${line}</span><div class="credit-machine"><div class="credit-dust"><i></i><i></i><i></i></div>${vacuum(color)}</div></div>`,
     ).join("")}</div>
+    <div id="credits-delivery" class="credits-delivery" aria-hidden="true" hidden>
+      <div id="credits-courier" class="credits-courier"><span id="credits-cough" class="credits-cough">KHH... PTOO!</span><div id="credits-courier-body">${vacuum("#c94732")}</div><div id="credits-spit" class="credit-dust credits-spit"><i></i><i></i><i></i></div></div>
+    </div>
     <div id="credits-finale" class="credits-finale" hidden>
-      <span>MADE BY</span><h2>Rapido.</h2><p>Chief orchestrator. Professional bad influence.</p>
+      <div id="credits-ticket-slot" class="credits-ticket-slot"><div id="credits-ticket" class="credits-ticket">
+        <small class="receipt-code">NIGHT SHIFT · RECEIPT 001</small>
+        <span class="receipt-label">MADE BY</span><h2>Rapido.</h2><p>Chief orchestrator. Professional bad influence.</p>
+        <div class="receipt-barcode" aria-hidden="true"></div><small class="receipt-signoff">THANK YOU FOR MAKING A MESS.</small>
+      </div></div>
       <div id="credits-twist" hidden><small>YOU MISSED A SPOT.</small><h3>The adventure<br><em>continues.</em></h3><p>A service lift. Ten hidden aisles. You're not clocking out yet.</p></div>
       <button id="credits-continue" class="primary">BACK TO SETTINGS</button>
     </div>
@@ -121,6 +134,12 @@ export function createCredits(root, { reducedMotion, onExit }) {
   const find = (id) => root.querySelector(`#${id}`);
   const roll = find("credits-roll"),
     viewport = find("credits-window");
+  const finale = find("credits-finale"),
+    ticket = find("credits-ticket"),
+    slot = find("credits-ticket-slot"),
+    courier = find("credits-courier"),
+    courierBody = find("credits-courier-body"),
+    courierWheels = [...courier.querySelectorAll(".credit-spokes")];
   const runners = [...root.querySelectorAll(".credit-vacuum")].map(
     (el) => ({
       el,
@@ -132,16 +151,107 @@ export function createCredits(root, { reducedMotion, onExit }) {
     }),
   );
   let state = null;
-  function finish() {
+  function updateControls() {
+    const delivering = state.finaleTime !== null;
+    find("credits-pause").textContent =
+      `${state.paused ? "RESUME" : "PAUSE"} ${delivering ? "ANIMATION" : "SCROLL"}`;
+    find("credits-pause").setAttribute(
+      "aria-pressed",
+      String(state.paused),
+    );
+    find("credits-skip").textContent = delivering
+      ? "SKIP ANIMATION"
+      : reducedMotion.matches
+        ? "FINISH CREDITS"
+        : "SKIP CREDITS";
+  }
+  function settleFinale() {
     if (!state || state.finished) return;
     state.finished = true;
+    root.classList.remove("credits-ending");
     root.classList.add("credits-finished");
-    find("credits-finale").hidden = false;
+    find("credits-delivery").hidden = true;
+    finale.inert = false;
+    ticket.style.transform = "none";
+    ticket.style.opacity = "1";
+    root.style.setProperty("--credits-after", "1");
+    root.style.setProperty("--credits-after-offset", "0px");
+    find("credits-continue").focus({ preventScroll: true });
+  }
+  function renderDelivery(time) {
+    const bounds = root.getBoundingClientRect(),
+      target = slot.getBoundingClientRect();
+    const width = courier.offsetWidth,
+      height = courier.offsetHeight;
+    const parkedX = Math.max(16, Math.min(180, bounds.width * 0.12));
+    const floor = bounds.height - find("credits-skip").offsetHeight - 50;
+    const enter = smooth(time / 1.15),
+      leave = smooth((time - 2.5) / 1.2);
+    const parkedY = floor - height;
+    const cough =
+      time > 1.2 && time < 1.85 ? Math.sin((time - 1.2) * 35) : 0;
+    const x = -width - 35 + (parkedX + width + 35) * enter * (1 - leave);
+    courier.style.transform = `translate(${x + cough * 3}px, ${parkedY}px)`;
+    courierBody.style.transform = `rotate(${cough * 5}deg) scaleY(${1 - Math.abs(cough) * 0.055})`;
+    for (const wheel of courierWheels)
+      wheel.setAttribute(
+        "transform",
+        `rotate(${(x / width) * 650} ${wheel.dataset.x} 70)`,
+      );
+    find("credits-cough").style.opacity = String(
+      smooth((time - 1.15) / 0.15) * (1 - smooth((time - 1.95) / 0.25)),
+    );
+    const puff = clamp((time - 1.8) / 0.55);
+    find("credits-spit").style.opacity =
+      time >= 1.8 ? String((1 - puff) * 0.75) : "0";
+    find("credits-spit").style.transform =
+      `translate(${puff * 30}px, ${-puff * 20}px) scale(${1 + puff * 2})`;
+
+    const flight = clamp((time - 1.8) / 1.5),
+      travel = 1 - (1 - flight) ** 3;
+    const sourceX = bounds.left + parkedX + width * 0.93;
+    const sourceY = bounds.top + parkedY + height * 0.82;
+    const dx = sourceX - (target.left + target.width / 2);
+    const dy = sourceY - (target.top + target.height / 2);
+    const arc =
+      Math.sin(flight * Math.PI) * Math.min(90, Math.abs(dy) * 0.25);
+    ticket.style.opacity = String(clamp((time - 1.8) / 0.12));
+    ticket.style.transform = `translate(${dx * (1 - travel)}px, ${dy * (1 - travel) - arc}px) rotate(${-14 * (1 - travel) + Math.sin(flight * Math.PI) * 6}deg) scale(${0.09 + 0.91 * smooth(flight)}, ${0.018 + 0.982 * smooth((flight - 0.18) / 0.82)})`;
+    const after = smooth((time - 3.45) / 0.65);
+    root.style.setProperty(
+      "--credits-clear",
+      String(1 - smooth(time / 0.55)),
+    );
+    root.style.setProperty("--credits-after", String(after));
+    root.style.setProperty(
+      "--credits-after-offset",
+      `${(1 - after) * 8}px`,
+    );
+    root.style.setProperty(
+      "--credits-controls-opacity",
+      String(1 - smooth((time - 4.1) / 0.3)),
+    );
+  }
+  function finish() {
+    if (!state || state.finished) return;
+    if (state.finaleTime !== null) {
+      settleFinale();
+      return;
+    }
+    state.finaleTime = 0;
+    state.paused = false;
+    root.classList.add("credits-ending");
+    finale.hidden = false;
+    finale.inert = true;
+    finale.scrollTop = 0;
     find("credits-twist").hidden = !state.reveal;
     find("credits-continue").textContent = state.reveal
       ? "WHAT'S DOWNSTAIRS?"
       : "BACK TO SETTINGS";
-    find("credits-continue").focus({ preventScroll: true });
+    find("credits-delivery").hidden = reducedMotion.matches;
+    updateControls();
+    if (reducedMotion.matches) settleFinale();
+    else renderDelivery(0);
   }
   function hide() {
     state = null;
@@ -158,13 +268,7 @@ export function createCredits(root, { reducedMotion, onExit }) {
   find("credits-pause").onclick = () => {
     if (!state) return;
     state.paused = !state.paused;
-    find("credits-pause").textContent = state.paused
-      ? "RESUME SCROLL"
-      : "PAUSE SCROLL";
-    find("credits-pause").setAttribute(
-      "aria-pressed",
-      String(state.paused),
-    );
+    updateControls();
   };
   return {
     get active() {
@@ -176,17 +280,27 @@ export function createCredits(root, { reducedMotion, onExit }) {
     hide,
     skip: () => (state?.reveal && !state.finished ? finish() : close()),
     open(reveal = false) {
-      state = { reveal, elapsed: 0, paused: false, finished: false };
-      root.classList.remove("credits-finished");
+      state = {
+        reveal,
+        elapsed: 0,
+        paused: false,
+        finished: false,
+        finaleTime: null,
+      };
+      root.classList.remove("credits-finished", "credits-ending");
+      for (const property of [
+        "--credits-clear",
+        "--credits-after",
+        "--credits-after-offset",
+        "--credits-controls-opacity",
+      ])
+        root.style.removeProperty(property);
       root.classList.toggle("credits-reduced", reducedMotion.matches);
       root.hidden = false;
       find("credits-finale").hidden = true;
+      find("credits-delivery").hidden = true;
       find("credits-pause").hidden = reducedMotion.matches;
-      find("credits-pause").textContent = "PAUSE SCROLL";
-      find("credits-pause").setAttribute("aria-pressed", "false");
-      find("credits-skip").textContent = reducedMotion.matches
-        ? "FINISH CREDITS"
-        : "SKIP CREDITS";
+      updateControls();
       viewport.scrollTop = 0;
       viewport.focus({ preventScroll: true });
       this.update(0);
@@ -196,9 +310,21 @@ export function createCredits(root, { reducedMotion, onExit }) {
       const reduced = reducedMotion.matches;
       root.classList.toggle("credits-reduced", reduced);
       find("credits-pause").hidden = reduced;
-      if (!state.paused && !reduced && !state.finished) state.elapsed += dt;
+      if (state.finished) return;
+      if (state.finaleTime !== null) {
+        if (reduced) settleFinale();
+        else {
+          if (!state.paused) state.finaleTime += dt;
+          renderDelivery(state.finaleTime);
+          if (state.finaleTime >= DELIVERY_SECONDS) settleFinale();
+        }
+        return;
+      }
+      if (!state.paused && !reduced)
+        state.elapsed = Math.min(ROLL_SECONDS, state.elapsed + dt);
       const portion = Math.min(1, state.elapsed / ROLL_SECONDS);
-      const start = root.clientHeight < 560 ? 0 : viewport.clientHeight * 0.45;
+      const start =
+        root.clientHeight < 560 ? 0 : viewport.clientHeight * 0.45;
       roll.style.transform = reduced
         ? "none"
         : `translateY(${start - portion * (start + roll.scrollHeight + 20)}px)`;

@@ -1,0 +1,19 @@
+{
+  "input": "Isolated credits component with reveal=true. Main game module blocked; no combat, save or progression changes. Real skip/continue clicks and wheel scrolling.",
+  "checks": [
+    "The vacuum delivery settles into a portrait receipt, continuation message and reachable button without clipping."
+  ],
+  "errors": [],
+  "smallPortrait": {
+    "x": 22,
+    "y": 19.515625,
+    "width": 276,
+    "height": 288.78125,
+    "top": 19.515625,
+    "right": 298,
+    "bottom": 308.296875,
+    "left": 22
+  },
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: The top of the receipt stays reachable on a short portrait screen\n    at file:///Users/rapido/perso/bittensor/404/hungry-for-trouble/outputs/credits/continuation-fixture.mjs:47:10"
+}

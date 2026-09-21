@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "The braking gag holds for its caption, pause freezes every effect, and the peeking vacuum turns back; tool attribution remains accurate",
+    "After the 60-second roll, a pausable vacuum delivery unfolds the Rapido receipt over 4.4 seconds; the final controls work without spoiling the basement",
+    "Reduced motion bypasses the flying ticket; skip from a paused roll starts the delivery, a second skip settles it, and desktop/landscape returns work"
+  ],
+  "errors": [],
+  "input": "Real settings clicks, scroll and keyboard; read-only presentation snapshots. No save fixtures or submitted scores.",
+  "duration": 60,
+  "deliveryDuration": 4.416500000000006,
+  "result": "PASS"
+}

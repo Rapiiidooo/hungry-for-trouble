@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "The braking gag holds for its caption, pause freezes every effect, and the peeking vacuum turns back; tool attribution remains accurate",
+    "After the 60-second roll, a pausable vacuum delivery unfolds the Rapido receipt over 4.4 seconds; the final controls work without spoiling the basement"
+  ],
+  "errors": [],
+  "input": "Real settings clicks, scroll and keyboard; read-only presentation snapshots. No save fixtures or submitted scores.",
+  "duration": 60,
+  "deliveryDuration": 4.416300000000015,
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\nfalse !== true\n\n    at file:///Users/rapido/perso/bittensor/404/hungry-for-trouble/scripts/credits-playtest.mjs:279:10"
+}

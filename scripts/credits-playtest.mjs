@@ -158,13 +158,78 @@ try {
     false,
     "The roll lasts longer than the previous 48 seconds",
   );
+  await page.waitForFunction(
+    () => window.__GAME__.credits.finaleTime !== null,
+    {
+      timeout: 20000,
+    },
+  );
+  assert.equal(await page.$eval("#credits-finale", (el) => el.inert), true);
+  const deliveryAt = (time) =>
+    page.waitForFunction(
+      (value) => window.__GAME__.credits.finaleTime >= value,
+      { timeout: 8000 },
+      time,
+    );
+  const deliveryPose = () =>
+    page.evaluate(() => ({
+      time: window.__GAME__.credits.finaleTime,
+      ticket: document
+        .getElementById("credits-ticket")
+        .getAttribute("style"),
+      courier: document
+        .getElementById("credits-courier")
+        .getAttribute("style"),
+      body: document
+        .getElementById("credits-courier-body")
+        .getAttribute("style"),
+    }));
+  await deliveryAt(1.45);
+  await page.click("#credits-pause");
+  const pausedDelivery = await deliveryPose();
+  await sleep(350);
+  assert.deepEqual(
+    await deliveryPose(),
+    pausedDelivery,
+    "Pause must freeze the delivery scene too",
+  );
+  assert.equal(
+    await page.$eval("#credits-ticket", (el) => el.style.opacity),
+    "0",
+  );
+  await shot("delivery-cough-phone");
+  await page.click("#credits-pause");
+  await deliveryAt(2.55);
+  assert.equal(
+    await page.$eval("#credits-ticket", (el) => el.style.opacity),
+    "1",
+  );
+  assert.notEqual(
+    await page.$eval("#credits-ticket", (el) => el.style.transform),
+    "none",
+  );
+  await shot("delivery-ticket-phone");
   await page.waitForFunction(() => window.__GAME__.credits.finished, {
-    timeout: 20000,
+    timeout: 8000,
   });
+  assert.equal(
+    await page.$eval("#credits-finale", (el) => el.inert),
+    false,
+  );
+  assert.equal(
+    await page.$eval("#credits-ticket", (el) => el.style.transform),
+    "none",
+  );
   report.duration = await page.evaluate(
     () => window.__GAME__.credits.elapsed,
   );
   assert.ok(report.duration >= 60 && report.duration < 60.2);
+  report.deliveryDuration = await page.evaluate(
+    () => window.__GAME__.credits.finaleTime,
+  );
+  assert.ok(
+    report.deliveryDuration >= 4.4 && report.deliveryDuration < 4.6,
+  );
   assert.match(
     await page.$eval("#credits-finale", (el) => el.textContent),
     /Rapido/,
@@ -177,7 +242,7 @@ try {
     false,
   );
   report.checks.push(
-    "The reverse gag and phone controls work; the 60-second ending shows Made by Rapido without spoiling the basement",
+    "After the 60-second roll, a pausable vacuum delivery unfolds the Rapido receipt over 4.4 seconds; the final controls work without spoiling the basement",
   );
   await page.emulateMediaFeatures([
     { name: "prefers-reduced-motion", value: "reduce" },
@@ -211,6 +276,9 @@ try {
   );
   await shot("inspirations-phone");
   await page.click("#credits-skip");
+  await page.waitForFunction(() => window.__GAME__.credits.finished, {
+    timeout: 1500,
+  });
   await page.click("#credits-continue");
   await page.emulateMediaFeatures([
     { name: "prefers-reduced-motion", value: "no-preference" },
@@ -219,6 +287,12 @@ try {
   await page.click("#open-credits");
   await shot("opening-landscape");
   await page.click("#credits-skip");
+  await deliveryAt(2.5);
+  await shot("delivery-ticket-landscape");
+  await page.click("#credits-skip");
+  await page.waitForFunction(() => window.__GAME__.credits.finished, {
+    timeout: 1500,
+  });
   await shot("made-by-landscape");
   await page.click("#credits-continue");
   await page.click("#open-credits");
@@ -231,8 +305,29 @@ try {
     await page.$eval("#settings-screen", (el) => el.hidden),
     false,
   );
+  await page.setViewport({
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+  });
+  await page.click("#open-credits");
+  await page.click("#credits-pause");
+  await page.click("#credits-skip");
+  await deliveryAt(1.5);
+  assert.equal(
+    await page.evaluate(() => window.__GAME__.credits.paused),
+    false,
+  );
+  await shot("delivery-cough-desktop");
+  await deliveryAt(2.55);
+  await shot("delivery-ticket-desktop");
+  await page.waitForFunction(() => window.__GAME__.credits.finished, {
+    timeout: 8000,
+  });
+  await shot("made-by-desktop");
+  await page.click("#credits-continue");
   report.checks.push(
-    "Reduced motion uses a manually scrollable list; skip, keyboard return and landscape controls remain usable",
+    "Reduced motion bypasses the flying ticket; skip from a paused roll starts the delivery, a second skip settles it, and desktop/landscape returns work",
   );
   assert.deepEqual(report.errors, []);
   report.result = "PASS";
