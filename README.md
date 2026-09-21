@@ -76,4 +76,6 @@ The simulation tests use Node's built-in test runner. The shipping and browser c
 
 The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits); their catalog download is waiting for the owner’s workspace-access approval and they are not yet used at runtime.
 
+The official phone/4G gate passes locally on the current gameplay commit: 5.3-second readiness, 2.6 MB, real touch movement and no errors. The [verdict](receipts/verification-multiplayer/jam/verdict.txt) records its exact scope; the live-URL gate remains outstanding.
+
 For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. Hosting and contest submission have not been performed.

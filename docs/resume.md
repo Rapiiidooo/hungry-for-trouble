@@ -2,7 +2,7 @@
 
 ## Current state
 
-The ten-floor campaign, feel/story pass, Daily Rush leaderboard and two-player co-op/versus rooms are implemented and verified locally. The remaining active request is Atlas media integration, awaiting the user's workspace-access decision in `tasks/atlas-assets.md`. Record the final local phone gate after the multiplayer gameplay commit. Public hosting, push and submission are not authorized yet.
+The ten-floor campaign, feel/story pass, Daily Rush leaderboard and two-player co-op/versus rooms are implemented and verified locally. The remaining active request is Atlas media integration, awaiting the user's workspace-access decision in `tasks/atlas-assets.md`. Public hosting, push and submission are not authorized yet.
 
 Local preview: `http://localhost:3001`. Current server tool session: `7123`, command `npm run dev` / `node scripts/serve.mjs`. Identify its exact PID before restarting only this server. The abandoned coffin game and its port 3000 process remain separate. Game and repository text are English; conversation is French.
 
@@ -29,7 +29,7 @@ Use Node 24 with `npm run dev`, no installation or runtime API key. The leaderbo
 
 ## Verification
 
-Twenty-three Node checks pass, including 1,600 seeded maps, repair rules, projectile occlusion, authoritative replays, shared ammo, no friendly fire, revives, KOs, protected respawns, session isolation, forged inputs, roster replacement, stale controls and disconnects. The latest shipping check covers 31 modules. The selected recipe pack remains 12/12.
+Twenty-three Node checks pass, including 1,600 seeded maps, repair rules, projectile occlusion, authoritative replays, shared ammo, no friendly fire, revives, KOs, protected respawns, session isolation, forged inputs, roster replacement, stale controls and disconnects. The latest shipping check covers 31 modules. The selected recipe pack remains 12/12. The official local phone/4G gate passes for gameplay commit `18dfa76c2a4d5bf334dff21028d2e0ee6043c2d7`: 5.3-second readiness, 2.6 MB, 8.7 m of real finger movement, peak 296 draws and 574,668 triangles, no errors or missing resources. The unchanged verdict and screenshots are in `receipts/verification-multiplayer/jam/`.
 
 `receipts/verification-feel/` holds the full ten-stage campaign, both bosses, death/retry, camera reversal/reduced motion/expiry, ranged FPS combat, mouse/touch checks, a server-accepted 90-second daily survival and two-client leaderboard verification. The focused visual practice test preloads only route unlocks and discloses it. Automated campaign time is not a human play-time estimate.
 
