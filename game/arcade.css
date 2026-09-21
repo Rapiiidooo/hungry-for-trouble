@@ -332,9 +332,6 @@
   border-bottom-color: var(--gold);
   transform: translateY(-3px);
 }
-.upgrades button:hover svg {
-  transform: rotate(-6deg) scale(1.08);
-}
 .upgrades button > small {
   font-size: 7px;
   color: var(--paper-muted);
@@ -805,15 +802,7 @@
   }
   .upgrades button {
     min-height: 108px;
-    padding: 13px 12px 12px 100px;
-  }
-  .upgrade-art {
-    position: absolute;
-    left: 5px;
-    top: 8px;
-    width: 86px;
-    height: 86px;
-    margin: 0;
+    padding: 12px;
   }
   .upgrades h3 {
     font-size: 24px;

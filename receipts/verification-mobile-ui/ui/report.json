@@ -1,0 +1,2857 @@
+{
+  "scope": "Real start and HUD; isolated checkout fixtures exercise the actual card renderer, all upgrade illustrations and real selection. Chrome phone emulation, not combat completion or a physical device. No score is posted.",
+  "checks": [
+    "Six viewport layouts captured, all eight upgrade illustrations inspected by geometry, eight-heart/shield fixtures fit, and original thumb target sizes retained",
+    "The last card can be reached and equipped in every viewport, entering the next aisle"
+  ],
+  "issues": [],
+  "errors": [],
+  "hud": [
+    {
+      "name": "narrow",
+      "vitals": {
+        "x": 20,
+        "y": 374,
+        "width": 167.59375,
+        "height": 47,
+        "right": 187.59375,
+        "bottom": 421
+      },
+      "health": {
+        "x": 31,
+        "y": 384.75,
+        "width": 81,
+        "height": 17,
+        "right": 112,
+        "bottom": 401.75
+      },
+      "ammo": {
+        "x": 122,
+        "y": 382,
+        "width": 55.59375,
+        "height": 31,
+        "right": 177.59375,
+        "bottom": 413
+      },
+      "move": {
+        "x": 24,
+        "y": 435,
+        "width": 108,
+        "height": 108,
+        "right": 132,
+        "bottom": 543
+      },
+      "aim": {
+        "x": 210.03125,
+        "y": 435,
+        "width": 108,
+        "height": 108,
+        "right": 318.03125,
+        "bottom": 543
+      },
+      "score": {
+        "x": 240.203125,
+        "y": 399,
+        "width": 59.796875,
+        "height": 22,
+        "right": 300,
+        "bottom": 421
+      },
+      "hearts": [
+        {
+          "x": 31,
+          "y": 384.75,
+          "right": 49,
+          "bottom": 401.75
+        },
+        {
+          "x": 52,
+          "y": 384.75,
+          "right": 70,
+          "bottom": 401.75
+        },
+        {
+          "x": 73,
+          "y": 384.75,
+          "right": 91,
+          "bottom": 401.75
+        },
+        {
+          "x": 94,
+          "y": 384.75,
+          "right": 112,
+          "bottom": 401.75
+        }
+      ],
+      "shield": "",
+      "shieldVisible": false
+    },
+    {
+      "name": "small",
+      "vitals": {
+        "x": 20,
+        "y": 446,
+        "width": 167.59375,
+        "height": 47,
+        "right": 187.59375,
+        "bottom": 493
+      },
+      "health": {
+        "x": 31,
+        "y": 456.75,
+        "width": 81,
+        "height": 17,
+        "right": 112,
+        "bottom": 473.75
+      },
+      "ammo": {
+        "x": 122,
+        "y": 454,
+        "width": 55.59375,
+        "height": 31,
+        "right": 177.59375,
+        "bottom": 485
+      },
+      "move": {
+        "x": 24,
+        "y": 507,
+        "width": 108,
+        "height": 108,
+        "right": 132,
+        "bottom": 615
+      },
+      "aim": {
+        "x": 228,
+        "y": 507,
+        "width": 108,
+        "height": 108,
+        "right": 336,
+        "bottom": 615
+      },
+      "score": {
+        "x": 280.203125,
+        "y": 471,
+        "width": 59.796875,
+        "height": 22,
+        "right": 340,
+        "bottom": 493
+      },
+      "hearts": [
+        {
+          "x": 31,
+          "y": 456.75,
+          "right": 49,
+          "bottom": 473.75
+        },
+        {
+          "x": 52,
+          "y": 456.75,
+          "right": 70,
+          "bottom": 473.75
+        },
+        {
+          "x": 73,
+          "y": 456.75,
+          "right": 91,
+          "bottom": 473.75
+        },
+        {
+          "x": 94,
+          "y": 456.75,
+          "right": 112,
+          "bottom": 473.75
+        }
+      ],
+      "shield": "",
+      "shieldVisible": false
+    },
+    {
+      "name": "portrait",
+      "vitals": {
+        "x": 20,
+        "y": 650,
+        "width": 167.59375,
+        "height": 47,
+        "right": 187.59375,
+        "bottom": 697
+      },
+      "health": {
+        "x": 31,
+        "y": 660.75,
+        "width": 81,
+        "height": 17,
+        "right": 112,
+        "bottom": 677.75
+      },
+      "ammo": {
+        "x": 122,
+        "y": 658,
+        "width": 55.59375,
+        "height": 31,
+        "right": 177.59375,
+        "bottom": 689
+      },
+      "move": {
+        "x": 24,
+        "y": 711,
+        "width": 108,
+        "height": 108,
+        "right": 132,
+        "bottom": 819
+      },
+      "aim": {
+        "x": 258,
+        "y": 711,
+        "width": 108,
+        "height": 108,
+        "right": 366,
+        "bottom": 819
+      },
+      "score": {
+        "x": 310.203125,
+        "y": 675,
+        "width": 59.796875,
+        "height": 22,
+        "right": 370,
+        "bottom": 697
+      },
+      "hearts": [
+        {
+          "x": 31,
+          "y": 660.75,
+          "right": 49,
+          "bottom": 677.75
+        },
+        {
+          "x": 52,
+          "y": 660.75,
+          "right": 70,
+          "bottom": 677.75
+        },
+        {
+          "x": 73,
+          "y": 660.75,
+          "right": 91,
+          "bottom": 677.75
+        },
+        {
+          "x": 94,
+          "y": 660.75,
+          "right": 112,
+          "bottom": 677.75
+        }
+      ],
+      "shield": "",
+      "shieldVisible": false
+    },
+    {
+      "name": "short-landscape",
+      "vitals": {
+        "x": 132,
+        "y": 304,
+        "width": 167.59375,
+        "height": 47,
+        "right": 299.59375,
+        "bottom": 351
+      },
+      "health": {
+        "x": 143,
+        "y": 314.75,
+        "width": 81,
+        "height": 17,
+        "right": 224,
+        "bottom": 331.75
+      },
+      "ammo": {
+        "x": 234,
+        "y": 312,
+        "width": 55.59375,
+        "height": 31,
+        "right": 289.59375,
+        "bottom": 343
+      },
+      "move": {
+        "x": 20,
+        "y": 267,
+        "width": 92,
+        "height": 92,
+        "right": 112,
+        "bottom": 359
+      },
+      "aim": {
+        "x": 555,
+        "y": 267,
+        "width": 92,
+        "height": 92,
+        "right": 647,
+        "bottom": 359
+      },
+      "score": {
+        "x": 475.203125,
+        "y": 329,
+        "width": 59.796875,
+        "height": 22,
+        "right": 535,
+        "bottom": 351
+      },
+      "hearts": [
+        {
+          "x": 143,
+          "y": 314.75,
+          "right": 161,
+          "bottom": 331.75
+        },
+        {
+          "x": 164,
+          "y": 314.75,
+          "right": 182,
+          "bottom": 331.75
+        },
+        {
+          "x": 185,
+          "y": 314.75,
+          "right": 203,
+          "bottom": 331.75
+        },
+        {
+          "x": 206,
+          "y": 314.75,
+          "right": 224,
+          "bottom": 331.75
+        }
+      ],
+      "shield": "",
+      "shieldVisible": false
+    },
+    {
+      "name": "landscape",
+      "vitals": {
+        "x": 132,
+        "y": 319,
+        "width": 167.59375,
+        "height": 47,
+        "right": 299.59375,
+        "bottom": 366
+      },
+      "health": {
+        "x": 143,
+        "y": 329.75,
+        "width": 81,
+        "height": 17,
+        "right": 224,
+        "bottom": 346.75
+      },
+      "ammo": {
+        "x": 234,
+        "y": 327,
+        "width": 55.59375,
+        "height": 31,
+        "right": 289.59375,
+        "bottom": 358
+      },
+      "move": {
+        "x": 20,
+        "y": 282,
+        "width": 92,
+        "height": 92,
+        "right": 112,
+        "bottom": 374
+      },
+      "aim": {
+        "x": 732,
+        "y": 282,
+        "width": 92,
+        "height": 92,
+        "right": 824,
+        "bottom": 374
+      },
+      "score": {
+        "x": 621.546875,
+        "y": 328,
+        "width": 90.453125,
+        "height": 38,
+        "right": 712,
+        "bottom": 366
+      },
+      "hearts": [
+        {
+          "x": 143,
+          "y": 329.75,
+          "right": 161,
+          "bottom": 346.75
+        },
+        {
+          "x": 164,
+          "y": 329.75,
+          "right": 182,
+          "bottom": 346.75
+        },
+        {
+          "x": 185,
+          "y": 329.75,
+          "right": 203,
+          "bottom": 346.75
+        },
+        {
+          "x": 206,
+          "y": 329.75,
+          "right": 224,
+          "bottom": 346.75
+        }
+      ],
+      "shield": "",
+      "shieldVisible": false
+    },
+    {
+      "name": "desktop",
+      "vitals": {
+        "x": 36,
+        "y": 617.15625,
+        "width": 257,
+        "height": 150.84375,
+        "right": 293,
+        "bottom": 768
+      },
+      "health": {
+        "x": 56,
+        "y": 647.15625,
+        "width": 220,
+        "height": 29,
+        "right": 276,
+        "bottom": 676.15625
+      },
+      "ammo": {
+        "x": 56,
+        "y": 707.15625,
+        "width": 220,
+        "height": 45.84375,
+        "right": 276,
+        "bottom": 753
+      },
+      "move": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "aim": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "right": 0,
+        "bottom": 0
+      },
+      "score": {
+        "x": 1142.859375,
+        "y": 717,
+        "width": 101.140625,
+        "height": 51,
+        "right": 1244,
+        "bottom": 768
+      },
+      "hearts": [
+        {
+          "x": 56,
+          "y": 647.15625,
+          "right": 86,
+          "bottom": 676.15625
+        },
+        {
+          "x": 93,
+          "y": 647.15625,
+          "right": 123,
+          "bottom": 676.15625
+        },
+        {
+          "x": 130,
+          "y": 647.15625,
+          "right": 160,
+          "bottom": 676.15625
+        },
+        {
+          "x": 167,
+          "y": 647.15625,
+          "right": 197,
+          "bottom": 676.15625
+        }
+      ],
+      "shield": "",
+      "shieldVisible": false
+    },
+    {
+      "name": "narrow-loaded",
+      "vitals": {
+        "x": 20,
+        "y": 356.609375,
+        "width": 204,
+        "height": 64.390625,
+        "right": 224,
+        "bottom": 421
+      },
+      "health": {
+        "x": 31,
+        "y": 364.609375,
+        "width": 117.09375,
+        "height": 37,
+        "right": 148.09375,
+        "bottom": 401.609375
+      },
+      "ammo": {
+        "x": 158.09375,
+        "y": 373.296875,
+        "width": 55.90625,
+        "height": 31,
+        "right": 214,
+        "bottom": 404.296875
+      },
+      "move": {
+        "x": 24,
+        "y": 435,
+        "width": 108,
+        "height": 108,
+        "right": 132,
+        "bottom": 543
+      },
+      "aim": {
+        "x": 210.03125,
+        "y": 435,
+        "width": 108,
+        "height": 108,
+        "right": 318.03125,
+        "bottom": 543
+      },
+      "score": {
+        "x": 235.484375,
+        "y": 399,
+        "width": 64.515625,
+        "height": 22,
+        "right": 300,
+        "bottom": 421
+      },
+      "hearts": [
+        {
+          "x": 31,
+          "y": 364.609375,
+          "right": 49,
+          "bottom": 381.609375
+        },
+        {
+          "x": 52,
+          "y": 364.609375,
+          "right": 70,
+          "bottom": 381.609375
+        },
+        {
+          "x": 73,
+          "y": 364.609375,
+          "right": 91,
+          "bottom": 381.609375
+        },
+        {
+          "x": 94,
+          "y": 364.609375,
+          "right": 112,
+          "bottom": 381.609375
+        },
+        {
+          "x": 115,
+          "y": 364.609375,
+          "right": 133,
+          "bottom": 381.609375
+        },
+        {
+          "x": 31,
+          "y": 384.609375,
+          "right": 49,
+          "bottom": 401.609375
+        },
+        {
+          "x": 52,
+          "y": 384.609375,
+          "right": 70,
+          "bottom": 401.609375
+        },
+        {
+          "x": 73,
+          "y": 384.609375,
+          "right": 91,
+          "bottom": 401.609375
+        }
+      ],
+      "shield": "SHIELD · 3 HITS",
+      "shieldVisible": true
+    },
+    {
+      "name": "small-loaded",
+      "vitals": {
+        "x": 20,
+        "y": 428.609375,
+        "width": 244,
+        "height": 64.390625,
+        "right": 264,
+        "bottom": 493
+      },
+      "health": {
+        "x": 31,
+        "y": 436.609375,
+        "width": 157.09375,
+        "height": 37,
+        "right": 188.09375,
+        "bottom": 473.609375
+      },
+      "ammo": {
+        "x": 198.09375,
+        "y": 445.296875,
+        "width": 55.90625,
+        "height": 31,
+        "right": 254,
+        "bottom": 476.296875
+      },
+      "move": {
+        "x": 24,
+        "y": 507,
+        "width": 108,
+        "height": 108,
+        "right": 132,
+        "bottom": 615
+      },
+      "aim": {
+        "x": 228,
+        "y": 507,
+        "width": 108,
+        "height": 108,
+        "right": 336,
+        "bottom": 615
+      },
+      "score": {
+        "x": 275.484375,
+        "y": 471,
+        "width": 64.515625,
+        "height": 22,
+        "right": 340,
+        "bottom": 493
+      },
+      "hearts": [
+        {
+          "x": 31,
+          "y": 436.609375,
+          "right": 49,
+          "bottom": 453.609375
+        },
+        {
+          "x": 52,
+          "y": 436.609375,
+          "right": 70,
+          "bottom": 453.609375
+        },
+        {
+          "x": 73,
+          "y": 436.609375,
+          "right": 91,
+          "bottom": 453.609375
+        },
+        {
+          "x": 94,
+          "y": 436.609375,
+          "right": 112,
+          "bottom": 453.609375
+        },
+        {
+          "x": 115,
+          "y": 436.609375,
+          "right": 133,
+          "bottom": 453.609375
+        },
+        {
+          "x": 136,
+          "y": 436.609375,
+          "right": 154,
+          "bottom": 453.609375
+        },
+        {
+          "x": 157,
+          "y": 436.609375,
+          "right": 175,
+          "bottom": 453.609375
+        },
+        {
+          "x": 31,
+          "y": 456.609375,
+          "right": 49,
+          "bottom": 473.609375
+        }
+      ],
+      "shield": "SHIELD · 3 HITS",
+      "shieldVisible": true
+    },
+    {
+      "name": "portrait-loaded",
+      "vitals": {
+        "x": 20,
+        "y": 650,
+        "width": 251.90625,
+        "height": 47,
+        "right": 271.90625,
+        "bottom": 697
+      },
+      "health": {
+        "x": 31,
+        "y": 658.640625,
+        "width": 165,
+        "height": 17,
+        "right": 196,
+        "bottom": 675.640625
+      },
+      "ammo": {
+        "x": 206,
+        "y": 658,
+        "width": 55.90625,
+        "height": 31,
+        "right": 261.90625,
+        "bottom": 689
+      },
+      "move": {
+        "x": 24,
+        "y": 711,
+        "width": 108,
+        "height": 108,
+        "right": 132,
+        "bottom": 819
+      },
+      "aim": {
+        "x": 258,
+        "y": 711,
+        "width": 108,
+        "height": 108,
+        "right": 366,
+        "bottom": 819
+      },
+      "score": {
+        "x": 305.484375,
+        "y": 675,
+        "width": 64.515625,
+        "height": 22,
+        "right": 370,
+        "bottom": 697
+      },
+      "hearts": [
+        {
+          "x": 31,
+          "y": 658.640625,
+          "right": 49,
+          "bottom": 675.640625
+        },
+        {
+          "x": 52,
+          "y": 658.640625,
+          "right": 70,
+          "bottom": 675.640625
+        },
+        {
+          "x": 73,
+          "y": 658.640625,
+          "right": 91,
+          "bottom": 675.640625
+        },
+        {
+          "x": 94,
+          "y": 658.640625,
+          "right": 112,
+          "bottom": 675.640625
+        },
+        {
+          "x": 115,
+          "y": 658.640625,
+          "right": 133,
+          "bottom": 675.640625
+        },
+        {
+          "x": 136,
+          "y": 658.640625,
+          "right": 154,
+          "bottom": 675.640625
+        },
+        {
+          "x": 157,
+          "y": 658.640625,
+          "right": 175,
+          "bottom": 675.640625
+        },
+        {
+          "x": 178,
+          "y": 658.640625,
+          "right": 196,
+          "bottom": 675.640625
+        }
+      ],
+      "shield": "SHIELD · 3 HITS",
+      "shieldVisible": true
+    },
+    {
+      "name": "short-landscape-loaded",
+      "vitals": {
+        "x": 132,
+        "y": 304,
+        "width": 251.90625,
+        "height": 47,
+        "right": 383.90625,
+        "bottom": 351
+      },
+      "health": {
+        "x": 143,
+        "y": 312.640625,
+        "width": 165,
+        "height": 17,
+        "right": 308,
+        "bottom": 329.640625
+      },
+      "ammo": {
+        "x": 318,
+        "y": 312,
+        "width": 55.90625,
+        "height": 31,
+        "right": 373.90625,
+        "bottom": 343
+      },
+      "move": {
+        "x": 20,
+        "y": 267,
+        "width": 92,
+        "height": 92,
+        "right": 112,
+        "bottom": 359
+      },
+      "aim": {
+        "x": 555,
+        "y": 267,
+        "width": 92,
+        "height": 92,
+        "right": 647,
+        "bottom": 359
+      },
+      "score": {
+        "x": 470.484375,
+        "y": 329,
+        "width": 64.515625,
+        "height": 22,
+        "right": 535,
+        "bottom": 351
+      },
+      "hearts": [
+        {
+          "x": 143,
+          "y": 312.640625,
+          "right": 161,
+          "bottom": 329.640625
+        },
+        {
+          "x": 164,
+          "y": 312.640625,
+          "right": 182,
+          "bottom": 329.640625
+        },
+        {
+          "x": 185,
+          "y": 312.640625,
+          "right": 203,
+          "bottom": 329.640625
+        },
+        {
+          "x": 206,
+          "y": 312.640625,
+          "right": 224,
+          "bottom": 329.640625
+        },
+        {
+          "x": 227,
+          "y": 312.640625,
+          "right": 245,
+          "bottom": 329.640625
+        },
+        {
+          "x": 248,
+          "y": 312.640625,
+          "right": 266,
+          "bottom": 329.640625
+        },
+        {
+          "x": 269,
+          "y": 312.640625,
+          "right": 287,
+          "bottom": 329.640625
+        },
+        {
+          "x": 290,
+          "y": 312.640625,
+          "right": 308,
+          "bottom": 329.640625
+        }
+      ],
+      "shield": "SHIELD · 3 HITS",
+      "shieldVisible": true
+    },
+    {
+      "name": "landscape-loaded",
+      "vitals": {
+        "x": 132,
+        "y": 319,
+        "width": 251.90625,
+        "height": 47,
+        "right": 383.90625,
+        "bottom": 366
+      },
+      "health": {
+        "x": 143,
+        "y": 327.640625,
+        "width": 165,
+        "height": 17,
+        "right": 308,
+        "bottom": 344.640625
+      },
+      "ammo": {
+        "x": 318,
+        "y": 327,
+        "width": 55.90625,
+        "height": 31,
+        "right": 373.90625,
+        "bottom": 358
+      },
+      "move": {
+        "x": 20,
+        "y": 282,
+        "width": 92,
+        "height": 92,
+        "right": 112,
+        "bottom": 374
+      },
+      "aim": {
+        "x": 732,
+        "y": 282,
+        "width": 92,
+        "height": 92,
+        "right": 824,
+        "bottom": 374
+      },
+      "score": {
+        "x": 621.546875,
+        "y": 328,
+        "width": 90.453125,
+        "height": 38,
+        "right": 712,
+        "bottom": 366
+      },
+      "hearts": [
+        {
+          "x": 143,
+          "y": 327.640625,
+          "right": 161,
+          "bottom": 344.640625
+        },
+        {
+          "x": 164,
+          "y": 327.640625,
+          "right": 182,
+          "bottom": 344.640625
+        },
+        {
+          "x": 185,
+          "y": 327.640625,
+          "right": 203,
+          "bottom": 344.640625
+        },
+        {
+          "x": 206,
+          "y": 327.640625,
+          "right": 224,
+          "bottom": 344.640625
+        },
+        {
+          "x": 227,
+          "y": 327.640625,
+          "right": 245,
+          "bottom": 344.640625
+        },
+        {
+          "x": 248,
+          "y": 327.640625,
+          "right": 266,
+          "bottom": 344.640625
+        },
+        {
+          "x": 269,
+          "y": 327.640625,
+          "right": 287,
+          "bottom": 344.640625
+        },
+        {
+          "x": 290,
+          "y": 327.640625,
+          "right": 308,
+          "bottom": 344.640625
+        }
+      ],
+      "shield": "SHIELD · 3 HITS",
+      "shieldVisible": true
+    }
+  ],
+  "cards": [
+    {
+      "viewport": "narrow",
+      "key": "rapid",
+      "card": {
+        "x": 27,
+        "y": 204.296875,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 391.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 215.296875,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 315.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 248.890625,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 311.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "spread",
+      "card": {
+        "x": 27,
+        "y": 404.296875,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 591.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 415.296875,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 515.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 448.890625,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 511.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "pierce",
+      "card": {
+        "x": 27,
+        "y": 601.296875,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 788.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 612.296875,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 712.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 645.890625,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 708.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "shield",
+      "card": {
+        "x": 27,
+        "y": 204.296875,
+        "width": 266,
+        "height": 188.1875,
+        "right": 293,
+        "bottom": 392.484375
+      },
+      "art": {
+        "x": 38,
+        "y": 215.890625,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 315.890625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 249.484375,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 311.890625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "magnet",
+      "card": {
+        "x": 27,
+        "y": 405.484375,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 592.484375
+      },
+      "art": {
+        "x": 38,
+        "y": 416.484375,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 516.484375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 450.078125,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 512.484375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "heart",
+      "card": {
+        "x": 27,
+        "y": 602.484375,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 789.484375
+      },
+      "art": {
+        "x": 38,
+        "y": 613.484375,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 713.484375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 647.078125,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 709.484375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "ricochet",
+      "card": {
+        "x": 27,
+        "y": 204.296875,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 391.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 215.296875,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 315.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 248.890625,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 311.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "frost",
+      "card": {
+        "x": 27,
+        "y": 404.296875,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 591.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 415.296875,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 515.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 448.890625,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 511.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "heart",
+      "card": {
+        "x": 27,
+        "y": 601.296875,
+        "width": 266,
+        "height": 187,
+        "right": 293,
+        "bottom": 788.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 612.296875,
+        "width": 78,
+        "height": 100,
+        "right": 116,
+        "bottom": 712.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 645.890625,
+          "width": 70,
+          "height": 62.40625,
+          "right": 112,
+          "bottom": 708.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "rapid",
+      "card": {
+        "x": 27,
+        "y": 193.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 380.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 204.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 304.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 227.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 300.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "spread",
+      "card": {
+        "x": 27,
+        "y": 387.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 574.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 398.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 498.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 421.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 494.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "pierce",
+      "card": {
+        "x": 27,
+        "y": 587.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 774.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 598.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 698.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 621.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 694.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "shield",
+      "card": {
+        "x": 27,
+        "y": 193.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 380.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 204.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 304.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 227.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 300.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "magnet",
+      "card": {
+        "x": 27,
+        "y": 387.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 574.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 398.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 498.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 421.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 494.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "heart",
+      "card": {
+        "x": 27,
+        "y": 587.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 774.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 598.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 698.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 621.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 694.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "ricochet",
+      "card": {
+        "x": 27,
+        "y": 193.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 380.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 204.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 304.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 227.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 300.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "frost",
+      "card": {
+        "x": 27,
+        "y": 387.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 574.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 398.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 498.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 421.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 494.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "heart",
+      "card": {
+        "x": 27,
+        "y": 587.296875,
+        "width": 306,
+        "height": 187,
+        "right": 333,
+        "bottom": 774.296875
+      },
+      "art": {
+        "x": 38,
+        "y": 598.296875,
+        "width": 86.390625,
+        "height": 100,
+        "right": 124.390625,
+        "bottom": 698.296875
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 621.09375,
+          "width": 78.390625,
+          "height": 73.203125,
+          "right": 120.390625,
+          "bottom": 694.296875
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "rapid",
+      "card": {
+        "x": 27,
+        "y": 201.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 388.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 212.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 312.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 235.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 308.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "spread",
+      "card": {
+        "x": 27,
+        "y": 395.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 582.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 406.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 506.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 429.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 502.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "pierce",
+      "card": {
+        "x": 27,
+        "y": 595.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 782.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 606.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 706.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 629.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 702.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "shield",
+      "card": {
+        "x": 27,
+        "y": 201.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 388.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 212.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 312.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 235.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 308.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "magnet",
+      "card": {
+        "x": 27,
+        "y": 395.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 582.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 406.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 506.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 429.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 502.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "heart",
+      "card": {
+        "x": 27,
+        "y": 595.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 782.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 606.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 706.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 629.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 702.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "ricochet",
+      "card": {
+        "x": 27,
+        "y": 201.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 388.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 212.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 312.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 235.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 308.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "frost",
+      "card": {
+        "x": 27,
+        "y": 395.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 582.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 406.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 506.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 429.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 502.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "heart",
+      "card": {
+        "x": 27,
+        "y": 595.34375,
+        "width": 336,
+        "height": 187,
+        "right": 363,
+        "bottom": 782.34375
+      },
+      "art": {
+        "x": 38,
+        "y": 606.34375,
+        "width": 93.59375,
+        "height": 100,
+        "right": 131.59375,
+        "bottom": 706.34375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 42,
+          "y": 629.140625,
+          "width": 85.59375,
+          "height": 73.203125,
+          "right": 127.59375,
+          "bottom": 702.34375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "rapid",
+      "card": {
+        "x": 27,
+        "y": 152.390625,
+        "width": 199,
+        "height": 224.140625,
+        "right": 226,
+        "bottom": 376.53125
+      },
+      "art": {
+        "x": 74.5,
+        "y": 161.390625,
+        "width": 104,
+        "height": 78,
+        "right": 178.5,
+        "bottom": 239.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 78.5,
+          "y": 184.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 174.5,
+          "bottom": 235.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "spread",
+      "card": {
+        "x": 234,
+        "y": 152.390625,
+        "width": 199,
+        "height": 224.140625,
+        "right": 433,
+        "bottom": 376.53125
+      },
+      "art": {
+        "x": 281.5,
+        "y": 161.390625,
+        "width": 104,
+        "height": 78,
+        "right": 385.5,
+        "bottom": 239.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 285.5,
+          "y": 184.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 381.5,
+          "bottom": 235.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "pierce",
+      "card": {
+        "x": 441,
+        "y": 149.390625,
+        "width": 199,
+        "height": 224.140625,
+        "right": 640,
+        "bottom": 373.53125
+      },
+      "art": {
+        "x": 488.5,
+        "y": 158.390625,
+        "width": 104,
+        "height": 78,
+        "right": 592.5,
+        "bottom": 236.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 492.5,
+          "y": 181.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 588.5,
+          "bottom": 232.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "shield",
+      "card": {
+        "x": 27,
+        "y": 152.390625,
+        "width": 199,
+        "height": 224.140625,
+        "right": 226,
+        "bottom": 376.53125
+      },
+      "art": {
+        "x": 74.5,
+        "y": 161.390625,
+        "width": 104,
+        "height": 78,
+        "right": 178.5,
+        "bottom": 239.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 78.5,
+          "y": 184.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 174.5,
+          "bottom": 235.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "magnet",
+      "card": {
+        "x": 234,
+        "y": 152.390625,
+        "width": 199,
+        "height": 224.140625,
+        "right": 433,
+        "bottom": 376.53125
+      },
+      "art": {
+        "x": 281.5,
+        "y": 161.390625,
+        "width": 104,
+        "height": 78,
+        "right": 385.5,
+        "bottom": 239.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 285.5,
+          "y": 184.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 381.5,
+          "bottom": 235.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "heart",
+      "card": {
+        "x": 441,
+        "y": 149.390625,
+        "width": 199,
+        "height": 224.140625,
+        "right": 640,
+        "bottom": 373.53125
+      },
+      "art": {
+        "x": 488.5,
+        "y": 158.390625,
+        "width": 104,
+        "height": 78,
+        "right": 592.5,
+        "bottom": 236.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 492.5,
+          "y": 181.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 588.5,
+          "bottom": 232.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "ricochet",
+      "card": {
+        "x": 27,
+        "y": 152.390625,
+        "width": 199,
+        "height": 236.28125,
+        "right": 226,
+        "bottom": 388.671875
+      },
+      "art": {
+        "x": 74.5,
+        "y": 161.390625,
+        "width": 104,
+        "height": 78,
+        "right": 178.5,
+        "bottom": 239.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 78.5,
+          "y": 184.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 174.5,
+          "bottom": 235.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "frost",
+      "card": {
+        "x": 234,
+        "y": 152.390625,
+        "width": 199,
+        "height": 236.28125,
+        "right": 433,
+        "bottom": 388.671875
+      },
+      "art": {
+        "x": 281.5,
+        "y": 161.390625,
+        "width": 104,
+        "height": 78,
+        "right": 385.5,
+        "bottom": 239.390625
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 285.5,
+          "y": 184.1875,
+          "width": 96,
+          "height": 51.203125,
+          "right": 381.5,
+          "bottom": 235.390625
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "heart",
+      "card": {
+        "x": 441,
+        "y": 149.390625,
+        "width": 199,
+        "height": 236.28125,
+        "right": 640,
+        "bottom": 385.671875
+      },
+      "art": {
+        "x": 488.5,
+        "y": 164.453125,
+        "width": 104,
+        "height": 78,
+        "right": 592.5,
+        "bottom": 242.453125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 492.5,
+          "y": 187.25,
+          "width": 96,
+          "height": 51.203125,
+          "right": 588.5,
+          "bottom": 238.453125
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "rapid",
+      "card": {
+        "x": 27,
+        "y": 155.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 285,
+        "bottom": 383.234375
+      },
+      "art": {
+        "x": 104,
+        "y": 164.09375,
+        "width": 104,
+        "height": 78,
+        "right": 208,
+        "bottom": 242.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 108,
+          "y": 186.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 204,
+          "bottom": 238.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "spread",
+      "card": {
+        "x": 293,
+        "y": 155.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 551,
+        "bottom": 383.234375
+      },
+      "art": {
+        "x": 370,
+        "y": 164.09375,
+        "width": 104,
+        "height": 78,
+        "right": 474,
+        "bottom": 242.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 374,
+          "y": 186.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 470,
+          "bottom": 238.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "pierce",
+      "card": {
+        "x": 559,
+        "y": 152.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 817,
+        "bottom": 380.234375
+      },
+      "art": {
+        "x": 636,
+        "y": 161.09375,
+        "width": 104,
+        "height": 78,
+        "right": 740,
+        "bottom": 239.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 640,
+          "y": 183.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 736,
+          "bottom": 235.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "shield",
+      "card": {
+        "x": 27,
+        "y": 155.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 285,
+        "bottom": 383.234375
+      },
+      "art": {
+        "x": 104,
+        "y": 164.09375,
+        "width": 104,
+        "height": 78,
+        "right": 208,
+        "bottom": 242.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 108,
+          "y": 186.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 204,
+          "bottom": 238.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "magnet",
+      "card": {
+        "x": 293,
+        "y": 155.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 551,
+        "bottom": 383.234375
+      },
+      "art": {
+        "x": 370,
+        "y": 164.09375,
+        "width": 104,
+        "height": 78,
+        "right": 474,
+        "bottom": 242.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 374,
+          "y": 186.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 470,
+          "bottom": 238.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "heart",
+      "card": {
+        "x": 559,
+        "y": 152.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 817,
+        "bottom": 380.234375
+      },
+      "art": {
+        "x": 636,
+        "y": 161.09375,
+        "width": 104,
+        "height": 78,
+        "right": 740,
+        "bottom": 239.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 640,
+          "y": 183.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 736,
+          "bottom": 235.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "ricochet",
+      "card": {
+        "x": 27,
+        "y": 155.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 285,
+        "bottom": 383.234375
+      },
+      "art": {
+        "x": 104,
+        "y": 164.09375,
+        "width": 104,
+        "height": 78,
+        "right": 208,
+        "bottom": 242.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 108,
+          "y": 186.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 204,
+          "bottom": 238.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "frost",
+      "card": {
+        "x": 293,
+        "y": 155.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 551,
+        "bottom": 383.234375
+      },
+      "art": {
+        "x": 370,
+        "y": 164.09375,
+        "width": 104,
+        "height": 78,
+        "right": 474,
+        "bottom": 242.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 374,
+          "y": 186.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 470,
+          "bottom": 238.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "heart",
+      "card": {
+        "x": 559,
+        "y": 152.09375,
+        "width": 258,
+        "height": 228.140625,
+        "right": 817,
+        "bottom": 380.234375
+      },
+      "art": {
+        "x": 636,
+        "y": 161.09375,
+        "width": 104,
+        "height": 78,
+        "right": 740,
+        "bottom": 239.09375
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 640,
+          "y": 183.890625,
+          "width": 96,
+          "height": 51.203125,
+          "right": 736,
+          "bottom": 235.09375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "rapid",
+      "card": {
+        "x": 196,
+        "y": 302.828125,
+        "width": 288,
+        "height": 388,
+        "right": 484,
+        "bottom": 690.828125
+      },
+      "art": {
+        "x": 217,
+        "y": 321.828125,
+        "width": 246,
+        "height": 132,
+        "right": 463,
+        "bottom": 453.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 221,
+          "y": 344.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 335,
+          "bottom": 452.859375
+        },
+        {
+          "x": 344,
+          "y": 344.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 459,
+          "bottom": 452.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "spread",
+      "card": {
+        "x": 496,
+        "y": 302.828125,
+        "width": 288,
+        "height": 388,
+        "right": 784,
+        "bottom": 690.828125
+      },
+      "art": {
+        "x": 517,
+        "y": 321.828125,
+        "width": 246,
+        "height": 132,
+        "right": 763,
+        "bottom": 453.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 521,
+          "y": 344.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 635,
+          "bottom": 452.859375
+        },
+        {
+          "x": 644,
+          "y": 344.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 759,
+          "bottom": 452.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "pierce",
+      "card": {
+        "x": 796,
+        "y": 299.828125,
+        "width": 288,
+        "height": 388,
+        "right": 1084,
+        "bottom": 687.828125
+      },
+      "art": {
+        "x": 817,
+        "y": 318.828125,
+        "width": 246,
+        "height": 132,
+        "right": 1063,
+        "bottom": 450.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 821,
+          "y": 341.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 935,
+          "bottom": 449.859375
+        },
+        {
+          "x": 944,
+          "y": 341.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 1059,
+          "bottom": 449.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "shield",
+      "card": {
+        "x": 196,
+        "y": 302.828125,
+        "width": 288,
+        "height": 388,
+        "right": 484,
+        "bottom": 690.828125
+      },
+      "art": {
+        "x": 217,
+        "y": 321.828125,
+        "width": 246,
+        "height": 132,
+        "right": 463,
+        "bottom": 453.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 221,
+          "y": 344.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 335,
+          "bottom": 452.859375
+        },
+        {
+          "x": 344,
+          "y": 344.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 459,
+          "bottom": 452.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "magnet",
+      "card": {
+        "x": 496,
+        "y": 302.828125,
+        "width": 288,
+        "height": 388,
+        "right": 784,
+        "bottom": 690.828125
+      },
+      "art": {
+        "x": 517,
+        "y": 321.828125,
+        "width": 246,
+        "height": 132,
+        "right": 763,
+        "bottom": 453.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 521,
+          "y": 344.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 635,
+          "bottom": 452.859375
+        },
+        {
+          "x": 644,
+          "y": 344.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 759,
+          "bottom": 452.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "heart",
+      "card": {
+        "x": 796,
+        "y": 299.828125,
+        "width": 288,
+        "height": 388,
+        "right": 1084,
+        "bottom": 687.828125
+      },
+      "art": {
+        "x": 817,
+        "y": 318.828125,
+        "width": 246,
+        "height": 132,
+        "right": 1063,
+        "bottom": 450.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 821,
+          "y": 341.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 935,
+          "bottom": 449.859375
+        },
+        {
+          "x": 944,
+          "y": 341.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 1059,
+          "bottom": 449.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "ricochet",
+      "card": {
+        "x": 196,
+        "y": 302.828125,
+        "width": 288,
+        "height": 388,
+        "right": 484,
+        "bottom": 690.828125
+      },
+      "art": {
+        "x": 217,
+        "y": 321.828125,
+        "width": 246,
+        "height": 132,
+        "right": 463,
+        "bottom": 453.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 221,
+          "y": 344.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 335,
+          "bottom": 452.859375
+        },
+        {
+          "x": 344,
+          "y": 344.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 459,
+          "bottom": 452.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "frost",
+      "card": {
+        "x": 496,
+        "y": 302.828125,
+        "width": 288,
+        "height": 388,
+        "right": 784,
+        "bottom": 690.828125
+      },
+      "art": {
+        "x": 517,
+        "y": 321.828125,
+        "width": 246,
+        "height": 132,
+        "right": 763,
+        "bottom": 453.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 521,
+          "y": 344.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 635,
+          "bottom": 452.859375
+        },
+        {
+          "x": 644,
+          "y": 344.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 759,
+          "bottom": 452.859375
+        }
+      ],
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "heart",
+      "card": {
+        "x": 796,
+        "y": 299.828125,
+        "width": 288,
+        "height": 388,
+        "right": 1084,
+        "bottom": 687.828125
+      },
+      "art": {
+        "x": 817,
+        "y": 318.828125,
+        "width": 246,
+        "height": 132,
+        "right": 1063,
+        "bottom": 450.828125
+      },
+      "overlaps": false,
+      "overflow": false,
+      "svgs": [
+        {
+          "x": 821,
+          "y": 341.625,
+          "width": 114,
+          "height": 108.234375,
+          "right": 935,
+          "bottom": 449.859375
+        },
+        {
+          "x": 944,
+          "y": 341.625,
+          "width": 115,
+          "height": 108.234375,
+          "right": 1059,
+          "bottom": 449.859375
+        }
+      ],
+      "illustrationInside": true
+    }
+  ],
+  "result": "PASS"
+}

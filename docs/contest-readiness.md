@@ -33,7 +33,7 @@ Stage one is blind visual pairing, about six pairs per entry with three judges. 
 
 Total: **10 TAO**, paid in TAO to one Bittensor wallet per team within thirty days of the announcement. Dollar figures are indicative only. Ten entrants from the shortlist and honourable mentions receive an Atlas licence. The supplied community-vote window is **27 September to 28 September, 12:00 UTC**, one entrant account and one vote, excluding one's own entry.
 
-The user retains ownership. The supplied terms include a non-exclusive promotional licence to 404 and eligibility/rights requirements. The entrant confirmed eligibility and the entry lists team `Rapiiidooo`, public contact `@Rapido_ai` and wallet `later`, as permitted by the official template. A payout address will be needed if the organizers request one.
+The user retains ownership. The supplied terms include a non-exclusive promotional licence to 404 and eligibility/rights requirements. The entrant confirmed eligibility and the entry lists team `Rapiiidooo`, public contact `@Rapido_ai` and wallet `5HRAPidoCoZPYsLE2q7Ge8WWAfQ3XZpSYoz7aGYJYRmMQpt1`, supplied by the owner and checked for its SS58 format/checksum. No further entry information is missing against the current official template; acceptance awaits the organizers' gate rerun and merge.
 
 ## Completed delivery
 

@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "checks": [
+    "Two simultaneous thumbs move right and fire north",
+    "A third touch activates dash without releasing either stick",
+    "Releasing the sticks stops movement and shooting",
+    "Touch cancellation does not leave movement stuck",
+    "Sound toggles and resumes after a gesture",
+    "Touch pause and resume",
+    "Landscape controls remain visible after rotation"
+  ],
+  "errors": []
+}

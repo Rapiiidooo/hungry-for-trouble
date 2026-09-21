@@ -111,6 +111,7 @@ node scripts/leaderboard-playtest.mjs
 node scripts/continue-playtest.mjs
 node scripts/atlas-playtest.mjs
 node scripts/analytics-playtest.mjs
+node scripts/mobile-ui-playtest.mjs
 node scripts/credits-playtest.mjs
 node scripts/playthrough.mjs --from=10 --credits --out=credits-director
 node scripts/multiplayer-playtest.mjs

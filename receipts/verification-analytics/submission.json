@@ -8,5 +8,7 @@
   "reason": "Owner-requested traffic analytics; gameplay, scoring and saves unchanged",
   "status": "Existing entry updated; organizer review and gate rerun pending",
   "verdict": "PASS",
-  "verdictFile": "jam/verdict.txt"
+  "verdictFile": "jam/verdict.txt",
+  "wallet": "5HRAPidoCoZPYsLE2q7Ge8WWAfQ3XZpSYoz7aGYJYRmMQpt1",
+  "entryMetadataUpdatedAt": "2026-09-21T19:39:49.320438+00:00"
 }

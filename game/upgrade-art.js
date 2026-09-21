@@ -76,8 +76,10 @@ function diagram(key, after, n, baseHp) {
         : "")
     );
   return (
-    Array.from({ length: Math.min(6, baseHp + n) }, (_, i) =>
-      heart(13 + i * 21, 50),
+    Array.from({ length: Math.min(8, baseHp + n) }, (_, i) =>
+      baseHp + n > 6
+        ? heart(29 + (i % 4) * 26, 28 + Math.floor(i / 4) * 34)
+        : heart(13 + i * 21, 50),
     ).join("") +
     (after
       ? '<text x="65" y="105" text-anchor="middle" fill="#f0f2f3" font-size="13">+1 MAX ♥</text>'
@@ -101,5 +103,10 @@ export function upgradeStats(key, n, baseHp = 4) {
   return `<span>${fmt(a)}</span><i>→</i><strong>${fmt(b)}</strong><small>${unit}</small>`;
 }
 export function upgradeArt(key, n, baseHp = 4) {
-  return `<svg viewBox="0 0 288 146" aria-hidden="true"><text x="66" y="17" text-anchor="middle" fill="#8e9ab0" font-size="10" font-weight="700">NOW</text><text x="219" y="17" text-anchor="middle" fill="#efb546" font-size="10" font-weight="700">AFTER UPGRADE</text><path d="M143 30v93" stroke="#475369" stroke-dasharray="3 5"/><g transform="translate(1 13)">${diagram(key, false, n, baseHp)}</g><g transform="translate(153 13)">${diagram(key, true, n + 1, baseHp)}</g></svg>`;
+  return [false, true]
+    .map(
+      (after) =>
+        `<div class="upgrade-example upgrade-${after ? "after" : "before"}" aria-hidden="true"><span>${after ? "AFTER UPGRADE" : "NOW"}</span><svg viewBox="0 0 136 128" focusable="false">${diagram(key, after, n + Number(after), baseHp)}</svg></div>`,
+    )
+    .join("");
 }
