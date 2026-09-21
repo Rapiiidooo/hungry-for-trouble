@@ -36,19 +36,19 @@ try {
   await page.click("#open-route");
   assert.equal(
     await page.$$eval("#route-map .route-node", (rows) => rows.length),
-    20,
+    10,
   );
   assert.equal(
     await page.$$eval("#route-map .boss-node", (rows) => rows.length),
-    4,
+    2,
   );
   assert.equal(
     await page.$$eval("#route-map button:disabled", (rows) => rows.length),
-    19,
+    9,
   );
   await page.screenshot({ path: new URL("route-desktop.png", out).pathname });
   report.checks.push(
-    "Twenty-node escape map, four boss milestones and honest locked stages",
+    "Ten-node rescue map, two boss milestones and hidden basement",
   );
   await page.setViewport({
     width: 390,

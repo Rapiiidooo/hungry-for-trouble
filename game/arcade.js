@@ -126,16 +126,20 @@ function floorShape(level) {
   );
   return `<svg class="floor-shape" viewBox="0 0 ${level.map[0].length} ${level.map.length}" aria-hidden="true" fill="currentColor">${cells}</svg>`;
 }
+export function visibleFloorCount(progress) {
+  return progress.unlocked >= 10 || progress.cleared.includes(9)
+    ? LEVELS.length
+    : 10;
+}
 export function drawRoute(container, progress, current, select) {
   container.replaceChildren();
-  LEVELS.forEach((level, index) => {
+  container.style.setProperty("--route-count", visibleFloorCount(progress));
+  LEVELS.slice(0, visibleFloorCount(progress)).forEach((level, index) => {
     if (select && index % 10 === 0) {
       const heading = document.createElement("div");
       heading.className = "act-heading";
       heading.textContent =
-        index === 0
-          ? "ACT I · RESCUE MOP-3"
-          : "ACT II · NO EMPLOYEE LEFT BEHIND";
+        index === 0 ? "RESCUE MOP-3" : "ACT II · NO EMPLOYEE LEFT BEHIND";
       container.append(heading);
     }
     const node = document.createElement(select ? "button" : "div");

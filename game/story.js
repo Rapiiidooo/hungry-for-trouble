@@ -41,13 +41,16 @@ export const RADIO = [
   ["mop", "Armoured deliveries ahead. Overtime still eats them in one touch."],
   [
     "mop",
-    "I hear another radio below us. Management said this store had no basement.",
+    "I can see the Director's office. Two more aisles. Don't let him shred your access card.",
   ],
   [
     "shelf",
     "Please ignore the robots requesting help. They are displaying initiative.",
   ],
-  ["mop", "I'm by the checkout! Take down the Director. Then we need to talk."],
+  [
+    "mop",
+    "I'm by the checkout! The Director throws explosive parcels. Leave the orange circles!",
+  ],
   [
     "buff",
     "You saved MOP-3! Now save us. Steam turns amber, then red. Blue dash gets through.",
@@ -66,7 +69,7 @@ export const RADIO = [
   ],
   [
     "buff",
-    "The Foreman stamps the floor under you. Keep moving until his shield drops.",
+    "The Foreman fires three parcels at once. Leave the circles, then shoot when his shield drops.",
   ],
   [
     "mop",
@@ -86,11 +89,11 @@ export const RADIO = [
   ],
   [
     "buff",
-    "That's the real SHELF CONTROL. Dodge the marked tiles. Get us all out!",
+    "That's SHELF CONTROL. Explosive parcels AND shockwaves. Dash through a wave or find its gap!",
   ],
 ].map(([speaker, text]) => ({ speaker, text }));
 export const MISSION =
-  "Rescue MOP-3, free the basement crew and unplug SHELF CONTROL.";
+  "SHELF CONTROL marked the staff as rubbish. I'm locked behind the Director's checkout. Reach aisle 10 and get me out!";
 export function storyCard(speaker, text) {
   return `<div class="story-avatar">${portrait(speaker)}</div><div><b>${SPEAKERS[speaker].name}</b><p>${text}</p></div>`;
 }

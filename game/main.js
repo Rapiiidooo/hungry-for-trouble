@@ -12,8 +12,10 @@ import { Sound } from "./audio.js";
 import { LEVELS } from "./levels.js";
 import { ViewRig } from "./view-rig.js";
 import { receiptEffects } from "./combat-fx.js";
-import { RADIO, SPEAKERS, portrait, storyCard } from "./story.js";
+import { RADIO, SPEAKERS, MISSION, portrait, storyCard } from "./story.js";
 import { campaignEffects } from "./campaign-fx.js";
+import { presentationEffects } from "./presentation-fx.js";
+import { escapeScene, ESCAPE_SECONDS, ESCAPE_LINES } from "./escape-scene.js";
 import { ventPhase } from "./machines.js";
 import { RoomClient } from "./room-client.js";
 import { newMatch } from "./multiplayer-sim.js";
@@ -29,6 +31,7 @@ import {
   UPGRADES,
   upgradeChoices,
   readProgress,
+  visibleFloorCount,
   unlock,
   drawRoute,
   api,
@@ -89,6 +92,12 @@ let viewRig,
   repairModels = [];
 let damageBearing = 0,
   radioUntil = 0;
+let presentationFX,
+  ending = null,
+  endingAt = 0,
+  endingFinished = false,
+  endingLine = -1;
+let goldEnabled = false;
 let floorEffects,
   rescueUntil = 0,
   pendingOverlay = "",
@@ -186,7 +195,7 @@ const isFPS = () =>
   game.state === "playing" &&
   game.fpsTime > 0 &&
   !viewOverhead;
-const activeCamera = () => viewRig?.camera || camera;
+const activeCamera = () => ending?.camera || viewRig?.camera || camera;
 
 function drawLobby(room, selfId) {
   const key = JSON.stringify([room.code, room.phase, room.players, room.host]);
@@ -330,7 +339,65 @@ function floatText(text, x, z, kind = "ammo") {
   floating.push({ el, x, z, start: clock, kind });
 }
 
+function applyLivery(model) {
+  if (!model) return;
+  markEmissive(model);
+  model.traverse((node) => {
+    if (!node.isMesh) return;
+    node.userData.liveryColor ??= node.material.color.getHex();
+    if (node.userData.liveryColor === palette.cream)
+      node.material.color.setHex(goldEnabled ? 0xd9aa4d : palette.cream);
+  });
+}
+
+function refreshProgressUI() {
+  const count = visibleFloorCount(progress),
+    discovered = count > 10;
+  ui["route-count"].textContent = `${count} AISLES · ${count / 5} BOSSES`;
+  ui["route-floors"].textContent = `${count} FLOORS`;
+  ui["route-bosses"].textContent = `${count / 5} BOSS SHOWDOWNS`;
+  ui["route-mission"].textContent = discovered
+    ? "MOP-3 is free. Rescue the basement crew and shut down SHELF CONTROL."
+    : "Reach the Director's checkout and rescue MOP-3.";
+  ui.best.textContent = best
+    ? `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${Math.min(bestFloor, count)}/${count}`
+    : discovered
+      ? "THE BASEMENT IS OPEN. NOBODY LEFT BEHIND."
+      : "TEN AISLES. ONE FRIEND TO RESCUE.";
+  ui["gold-toggle"].hidden = !progress.cleared.includes(19);
+  ui["gold-toggle"].textContent = `GOLD VACUUM: ${goldEnabled ? "ON" : "OFF"}`;
+  ui["gold-toggle"].setAttribute("aria-pressed", String(goldEnabled));
+}
+
+function finishEnding() {
+  if (!ending || endingFinished) return;
+  endingFinished = true;
+  ending.update(ESCAPE_SECONDS, reducedMotion.matches);
+  ui.cinema.hidden = true;
+  ui.result.hidden = false;
+}
+
+function updateBossBar() {
+  const boss = game.boss;
+  if (!boss || boss.hp <= 0 || ending || paused) {
+    ui["boss-bar"].hidden = true;
+    return;
+  }
+  const point = new THREE.Vector3(boss.x, 3.7, boss.z).project(activeCamera());
+  const visible =
+    point.z > -1 && point.z < 1 && Math.abs(point.x) < 1.15 && point.y > -1.2;
+  ui["boss-bar"].hidden = !visible;
+  if (!visible) return;
+  const half = ui["boss-bar"].offsetWidth / 2;
+  const minY = innerHeight < 560 ? 115 : innerWidth < 700 ? 205 : 155;
+  ui["boss-bar"].style.left =
+    `${clamp((point.x * 0.5 + 0.5) * innerWidth, half + 8, innerWidth - half - 8)}px`;
+  ui["boss-bar"].style.top =
+    `${clamp((-point.y * 0.5 + 0.5) * innerHeight, minY, innerHeight - 145)}px`;
+}
+
 function chooseStage(index) {
+  index = Math.min(index, visibleFloorCount(progress) - 1);
   selectedStage = index;
   ui["stage-title"].textContent =
     `AISLE ${String(index + 1).padStart(2, "0")} · ${LEVELS[index].name}`;
@@ -341,6 +408,7 @@ function chooseStage(index) {
 
 function openRoute() {
   if (mode === "playing") pause(true);
+  refreshProgressUI();
   ui["route-screen"].hidden = false;
   chooseStage(mode === "playing" ? game.levelIndex : progress.unlocked);
 }
@@ -906,6 +974,7 @@ async function buildWorld() {
     if (node.name === "wheel") node.userData.spinning = true;
   });
   world.add(hero);
+  if (!game.multiplayer) applyLivery(hero);
   if (game.multiplayer) {
     markEmissive(hero);
     const tint =
@@ -1046,13 +1115,6 @@ async function buildWorld() {
           node.material.color.setHex(bossTint);
       });
     world.add(bossModel);
-    const manager = label(
-      game.boss.name || (game.boss.director ? "THE DIRECTOR" : "THE MANAGER"),
-      "#ff8065",
-      3.5,
-    );
-    manager.position.set(game.boss.x, 3.7, game.boss.z);
-    world.add(manager);
   }
   shotPool = pool(
     game.multiplayer ? 0xffffff : game.upgrades.frost ? 0xa4ddff : palette.gold,
@@ -1067,6 +1129,15 @@ async function buildWorld() {
     makeRing,
     label,
     markEmissive,
+  });
+  presentationFX = presentationEffects({
+    world,
+    game,
+    cloneAsset,
+    makeRing,
+    label,
+    markEmissive,
+    ownedGeometry,
   });
   if (game.levelIndex >= 10) {
     const sign = label(game.map.level.shape, "#e3eaf4", 5.5);
@@ -1100,7 +1171,7 @@ async function buildWorld() {
     ? "DAILY · SAME CHALLENGE FOR EVERYONE"
     : runKind === "practice"
       ? "PRACTICE · UNLOCKED AISLE"
-      : `ESCAPE ROUTE · ${game.levelIndex + 1} / ${LEVELS.length}`;
+      : `ESCAPE ROUTE · ${game.levelIndex + 1} / ${visibleFloorCount(progress)}`;
   ui["boss-name"].textContent = game.boss?.name || "THE MANAGER";
   ui.game.classList.toggle("boss-encounter", !!game.boss);
   updateModels(0);
@@ -1128,6 +1199,9 @@ async function start(fresh = true, upgrade, options = {}) {
   damageUntil = 0;
   rescueUntil = 0;
   pendingOverlay = "";
+  ending = null;
+  endingFinished = false;
+  endingLine = -1;
   wasFPS = false;
   fpsPitch = 0;
   await sound.start();
@@ -1185,6 +1259,8 @@ async function start(fresh = true, upgrade, options = {}) {
     "route-screen",
     "daily-screen",
     "room-screen",
+    "discovery-screen",
+    "cinema",
   ])
     ui[id].hidden = true;
   mode = "playing";
@@ -1195,6 +1271,8 @@ async function start(fresh = true, upgrade, options = {}) {
   ui.game.classList.add("playing");
   ui.game.classList.toggle("multiplayer", !!game.multiplayer);
   ui["room-result"].hidden = true;
+  ui["ending-crew"].hidden = true;
+  ui["gold-reward"].hidden = true;
   ui.retry.hidden = false;
   ui["peer-status"].hidden = !game.multiplayer;
   ui["pause-room-note"].hidden = !game.multiplayer;
@@ -1239,6 +1317,14 @@ function menu() {
   clearInput();
   mode = "menu";
   viewRig.reset();
+  ending = null;
+  pendingOverlay = "";
+  rescueUntil = 0;
+  scene.background.setHex(palette.ink);
+  keyLight.color.setHex(0xf2f6ff);
+  fillLight.color.setHex(0xc2cbdf);
+  refreshProgressUI();
+  applyLivery(menuHero);
   paused = false;
   if (world) world.visible = false;
   releaseLook();
@@ -1254,6 +1340,9 @@ function menu() {
     "route-screen",
     "daily-screen",
     "room-screen",
+    "discovery-screen",
+    "cinema",
+    "shield-visor",
   ])
     ui[id].hidden = true;
   ui.game.classList.remove("playing", "overtime", "multiplayer");
@@ -1286,8 +1375,20 @@ function handleEvents(events) {
     }
     if (event.type === "wave")
       showMessage(`WAVE ${event.wave}`, "Fresh crumbs. Faster colleagues.", 2);
-    if (event.type === "shield-save")
-      floatText("WARRANTY SAVED YOU", event.x, event.z, "shield-pop");
+    if (event.type === "shield-save") {
+      presentationFX?.hit(clock);
+      floatText(
+        game.player.shield > 0
+          ? "SHIELD BLOCKED IT"
+          : "SHIELD BROKEN · HIT BLOCKED",
+        event.x,
+        event.z,
+        "shield-pop",
+      );
+      burst(event.x, event.z, 0xb4d9ff, 26, 2.5);
+    }
+    if (event.type === "lob-impact")
+      burst(event.x, event.z, palette.gold, 35, 3);
     if (event.type === "drone-warning")
       burst(event.x, event.z, palette.red, 8, 0.5);
     if (event.type === "receipt-impact")
@@ -1308,6 +1409,7 @@ function handleEvents(events) {
       burst(event.x, event.z, palette.blue, 30, 3);
       burst(event.toX, event.toZ, palette.blue, 30, 3);
       floatText("SPECIAL DELIVERY!", event.toX, event.toZ, "shield-pop");
+      viewRig.beginTransit(reducedMotion.matches);
       follow.set(event.toX, 0, event.toZ);
     }
     if (
@@ -1410,7 +1512,7 @@ function handleEvents(events) {
           : game.levelIndex === 14
             ? "The basement crew is free. Find the core!"
             : game.boss.director
-              ? "MOP-3 is free. The basement radio is still calling!"
+              ? "MOP-3 is free. Reach the checkout and get your friend out!"
               : "Access card acquired. MOP-3 is in the control wing.",
         3,
       );
@@ -1426,6 +1528,7 @@ function handleEvents(events) {
   }
   if (!game.daily && ["cleared", "won"].includes(game.state))
     unlock(progress, game.levelIndex);
+  refreshProgressUI();
   if (game.state === "cleared") {
     ui["upgrade-screen"].hidden = false;
     ui["chapter-story"].hidden = ![9, 14].includes(game.levelIndex);
@@ -1441,7 +1544,8 @@ function handleEvents(events) {
       );
     if ([9, 14].includes(game.levelIndex)) {
       rescueUntil = clock + 2.6;
-      pendingOverlay = "upgrade-screen";
+      pendingOverlay =
+        game.levelIndex === 9 ? "discovery-screen" : "upgrade-screen";
       ui["upgrade-screen"].hidden = true;
       showMessage(
         "COLLEAGUE RESCUED!",
@@ -1482,7 +1586,7 @@ function handleEvents(events) {
   } catch {
     /* Storage is optional in private browser modes. */
   }
-  ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${bestFloor}/${LEVELS.length}`;
+  ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${Math.min(bestFloor, visibleFloorCount(progress))}/${visibleFloorCount(progress)}`;
   ui["result-eyebrow"].textContent = game.daily
     ? `DAILY RUSH · ${game.daily.day}`
     : won
@@ -1505,7 +1609,7 @@ function handleEvents(events) {
         : "Occupational hazard. No compensation.";
   ui["final-score"].textContent = game.score.toLocaleString("en-US");
   ui["result-stats"].textContent =
-    `${runKind === "campaign" && game.score > previousBest ? "NEW PERSONAL BEST · " : ""}${game.daily ? `${game.elapsed.toFixed(1)}s` : `AISLE ${game.levelIndex + 1}/${LEVELS.length}`} · ${runKills + game.kills} TAKEDOWNS · ${runCrumbs + game.collected} CRUMBS`;
+    `${runKind === "campaign" && game.score > previousBest ? "NEW PERSONAL BEST · " : ""}${game.daily ? `${game.elapsed.toFixed(1)}s` : `AISLE ${game.levelIndex + 1}/${visibleFloorCount(progress)}`} · ${runKills + game.kills} TAKEDOWNS · ${runCrumbs + game.collected} CRUMBS`;
   ui["score-form"].hidden = !game.daily;
   ui["share-score"].hidden = !game.daily;
   ui["score-status"].hidden = true;
@@ -1515,18 +1619,42 @@ function handleEvents(events) {
     : "ONE MORE SHIFT <span>▶</span>";
   ui.result.hidden = false;
   ui["ending-crew"].hidden = !won || !!game.daily;
+  ui["gold-reward"].hidden = !won || !!game.daily;
   if (won && !game.daily) {
     ui["ending-crew"].innerHTML = ["mop", "buff", "mop"]
       .map((id) => portrait(id))
       .join("");
-    rescueUntil = clock + 3;
-    pendingOverlay = "result";
+    goldEnabled = true;
+    try {
+      localStorage.setItem("hft-gold-v1", "on");
+    } catch {
+      /* Optional cosmetic preference. */
+    }
+    refreshProgressUI();
+    ui["gold-icon"].innerHTML =
+      '<img src="./favicon.svg" alt="Golden vacuum reward">';
+    ending = escapeScene({
+      world,
+      game,
+      cloneAsset,
+      markEmissive,
+      instanceAsset,
+      label,
+      fromCamera: activeCamera(),
+      scene,
+      keyLight,
+      fillLight,
+    });
+    endingAt = clock;
+    ending.update(0, reducedMotion.matches);
     ui.result.hidden = true;
-    showMessage(
-      "EVERYBODY CLOCKS OUT.",
-      "The store is closed. The robots are free.",
-      3,
-    );
+    ui.hud.hidden = true;
+    ui.pause.hidden = true;
+    ui.cinema.hidden = false;
+    ui.message.classList.remove("show");
+    particles.length = 0;
+    weapon.visible = false;
+    sound.effect("escape");
   }
 }
 
@@ -1544,11 +1672,15 @@ function renderActor(actor) {
 }
 
 function updateModels(dt) {
-  if (!hero) return;
+  if (!hero || ending) return;
   const p = renderActor(game.player),
     moving = Math.hypot(p.vx, p.vz),
     overtime = game.overtime > 0;
-  const scale = overtime ? 1.23 + Math.sin(clock * 23) * 0.015 : 1;
+  const scale =
+    (overtime ? 1.23 + Math.sin(clock * 23) * 0.015 : 1) *
+    (reducedMotion.matches
+      ? 1
+      : 1 - Math.sin(viewRig.transitProgress * Math.PI) * 0.18);
   hero.position.set(
     p.x,
     moving > 0.2 ? Math.abs(Math.sin(clock * 22)) * 0.045 : 0,
@@ -1564,7 +1696,7 @@ function updateModels(dt) {
   hero.scale.setScalar(scale);
   hero.visible = halo.visible = viewRig.blend < 0.75;
   ceiling.visible = viewRig.blend > 0.98;
-  weapon.visible = viewRig.blend > 0.92;
+  weapon.visible = viewRig.blend > 0.92 && viewRig.transitProgress > 0.9;
   const portraitFPS = innerWidth < 700 && innerHeight > innerWidth;
   weapon.scale.setScalar(portraitFPS ? 0.32 : 0.38);
   weapon.position.set(
@@ -1802,6 +1934,7 @@ function updateModels(dt) {
     if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
   }
   floorEffects?.update(game, clock, reducedMotion.matches);
+  presentationFX?.update(game, clock, viewRig.blend, reducedMotion.matches);
 }
 
 function screenPosition(x, y, z) {
@@ -1813,6 +1946,13 @@ function screenPosition(x, y, z) {
 }
 
 function updateCamera(dt, advance = true) {
+  if (ending) {
+    ending.update(
+      endingFinished ? ESCAPE_SECONDS : clock - endingAt,
+      reducedMotion.matches,
+    );
+    return;
+  }
   const portrait = innerWidth < 700 && innerHeight > innerWidth;
   if (mode === "menu") {
     const target = portrait
@@ -1848,7 +1988,7 @@ function updateCamera(dt, advance = true) {
     );
     fpsCamera.updateMatrixWorld();
   }
-  viewRig.update(advance ? dt : 0, isFPS(), reducedMotion.matches);
+  viewRig.update(advance && !paused ? dt : 0, isFPS(), reducedMotion.matches);
 }
 
 function drawMap() {
@@ -1932,7 +2072,7 @@ function updateHud() {
   ui.health.classList.toggle("critical", game.player.hp === 1);
   ui["shield-count"].textContent =
     game.player.shield > 0
-      ? `◈ ${game.player.shield} BLOCK${game.player.shield === 1 ? "" : "S"}`
+      ? `SHIELD · ${game.player.shield} HIT${game.player.shield === 1 ? "" : "S"}`
       : "";
   ui.health.setAttribute("aria-label", `${game.player.hp} health`);
   ui.ammo.textContent =
@@ -1995,12 +2135,12 @@ function updateHud() {
     game.overtime < 2
       ? "ENDING SOON · MAKE SPACE!"
       : "INVINCIBLE · TOUCH ENEMIES TO SCRAP THEM";
-  ui["boss-bar"].hidden = !game.boss || game.boss.hp <= 0;
   if (game.boss) {
     ui["boss-fill"].style.width = `${(game.boss.hp / game.boss.maxHp) * 100}%`;
+    ui["boss-bar"].classList.toggle("exposed", game.boss.exposed);
     ui["boss-state"].textContent = game.boss.exposed
-      ? "SHIELD DOWN. MAKE IT PERSONAL."
-      : "ARMOURED. DODGE THE COMPLAINTS.";
+      ? `SHIELD DOWN · ${Math.ceil(game.boss.hp)} / ${game.boss.maxHp}`
+      : `ARMOURED · ${Math.ceil(game.boss.hp)} / ${game.boss.maxHp}`;
   }
   ui["heal-hint"].textContent = game.daily
     ? "♥ REPAIR KIT +1 · RESPAWNS IN 30s"
@@ -2016,14 +2156,32 @@ function updateHud() {
       ventPhase(game, v) !== "safe" &&
       Math.hypot(v.x - game.player.x, v.z - game.player.z) < 1.8,
   );
+  const closeLob = game.lobs?.some(
+    (shot) =>
+      !shot.hit &&
+      Math.hypot(shot.x - game.player.x, shot.z - game.player.z) <
+        shot.radius + 0.4,
+  );
+  const closeWave = game.waves?.some(
+    (wave) =>
+      wave.radius > 0 &&
+      Math.abs(
+        Math.hypot(wave.x - game.player.x, wave.z - game.player.z) -
+          wave.radius,
+      ) < 2,
+  );
   ui["hazard-cue"].hidden =
     paused ||
     game.state !== "playing" ||
     game.overtime > 0 ||
-    (!closeMine && !closeSteam);
-  ui["hazard-cue"].textContent = closeMine
-    ? "MINE · DODGE OUT OF THE CIRCLE!"
-    : "STEAM · DASH CLEAR OF THE TILE!";
+    (!closeMine && !closeSteam && !closeLob && !closeWave);
+  ui["hazard-cue"].textContent = closeLob
+    ? "INCOMING · LEAVE THE ORANGE CIRCLE!"
+    : closeWave
+      ? "SHOCKWAVE · DASH THROUGH!"
+      : closeMine
+        ? "MINE · DODGE OUT OF THE CIRCLE!"
+        : "STEAM · DASH CLEAR OF THE TILE!";
   ui["damage-direction"].hidden = clock >= damageUntil || viewRig.blend < 0.8;
   ui["damage-direction"].style.transform =
     `rotate(${fpsYaw - damageBearing}rad)`;
@@ -2057,6 +2215,10 @@ function updateHud() {
 }
 
 function readInput() {
+  if (viewRig.transitProgress < 0.85) {
+    dashQueued = false;
+    return {};
+  }
   let x =
     Number(keys.has("KeyD") || keys.has("ArrowRight")) -
     Number(keys.has("KeyA") || keys.has("ArrowLeft")) +
@@ -2166,6 +2328,14 @@ function telemetry() {
       : null,
     firstPerson: isFPS(),
     viewBlend: viewRig.blend,
+    transitProgress: viewRig.transitProgress,
+    cameraPosition: activeCamera().position.toArray(),
+    shieldVisible: presentationFX?.shieldVisible || false,
+    lobs: (game.lobs || []).map((shot) => ({ ...shot })),
+    waves: (game.waves || []).map((wave) => ({ ...wave })),
+    visibleFloors: visibleFloorCount(progress),
+    endingTime: ending?.time ?? null,
+    goldEnabled,
     shape: game.map.level.shape,
     seed: game.seed,
     repairs: game.repairs.map((r) => ({ ...r })),
@@ -2231,10 +2401,31 @@ function frame(now) {
   ui.game.classList.toggle("first-person", isFPS());
   ui.game.classList.toggle("visor-active", game.fpsTime > 0);
   sound.update(active, game.overtime, game.map.level.theme);
+  ui["transit-effect"].style.opacity = String(
+    mode === "playing" && !ending
+      ? Math.sin(viewRig.transitProgress * Math.PI) * 0.8
+      : 0,
+  );
+  ui["shield-visor"].hidden =
+    !active || game.player.shield <= 0 || viewRig.blend < 0.8;
+  if (ending && !endingFinished) {
+    const age = clock - endingAt;
+    const line = ESCAPE_LINES.findLastIndex((entry) => age >= entry.at);
+    if (line !== endingLine) {
+      endingLine = line;
+      ui["cinema-title"].textContent = ESCAPE_LINES[line].title;
+      ui["cinema-line"].innerHTML = storyCard(
+        ESCAPE_LINES[line].speaker,
+        ESCAPE_LINES[line].text,
+      );
+    }
+    if (age >= ESCAPE_SECONDS) finishEnding();
+  }
   updateCamera(dt);
   if (mode === "playing" && !building) {
     if (!paused) updateModels(dt);
-    receiptFX?.update(game, activeCamera(), canStand);
+    if (!ending) receiptFX?.update(game, activeCamera(), canStand);
+    updateBossBar();
     hudTime += dt;
     if (hudTime > 0.08) {
       hudTime = 0;
@@ -2284,6 +2475,8 @@ function frame(now) {
   if (clock > messageUntil) ui.message.classList.remove("show");
   if (pendingOverlay && clock >= rescueUntil) {
     ui[pendingOverlay].hidden = false;
+    if (pendingOverlay === "discovery-screen")
+      ui["discovery-continue"].focus({ preventScroll: true });
     pendingOverlay = "";
   }
   ui["hit-flash"].classList.toggle("active", clock < damageUntil);
@@ -2365,6 +2558,21 @@ function bindStick(id, target, aiming) {
 
 function bindInput() {
   ui.start.onclick = () => start();
+  ui["discovery-continue"].onclick = () => {
+    ui["discovery-screen"].hidden = true;
+    ui["upgrade-screen"].hidden = false;
+  };
+  ui["skip-ending"].onclick = finishEnding;
+  ui["gold-toggle"].onclick = () => {
+    goldEnabled = !goldEnabled;
+    try {
+      localStorage.setItem("hft-gold-v1", goldEnabled ? "on" : "off");
+    } catch {
+      /* Optional cosmetic preference. */
+    }
+    applyLivery(menuHero);
+    refreshProgressUI();
+  };
   ui["open-rooms"].onclick = () => {
     ui["room-screen"].hidden = false;
     ui["room-setup"].hidden = !!rooms.session;
@@ -2629,12 +2837,30 @@ async function init() {
     if (record && Number.isFinite(record.score)) {
       best = record.score;
       bestFloor = clamp(record.floor || 1, 1, LEVELS.length);
-      ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${bestFloor}/${LEVELS.length}`;
+      ui.best.textContent = `PERSONAL BEST ${best.toLocaleString("en-US")} · AISLE ${Math.min(bestFloor, visibleFloorCount(progress))}/${visibleFloorCount(progress)}`;
     }
     ui["score-name"].value = localStorage.getItem("hft-alias") || "";
   } catch {
     /* A disabled or damaged local score must not prevent play. */
   }
+  ui["mission-card"].innerHTML = storyCard("mop", MISSION);
+  ui["discovery-mop"].innerHTML = storyCard(
+    "mop",
+    "You did it! Wait… this checkout has a service lift. I thought we only had ten floors.",
+  );
+  ui["discovery-buff"].innerHTML = storyCard(
+    "buff",
+    "BUFF-0 here. We're trapped downstairs. That Director was middle management. SHELF CONTROL is still running the basement.",
+  );
+  try {
+    goldEnabled =
+      progress.cleared.includes(19) &&
+      localStorage.getItem("hft-gold-v1") !== "off";
+  } catch {
+    /* Optional cosmetic preference. */
+  }
+  applyLivery(menuHero);
+  refreshProgressUI();
   bindInput();
   resize();
   ui.start.disabled = false;
@@ -2642,7 +2868,7 @@ async function init() {
     ui["open-daily"].disabled =
     ui["open-rooms"].disabled =
       false;
-  ui.start.innerHTML = "START THE NIGHT SHIFT <span>▶</span>";
+  ui.start.innerHTML = "RESCUE MOP-3 <span>▶</span>";
   const savedRoom = rooms.saved();
   ui["room-reconnect"].hidden = !savedRoom;
   if (savedRoom)

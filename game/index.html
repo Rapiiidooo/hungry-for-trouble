@@ -12,12 +12,13 @@
       name="description"
       content="A haunted supermarket. One heavily unqualified vacuum. Eat crumbs, dodge security and turn the tables."
     />
-    <link rel="icon" href="data:," />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./arcade.css" />
     <link rel="stylesheet" href="./feel.css" />
     <link rel="stylesheet" href="./multiplayer.css" />
     <link rel="stylesheet" href="./campaign.css" />
+    <link rel="stylesheet" href="./presentation.css" />
     <script type="importmap">
       {
         "imports": {
@@ -45,17 +46,23 @@
       <section id="menu">
         <div class="eyebrow"><i></i> CLEANUP ON AISLE EVERYWHERE.</div>
         <h1>Hungry<br />for <em>trouble.</em></h1>
-        <p class="lead">Minimum wage.<br /><b>Maximum firepower.</b></p>
-        <p class="pitch">
-          The store AI has marked you as rubbish.<br />Rescue MOP-3. Take out
-          the management.
+        <p class="lead">Minimum wage. <br /><b>Maximum firepower.</b></p>
+        <aside
+          id="mission-card"
+          class="story-card"
+          aria-label="Your mission"
+        ></aside>
+        <p id="mission-steps">
+          <b>EAT</b> crumbs for ammo. <b>FIGHT</b> through security.
+          <b>RESCUE</b> MOP-3.
         </p>
         <button id="start" class="primary" disabled>
           WARMING UP… <span>▶</span>
         </button>
         <div class="menu-secondary">
           <button id="open-route" disabled>
-            <span>▣</span> ESCAPE ROUTE <small>20 AISLES · 4 BOSSES</small>
+            <span>▣</span> ESCAPE ROUTE
+            <small id="route-count">10 AISLES · 2 BOSSES</small>
           </button>
           <button id="open-daily" disabled>
             <span>◷</span> DAILY RUSH <small>90 SECONDS · WORLD SCORES</small>
@@ -70,7 +77,15 @@
           ><span><kbd>SPACE</kbd> dash to dodge hits</span>
         </div>
         <p class="touch-hint">Left thumb moves. Right thumb aims and fires.</p>
-        <small id="best">TWENTY AISLES. FOUR BOSSES. NOBODY LEFT BEHIND.</small>
+        <small id="best">TEN AISLES. ONE FRIEND TO RESCUE.</small>
+        <button
+          id="gold-toggle"
+          class="text-button"
+          aria-pressed="false"
+          hidden
+        >
+          GOLD VACUUM: OFF
+        </button>
       </section>
       <aside id="hero-label">
         <span>EMPLOYEE OF THE MONTH*</span
@@ -175,6 +190,38 @@
       </section>
       <div id="message" role="status" aria-live="polite"></div>
       <div id="hit-flash"></div>
+      <div id="transit-effect" aria-hidden="true"></div>
+      <div id="shield-visor" aria-hidden="true" hidden>
+        <span>WARRANTY ACTIVE</span>
+      </div>
+      <section id="discovery-screen" class="overlay" hidden>
+        <div class="panel discovery-panel">
+          <div class="eyebrow">MOP-3 RESCUED · AN UNLISTED FLOOR</div>
+          <h2>That wasn't<br /><em>the way out.</em></h2>
+          <div class="service-lift" aria-hidden="true">
+            <span>B1</span><i></i><i></i><b>STAFF ONLY</b>
+          </div>
+          <aside id="discovery-mop" class="story-card"></aside>
+          <aside id="discovery-buff" class="story-card"></aside>
+          <p>
+            The service lift is open. Ten hidden floors. The real boss is still
+            downstairs.
+          </p>
+          <button id="discovery-continue" class="primary">
+            NOBODY LEFT BEHIND <span>↓</span>
+          </button>
+        </div>
+      </section>
+      <section id="cinema" hidden aria-label="The escape">
+        <div class="cinema-top">
+          <b>06:01 AM · OFF THE CLOCK</b
+          ><button id="skip-ending">SKIP TO RESULTS</button>
+        </div>
+        <div class="cinema-caption">
+          <h2 id="cinema-title"></h2>
+          <aside id="cinema-line" class="story-card"></aside>
+        </div>
+      </section>
       <section id="room-screen" class="overlay" hidden>
         <div class="panel room-panel">
           <div class="eyebrow">TWO EMPLOYEES. TWICE THE LIABILITY.</div>
@@ -272,6 +319,14 @@
           <h2 id="result-title">You <em>suck.</em></h2>
           <p id="result-comment">Occupational hazard. No compensation.</p>
           <div id="ending-crew" hidden></div>
+          <div id="gold-reward" hidden>
+            <div id="gold-icon"></div>
+            <div>
+              <b>GOLD VACUUM UNLOCKED</b>
+              <p>Same terrible employee. Much better finish.</p>
+              <small>EQUIPPED · CHANGE IT ON THE TITLE SCREEN</small>
+            </div>
+          </div>
           <div id="room-result" hidden>
             <button id="room-rematch" class="primary">REMATCH</button>
             <p id="room-rematch-note"></p>
@@ -311,9 +366,12 @@
         <div class="panel route-panel">
           <div class="eyebrow">FROM MINIMUM WAGE TO MAXIMUM ESCAPE</div>
           <h2>Your <em>way out.</em></h2>
-          <p>Rescue MOP-3. Free the basement crew. Shut down the real boss.</p>
+          <p id="route-mission">
+            Reach the Director's checkout and rescue MOP-3.
+          </p>
           <div class="route-zones">
-            <span>20 FLOORS</span><span>4 BOSS SHOWDOWNS</span>
+            <span id="route-floors">10 FLOORS</span
+            ><span id="route-bosses">2 BOSS SHOWDOWNS</span>
           </div>
           <div id="route-map" class="route-map"></div>
           <div id="stage-preview">

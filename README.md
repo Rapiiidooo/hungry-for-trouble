@@ -33,23 +33,23 @@ Dash gives a short protected burst in your movement direction, or your aim direc
 7. **Heavy Delivery:** tougher armoured trolleys and drones patrol moving shutters.
 8. **Brain Freeze:** sliding movement, ranged crossfire and armoured enemies.
 9. **Express Distress:** opposing conveyor lanes push players through a crowded layout.
-10. **Exit Interview:** defeat the Director and rescue MOP-3, who reveals the trapped basement crew.
+10. **Exit Interview:** dodge lobbed parcels, defeat the Director and rescue MOP-3. An unexpected transmission reveals a hidden service lift.
 11. **Hot Under the Collar:** boiler vents warn before steam damages anything on the tile.
 12. **Returns to Nowhere:** matching transport pads connect distant parts of the lost-property rooms.
 13. **Expiry Date:** mine layers leave shootable mines with an arming delay and a blast warning.
 14. **No Refunds:** shield carts block frontal shots; flank them or use Overtime.
-15. **The Foreman:** a third boss marks the player's floor while cycling receipt volleys and shield openings.
+15. **The Foreman:** three staggered explosive parcels force you to move between receipt volleys and shield openings.
 16. **Cold Connection:** four paired transport pads connect icy islands and steam traps.
 17. **Special Delivery:** conveyor lanes mix mine layers, shield carts and transport shortcuts.
 18. **Dead Air:** long-range snipers lock their aim before firing fast receipts across a radio network.
 19. **Final Final Notice:** shutters, vents and the new enemies guard the last detour.
-20. **Shelf Destruction:** SHELF CONTROL marks a cross of mine warnings; defeat it and escape with every colleague.
+20. **Shelf Destruction:** SHELF CONTROL alternates a cross of lobbed explosives with expanding shockwaves. Find the visible gap or dash through, then escape with the crew.
 
-After the familiar first aisle, eighteen floors use seeded room connections, cover and supplies while preserving reachable objectives. The two-act map announces four boss milestones and saves each real clear. Existing Director clears unlock floor 11. Unlocked aisles can be practised directly, with starter upgrades from floor 6 onward. Full campaign personal records remain separate from practice.
+After the familiar first aisle, eighteen floors use seeded cover and supplies inside distinct silhouettes: rings, a clover, a crescent, joined islands, a figure eight and a spiral, with different boss arenas. Objectives remain reachable. New players see ten floors and two bosses. Rescuing MOP-3 reveals the basement through an animated service lift and a conversation that waits for the player, then adds ten floors to the route. Each real clear is saved. Existing Director clears unlock floor 11. Unlocked aisles can be practised directly, with starter upgrades from floor 6 onward. Full campaign personal records remain separate from practice.
 
-Act-two stock is interactive: dash into or shoot a yellow stock cart to launch it at enemies. Shoot a flour display to interrupt and blind nearby enemies for three seconds. Transport pads use matching A/B labels and colours; step off the destination before returning. Arrivals grant brief protection.
+Act-two stock is interactive: dash into or shoot a yellow stock cart to launch it at enemies. Shoot a flour display to interrupt and blind nearby enemies for three seconds. Transport pads use matching A/B labels and colours; step off the destination before returning. A 720 ms camera transit and arrival pulse connect the pads visually; arrivals grant brief protection. Reduced motion uses a short dissolve.
 
-Eight capped upgrade types support different builds: faster firing, spread, piercing, a warranty shield, crumb attraction, extra health, wall ricochets and freezing shots that interrupt attacks. Ricochet, spread, piercing and frost combine. Original robot portraits identify MOP-3, BUFF-0 and SHELF CONTROL; the current radio message can be reread in the pause menu. The rescues at floors 10 and 15 lead into the next chapter, and floor 20 ends with the crew celebrating together.
+Eight capped upgrade types support different builds: faster firing, spread, piercing, a warranty shield, crumb attraction, extra health, wall ricochets and freezing shots that interrupt attacks. Ricochet, spread, piercing and frost combine. Original robot portraits identify MOP-3, BUFF-0 and SHELF CONTROL; the current radio message can be reread in the pause menu. The mission is readable on the title screen before the first tap. Rescues at floors 10 and 15 lead into the next chapter. Completing floor 20 powers down the store and stages a nine-second crew escape at sunrise, with an original musical payoff and a skippable conversation. It unlocks a saved golden vacuum livery, switchable on the title screen without affecting combat. Boss health follows the boss in both camera views. Warranty charges create a visible shield dome, with an impact flash and break effect; Vac Cam uses a matching visor indicator.
 
 ## Daily Rush and shared scores
 
@@ -85,6 +85,7 @@ node scripts/playthrough.mjs --daily
 node scripts/arcade-playtest.mjs
 node scripts/feel-playtest.mjs
 node scripts/act-two-playtest.mjs
+node scripts/presentation-playtest.mjs
 node scripts/multiplayer-playtest.mjs
 node scripts/multiplayer-playtest.mjs --coop
 ```
@@ -93,6 +94,6 @@ The simulation tests use Node's built-in test runner. The shipping and browser c
 
 The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits). The owner permits their workspace-catalog publication only after actual contest submission, so that download method is deferred and they are not yet used at runtime.
 
-The twenty-floor expansion passes 34 Node checks and the official 33-module shipping check. [Expansion evidence](receipts/verification-act-two/README.md) records real-input campaign completion, machinery, phone controls, FPS, daily scores and two-player regressions. The official local phone/4G gate passes for gameplay commit `4a298bd3618eb362b3c677e6f77f0fc288f9564e`: 5.5-second readiness, 2.6 MB, real touch movement and no errors. Its [unedited verdict](receipts/verification-act-two/jam/verdict.txt) covers the opening aisle on Chrome phone emulation; the live-URL gate remains outstanding.
+The mission and finale pass adds tests for delayed lob damage, shockwave gaps, the rendered safe sector and concealed progression. See [current verification](receipts/verification-reveal/README.md) for its checks and local gate. The preceding twenty-floor expansion passed 34 Node checks and the official 33-module shipping check. [Expansion evidence](receipts/verification-act-two/README.md) records real-input campaign completion, machinery, phone controls, FPS, daily scores and two-player regressions. The official local phone/4G gate passes for gameplay commit `4a298bd3618eb362b3c677e6f77f0fc288f9564e`: 5.5-second readiness, 2.6 MB, real touch movement and no errors. Its [unedited verdict](receipts/verification-act-two/jam/verdict.txt) covers the opening aisle on Chrome phone emulation; the live-URL gate remains outstanding.
 
 For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. Hosting and contest submission have not been performed.

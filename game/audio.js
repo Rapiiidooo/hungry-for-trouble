@@ -91,6 +91,29 @@ export class Sound {
   }
 
   effect(type, count = 1) {
+    if (type === "escape") {
+      for (const [i, interval] of [
+        0, 4, 7, 12, 9, 7, 4, 7, 12, 16, 19, 24,
+      ].entries())
+        this.note(
+          261.63 * 2 ** (interval / 12),
+          i === 11 ? 1.8 : 0.45,
+          0.16,
+          "triangle",
+          261.63 * 2 ** (interval / 12),
+          0.4 + i * 0.24,
+        );
+      for (const frequency of [130.81, 164.81, 196])
+        this.note(frequency, 2.4, 0.07, "sine", frequency, 2.8);
+    }
+    if (type === "lob-warning" || type === "pulse-warning") {
+      this.note(310, 0.24, 0.09, "triangle", 620);
+      this.note(620, 0.17, 0.08, "triangle", 930, 0.22);
+    }
+    if (type === "lob-impact") {
+      this.noise(0.18, 0.2, 400);
+      this.note(90, 0.23, 0.2, "sine", 25);
+    }
     if (type === "transport") {
       this.note(180, 0.3, 0.13, "sine", 1400);
       this.note(1400, 0.3, 0.1, "triangle", 440, 0.15);

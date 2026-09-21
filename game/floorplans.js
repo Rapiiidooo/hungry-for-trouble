@@ -1,4 +1,5 @@
 // Room footprints are designed; cover, connections and supplies vary with the run seed.
+import { carveRoom, carveSpecial, ROOM_SHAPES } from "./floor-shapes.js";
 export const DEFAULT_SEED = 4042026;
 const plans = {
   1: {
@@ -35,7 +36,7 @@ const plans = {
     exit: [19, 13],
     enemies: "EEA",
     gates: true,
-    shape: "LOADING LOOP",
+    shape: "CARGO RACETRACK",
   },
   3: {
     size: [23, 19],
@@ -74,7 +75,7 @@ const plans = {
     start: [2, 14],
     exit: [19, 2],
     enemies: "RRRE",
-    shape: "FOOD COURT",
+    shape: "CLOVER COURT",
   },
   6: {
     size: [23, 19],
@@ -95,7 +96,7 @@ const plans = {
     exit: [19, 2],
     enemies: "RRRTT",
     gates: true,
-    shape: "HORSESHOE",
+    shape: "CRESCENT DOCK",
   },
   7: {
     size: [23, 20],
@@ -188,7 +189,7 @@ const plans = {
     enemies: "NNRTA",
     portals: 2,
     stock: true,
-    shape: "LOST PROPERTY",
+    shape: "RETURN FIGURE EIGHT",
   },
   12: {
     size: [25, 19],
@@ -209,7 +210,7 @@ const plans = {
     enemies: "LLRNE",
     vents: 4,
     stock: true,
-    shape: "PACKING ZIGZAG",
+    shape: "PACKING SPIRAL",
   },
   13: {
     size: [23, 21],
@@ -361,7 +362,7 @@ const plans = {
     portals: 4,
     vents: 4,
     stock: true,
-    shape: "SHELF CONTROL CORE",
+    shape: "CORE COMPASS",
   },
 };
 const steps = [
@@ -403,11 +404,16 @@ export function floorplan(index, seed = DEFAULT_SEED) {
   const [width, height] = plan.size;
   const grid = Array.from({ length: height }, () => Array(width).fill(" "));
   const carve = (x, z, w, h) => {
-    for (let b = z; b < z + h; b++)
-      for (let a = x; a < x + w; a++) grid[b][a] = ".";
+    for (let b = Math.max(1, z); b < Math.min(height - 1, z + h); b++)
+      for (let a = Math.max(1, x); a < Math.min(width - 1, x + w); a++)
+        grid[b][a] = ".";
   };
-  for (const room of plan.rooms) carve(...room);
-  for (const [a, b] of plan.links) {
+  const special = carveSpecial(index, grid, carve);
+  if (!special)
+    plan.rooms.forEach((room, i) =>
+      carveRoom(carve, room, ROOM_SHAPES[index]?.[i]),
+    );
+  for (const [a, b] of special ? [] : plan.links) {
     const c = plan.rooms[a],
       d = plan.rooms[b];
     let x = c[0] + Math.floor(c[2] / 2),
@@ -426,9 +432,59 @@ export function floorplan(index, seed = DEFAULT_SEED) {
   if (plan.belts) {
     carve(19, 4, 2, 4);
     carve(1, 10, 2, 4);
+    if (index === 16) {
+      carve(10, 4, 3, 4);
+      carve(10, 10, 3, 4);
+    }
+  }
+  // Small entrance landings connect to the actual mask, never to its empty centre.
+  for (const [x, z] of [plan.start, plan.exit, plan.boss].filter(Boolean)) {
+    let nearest = null,
+      distance = Infinity;
+    for (let b = 1; b < height - 1; b++)
+      for (let a = 1; a < width - 1; a++)
+        if (
+          grid[b][a] === "." &&
+          Math.abs(a - x) + Math.abs(b - z) < distance
+        ) {
+          nearest = [a, b];
+          distance = Math.abs(a - x) + Math.abs(b - z);
+        }
+    carve(x - 1, z - 1, 3, 3);
+    if (nearest) {
+      carve(Math.min(x, nearest[0]), z, Math.abs(x - nearest[0]) + 1, 1);
+      carve(
+        nearest[0],
+        Math.min(z, nearest[1]),
+        1,
+        Math.abs(z - nearest[1]) + 1,
+      );
+    }
+  }
+  const padSites = [];
+  const openDistance = distances(grid, plan.start);
+  const furthest = Math.max(...openDistance.values());
+  for (let i = 0; i < (plan.portals || 0); i++) {
+    const desired = furthest * (i % 2 ? 0.85 : 0.2) + Math.floor(i / 2) * 4;
+    const candidates = [...openDistance].map(([k, d]) => ({
+      p: k.split(",").map(Number),
+      d,
+    }));
+    const chosen = candidates
+      .filter(
+        ({ p: [x, z] }) =>
+          [plan.start, plan.exit, plan.boss, ...padSites]
+            .filter(Boolean)
+            .every(([a, b]) => Math.hypot(x - a, z - b) >= 3) &&
+          [-1, 0, 1].every((dz) =>
+            [-1, 0, 1].every((dx) => grid[z + dz]?.[x + dx] === "."),
+          ),
+      )
+      .sort((a, b) => Math.abs(a.d - desired) - Math.abs(b.d - desired))[0];
+    if (chosen) padSites.push(chosen.p);
   }
   const protectedCell = (x, z) =>
-    [plan.start, plan.exit, plan.boss]
+    [plan.start, plan.exit, plan.boss, ...padSites]
       .filter(Boolean)
       .some(
         ([a, b]) =>
@@ -457,7 +513,9 @@ export function floorplan(index, seed = DEFAULT_SEED) {
     distance,
     noise: rng(),
   }));
-  const reserved = [plan.start, plan.exit, plan.boss].filter(Boolean);
+  const reserved = [plan.start, plan.exit, plan.boss, ...padSites].filter(
+    Boolean,
+  );
   const put = (p, char) => {
     grid[p[1]][p[0]] = char;
     reserved.push(p);
@@ -466,14 +524,6 @@ export function floorplan(index, seed = DEFAULT_SEED) {
     const options = cells.filter(
       ({ p: [x, z] }) =>
         grid[z][x] === "." &&
-        (char !== "P" ||
-          [-1, 0, 1].every((dz) =>
-            [-1, 0, 1].every(
-              (dx) =>
-                grid[z + dz]?.[x + dx] &&
-                !["#", " "].includes(grid[z + dz][x + dx]),
-            ),
-          )) &&
         reserved.every(([a, b]) => Math.hypot(a - x, b - z) >= spacing),
     );
     options.sort(
@@ -491,8 +541,7 @@ export function floorplan(index, seed = DEFAULT_SEED) {
   choose("V", 3, 1);
   const longest = Math.max(...routes.values());
   // Pads belong in open rooms, with an ordinary walking route around every edge.
-  for (let i = 0; i < (plan.portals || 0); i++)
-    choose("P", longest * (i % 2 ? 0.88 : 0.2) + Math.floor(i / 2) * 4, 2);
+  for (const site of padSites) put(site, "P");
   choose("B", 5);
   choose("B", longest * 0.55);
   choose("B", longest * 0.9);

@@ -94,7 +94,7 @@ test("repair kits heal exactly one heart, remain when full, and checkout heals o
   Object.assign(daily.player, daily.map.start);
   for (let i = 0; i < 1810; i++) stepGame(daily, {}, 1 / 60);
   assert.equal(dkit.collected, false);
-  assert.equal(RULESET, "daily-rush-3");
+  assert.equal(RULESET, "daily-rush-4");
 });
 
 test("receipt impacts respect walls and incoming damage carries a world direction", () => {

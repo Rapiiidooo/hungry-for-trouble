@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "Ten-node rescue map, two boss milestones and hidden basement",
+    "A real daily run records inputs and is accepted by server replay",
+    "An independent browser identity reads the same accepted score",
+    "Unavailable ranking is explicit and does not show fabricated scores"
+  ],
+  "errors": [],
+  "input": "Real DOM clicks, keyboard and pointer events. Simulation snapshots are read only.",
+  "run": {
+    "score": 130,
+    "ticks": 1579,
+    "state": "lost",
+    "day": "2026-09-21"
+  },
+  "result": "PASS"
+}

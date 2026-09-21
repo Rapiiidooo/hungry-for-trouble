@@ -1,6 +1,7 @@
 import { DEFAULT_SEED } from "./floorplans.js";
 import { CELL, LEVELS, layoutFor } from "./levels.js";
 import { updateMachines, hitStock, addMine } from "./machines.js";
+import { updateBoss } from "./boss-attacks.js";
 
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const length = (x, z) => Math.hypot(x, z);
@@ -105,6 +106,8 @@ export function newGame(levelIndex = 0, carry = {}) {
     bullets: [],
     hazards: [],
     mines: [],
+    lobs: [],
+    waves: [],
     stock: map.stock,
     collected: 0,
     score: carry.score || 0,
@@ -697,44 +700,7 @@ export function stepGame(game, input, dt) {
     }
   }
   game.bullets = game.bullets.filter((bullet) => bullet.life > 0);
-  if (game.boss && game.boss.hp > 0) {
-    const boss = game.boss;
-    boss.hit = Math.max(0, boss.hit - dt);
-    boss.phase += dt;
-    boss.special -= dt;
-    boss.fire -= dt;
-    boss.exposed = boss.director ? boss.phase % 7 > 4 : boss.phase % 6 > 3.5;
-    if (["foreman", "core"].includes(boss.kind) && boss.special <= 0) {
-      addMine(game, p, boss.kind === "core" ? 1.1 : 1.5);
-      if (boss.kind === "core")
-        for (const [dx, dz] of [
-          [2, 0],
-          [-2, 0],
-          [0, 2],
-          [0, -2],
-        ])
-          if (canStand(game, p.x + dx, p.z + dz))
-            addMine(game, { x: p.x + dx, z: p.z + dz }, 1.5);
-      boss.special = boss.kind === "core" ? 4.5 : 5.5;
-    }
-    if (boss.fire <= 0 && !boss.exposed) {
-      const enraged = boss.hp < boss.maxHp / 2;
-      boss.fire = enraged ? 0.7 : 0.95;
-      const angle = Math.atan2(p.x - boss.x, p.z - boss.z);
-      const angles = [-0.24, 0, 0.24].map((offset) => angle + offset);
-      if (boss.director) {
-        for (let i = 0; i < 12; i++)
-          angles.push((i * Math.PI) / 6 + boss.phase * 0.5);
-        boss.fire = enraged ? 0.6 : 0.9;
-      }
-      if (enraged)
-        for (let i = 0; i < 8; i++)
-          angles.push((i * Math.PI) / 4 + boss.phase * 0.12);
-      for (const direction of angles) launchHazard(game, boss, direction, 5, 4);
-      game.events.push({ type: "boss-shot" });
-    }
-    if (distance(p, boss) < 1.6) hurt(game, boss);
-  }
+  updateBoss(game, dt, { hurt, canStand, launchHazard });
   for (const hazard of game.hazards) {
     hazard.life -= dt;
     hazard.age = (hazard.age || 0) + dt;

@@ -9,7 +9,11 @@ import {
 } from "../game/sim.js";
 import { LEVELS, layoutFor } from "../game/levels.js";
 import { ventPhase, addMine } from "../game/machines.js";
-import { upgradeChoices, readProgress } from "../game/arcade.js";
+import {
+  upgradeChoices,
+  readProgress,
+  visibleFloorCount,
+} from "../game/arcade.js";
 import { newMatch, stepMatch } from "../game/multiplayer-sim.js";
 const dt = 1 / 60;
 const tick = (g, input, seconds) => {
@@ -257,8 +261,8 @@ test("new bosses mark hazards, builds cap correctly and old clears unlock act tw
     const g = quiet(floor);
     g.boss.special = 0;
     stepGame(g, {}, dt);
-    assert.ok(g.mines.length > 0);
-    assert.ok(g.mines.every((m) => m.arm >= 1));
+    assert.ok(g.lobs.length > 0);
+    assert.ok(g.lobs.every((m) => m.duration >= 1.5));
   }
   const g = newGame();
   Object.assign(g.upgrades, UPGRADE_LIMITS);
@@ -271,7 +275,92 @@ test("new bosses mark hazards, builds cap correctly and old clears unlock act tw
   };
   try {
     assert.equal(readProgress().unlocked, 10);
+    assert.equal(visibleFloorCount(readProgress()), 20);
   } finally {
     delete globalThis.localStorage;
   }
+});
+
+test("the route conceals the basement until rescue, preserving prior unlocks", () => {
+  assert.equal(visibleFloorCount({ unlocked: 0, cleared: [] }), 10);
+  assert.equal(visibleFloorCount({ unlocked: 9, cleared: [0, 4, 8] }), 10);
+  assert.equal(visibleFloorCount({ unlocked: 9, cleared: [9] }), 20);
+  assert.equal(visibleFloorCount({ unlocked: 15, cleared: [] }), 20);
+});
+
+test("lobbed parcels lock their targets and allow escape before a single impact", () => {
+  const make = () => {
+    const g = quiet(9);
+    g.boss.special = 0;
+    g.boss.fire = 999;
+    return g;
+  };
+  const waiting = make();
+  tick(waiting, {}, 1.4);
+  assert.equal(waiting.player.hp, 4, "A warning cannot deal damage");
+  assert.equal(waiting.lobs.length, 1);
+  assert.ok(tick(waiting, {}, 0.3).some((e) => e.type === "lob-impact"));
+  assert.equal(waiting.player.hp, 3);
+  tick(waiting, {}, 0.5);
+  assert.equal(waiting.player.hp, 3, "An explosion hits at most once");
+  const escaping = make();
+  stepGame(escaping, {}, dt);
+  const target = { x: escaping.lobs[0].x, z: escaping.lobs[0].z };
+  tick(escaping, { x: 1 }, 1.7);
+  assert.ok(
+    Math.hypot(escaping.player.x - target.x, escaping.player.z - target.z) >
+      1.55,
+  );
+  assert.equal(escaping.player.hp, 4, "Marked targets do not chase the player");
+  const shielded = make();
+  shielded.player.shield = 1;
+  assert.ok(tick(shielded, {}, 1.7).some((e) => e.type === "shield-save"));
+  assert.equal(shielded.player.shield, 0);
+  assert.equal(shielded.player.hp, 4);
+});
+
+test("the core alternates artillery and waves, with a usable gap and dash protection", () => {
+  const g = quiet(19);
+  g.map.vents = [];
+  g.boss.fire = 999;
+  g.boss.special = 0;
+  stepGame(g, {}, dt);
+  assert.ok(g.lobs.length >= 1);
+  g.boss.special = 0;
+  stepGame(g, {}, dt);
+  assert.equal(g.waves.length, 1);
+  assert.equal(g.waves[0].radius, 0, "Wave warns before expanding");
+  for (const [angle, dash, hp] of [
+    [0, 0, 4],
+    [Math.PI / 2, 0, 3],
+    [Math.PI / 2, 0.2, 4],
+  ]) {
+    const s = quiet(19);
+    s.map.vents = [];
+    s.boss.fire = s.boss.special = 999;
+    Object.assign(s.player, {
+      x: s.boss.x + Math.sin(angle) * 6,
+      z: s.boss.z + Math.cos(angle) * 6,
+      dash,
+    });
+    s.waves = [
+      {
+        x: s.boss.x,
+        z: s.boss.z,
+        warning: 1.1,
+        age: 2.3,
+        gapAngle: 0,
+        radius: 6,
+        hit: false,
+      },
+    ];
+    stepGame(s, {}, dt);
+    assert.equal(s.player.hp, hp);
+  }
+  g.boss.hp = 0;
+  stepGame(g, {}, dt);
+  assert.equal(
+    g.waves.length + g.lobs.length + g.mines.length + g.hazards.length,
+    0,
+  );
 });

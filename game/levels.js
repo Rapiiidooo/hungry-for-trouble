@@ -253,7 +253,7 @@ export const LEVELS = [
     quota: 40,
     time: 210,
     speed: 3.6,
-    tagline: "Rescue MOP-3. The Director is only the first problem.",
+    tagline: "Beat the Director. Get MOP-3 to the checkout.",
   },
   {
     name: "Hot Under the Collar",

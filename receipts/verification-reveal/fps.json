@@ -1,0 +1,111 @@
+{
+  "input": "Real keyboard and pointer events; read-only telemetry. No state injection.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Overhead-to-FPS camera interpolates continuously and settles",
+    "Visor pickup enters first person; real mouse look and firing work",
+    "Camera transition reverses mid-flight without snapping or pausing",
+    "Reduced motion changes view without a camera flight",
+    "Simultaneous touch movement, look and fire work in first person",
+    "Completed stages stay unlocked after reload and launch as practice"
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "seconds": 19.98333333333348,
+      "kills": 2,
+      "crumbs": 49,
+      "score": 1690,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 0,
+        "spread": 0,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 0
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 1,
+      "elapsed": 0.1,
+      "pos": [
+        2,
+        22
+      ],
+      "waypoint": [
+        2,
+        20
+      ],
+      "crumbs": 0,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 268
+    },
+    {
+      "floor": 1,
+      "elapsed": 7.1,
+      "pos": [
+        8.1,
+        2
+      ],
+      "waypoint": [
+        10,
+        2
+      ],
+      "crumbs": 16,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 6.8,
+      "fps": 60,
+      "draws": 250
+    },
+    {
+      "floor": 1,
+      "elapsed": 14.2,
+      "pos": [
+        28,
+        2
+      ],
+      "waypoint": [
+        30,
+        2
+      ],
+      "crumbs": 34,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 236
+    },
+    {
+      "floor": 2,
+      "elapsed": 1.1,
+      "pos": [
+        4.7,
+        22
+      ],
+      "waypoint": [
+        6,
+        22
+      ],
+      "crumbs": 1,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 289
+    }
+  ],
+  "result": "PASS"
+}

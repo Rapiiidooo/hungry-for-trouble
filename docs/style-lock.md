@@ -17,6 +17,8 @@
 
 The user rejected the previous acid-green and petrol palette as generic and AI-styled. Menus should resemble printed supermarket posters and price tickets: white price tickets, red ink, blue lettering and firm offset shadows. Avoid neon green, cyan glow and glassy dashboard panels. Keep the existing typography and layout.
 
+The employee badge uses a bottom rule, not a coloured left stripe. Campaign presentation keeps the basement secret until the Director rescue; first-time players see a ten-floor rescue mission. Story beats that explain a new objective must be readable before controls resume, rather than relying only on radio during combat.
+
 HUD damage uses brighter salmon `#ff8065` and shield feedback uses pale blue `#a4c0e0`, both readable against the dark HUD. White text and tomato buttons retain readable contrast. Concrete blue-grey floors and blue freezer aisles give the departments distinct moods. The user also rejected the cream treatment in the later theme review; neutral enamel white supersedes it.
 
 Verified asset modules and their original generation references retain their historical colours. `recolorEnamel()` in `game/main.js` maps their cached materials into this palette during assembly, before actor baking. Apply it to future scenery and articulated actors too; do not rewrite historical receipts. Native SVG upgrade illustrations use the same enamel colours.
@@ -63,10 +65,18 @@ The final boss uses the Director at 1.35 scale. Armoured trolleys reuse the veri
 
 ## Store takeover pass
 
-Eight later floors use seeded room footprints with exterior void: dogleg, loading loop, crossroads, food court, horseshoe, frozen islands, switchback and control wing. The first aisle stays familiar and the Manager keeps the original arena. Cover and supplies vary while objectives remain connected. Route cards show floor silhouettes and the minimap scales to each footprint.
+Eighteen later floors use shaped footprints with exterior void: rounded doglegs, rings, clover courts, crescents, connected islands, a figure eight, a spiral and distinct boss arenas. Reserve open transport landings before placing random cover so that walking around every pad stays possible. The first aisle stays familiar and the Manager keeps the original arena. Cover and supplies vary while objectives remain connected. Route cards show floor silhouettes and the minimap scales to each footprint.
 
 Receipts use original canvas sprite artwork with a red border, white paper, ink lines and motion trails at body height. Red targeting lines announce drone fire. Damage direction appears around the FPS crosshair. These are functional combat effects, not imported meshes. Repair kits reuse the verified battery with white/red materials and a heart label; MOP-3 reuses the polisher geometry at the final checkout.
 
-Upgrade cards diagram the actual mechanic before and after, alongside numeric changes. The radio tells a short rescue story without stopping play. Camera changes interpolate position, orientation and projection over 850 ms, reverse continuously and honour reduced motion. Resizing does not advance a transition.
+Upgrade cards diagram the actual mechanic before and after, alongside numeric changes. The radio gives brief combat advice; the mission appears before play and major discoveries wait for the player between floors. Camera changes interpolate position, orientation and projection over 850 ms, reverse continuously and honour reduced motion. Resizing does not advance a transition.
 
 Multiplayer reuses the verified vacuum, with blue host trim and red guest trim, a name label and ground ring. A downed vacuum tips sideways and its repair ring pulses. Partner health, revival/respawn status and the shared ammunition bag remain visible. Enemy player shots are red; allied shots are blue. Empty space between touch controls must pass pointer events to the game canvas.
+
+## Mission and payoff
+
+The title screen pairs MOP-3's portrait with a readable rescue request. Only ten floors and two bosses appear until the Director rescue opens the service lift. Keep future floors out of initial counters, route nodes and radio hints. Preserve an existing basement unlock.
+
+The warranty is a translucent pale-blue hemisphere with an orbiting arc and a single impact flare, tied to actual charges. Boss health follows its world position in overhead and first person. Orange landing rings fill before lobbed impacts. A shockwave's visible opening must match its safe sector. Camera transit uses a short lift and easing, with no roll and a reduced-motion alternative.
+
+The final checkout stages a crew escape, character banter and a sunrise, then rewards the golden vacuum livery. The livery changes appearance only and retains the red trim. The favicon is an original compact vacuum silhouette. The employee badge keeps its bottom rule.

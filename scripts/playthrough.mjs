@@ -16,14 +16,21 @@ const fromFloor = Math.max(
     ) || 1,
   ),
 );
+const outName = process.argv
+  .find((arg) => arg.startsWith("--out="))
+  ?.split("=")[1];
+if (outName && !/^[a-z0-9-]+$/.test(outName))
+  throw new Error("Invalid output name");
 const output = new URL(
-  fpsOnly
-    ? "../outputs/fps/"
-    : dailyOnly
-      ? "../outputs/daily-survival/"
-      : fromFloor > 1
-        ? `../outputs/continuation-${fromFloor}/`
-        : "../outputs/playthrough/",
+  outName
+    ? `../outputs/${outName}/`
+    : fpsOnly
+      ? "../outputs/fps/"
+      : dailyOnly
+        ? "../outputs/daily-survival/"
+        : fromFloor > 1
+          ? `../outputs/continuation-${fromFloor}/`
+          : "../outputs/playthrough/",
   import.meta.url,
 );
 await mkdir(output, { recursive: true });
@@ -83,12 +90,7 @@ function routes(g) {
         found.has(key)
       )
         continue;
-      if (
-        g.gates.some(
-          (gate) => gate.col === next[0] && gate.row === next[1] && gate.closed,
-        )
-      )
-        continue;
+      // Keep the route and wait for timed shutters instead of oscillating between detours.
       found.set(key, {
         path: [...route.path, next.map((n) => n * 2)],
         point: next,
@@ -112,6 +114,12 @@ function choosePath(g) {
   const found = routes(g);
   const pathFor = (point) =>
     found.get(point.map((n) => Math.round(n / 2)).join(","))?.path;
+  if (
+    g.runKind !== "daily" &&
+    g.collected >= g.quota &&
+    (!g.boss || g.boss.hp <= 0)
+  )
+    return pathFor([g.exit.x, g.exit.z]) || [];
   if (g.hp <= 2) {
     const repairs = g.repairs
       .filter((r) => !r.collected)
@@ -142,12 +150,6 @@ function choosePath(g) {
     return nearestBattery.path.length
       ? nearestBattery.path
       : [nearestBattery.point];
-  if (
-    g.runKind !== "daily" &&
-    g.collected >= g.quota &&
-    (!g.boss || g.boss.hp <= 0)
-  )
-    return pathFor([g.exit.x, g.exit.z]) || [];
   if (g.boss?.hp > 0 && g.collected >= g.quota) {
     const targets = [
       [g.boss.x - 6, g.boss.z],
@@ -173,12 +175,13 @@ function choosePath(g) {
 try {
   page = await browser.newPage();
   if (fromFloor > 1)
-    await page.evaluateOnNewDocument(() =>
+    await page.evaluateOnNewDocument((floor) => {
+      if (localStorage.getItem("hft-route-v1")) return;
       localStorage.setItem(
         "hft-route-v1",
-        JSON.stringify({ unlocked: 19, cleared: [] }),
-      ),
-    );
+        JSON.stringify({ unlocked: floor - 1, cleared: [] }),
+      );
+    }, fromFloor);
   page.on("pageerror", (e) => report.errors.push(e.stack));
   page.on("console", (e) => {
     if (e.type() === "error") report.errors.push(e.text());
@@ -415,7 +418,51 @@ try {
         path: new URL(`floor-${g.floor}-cleared.png`, output).pathname,
       });
       console.log(JSON.stringify({ cleared: report.floors.at(-1) }));
-      if (g.state === "won") break;
+      if (g.state === "won") {
+        if (!dailyOnly) {
+          for (const second of [1, 3.5, 6.5]) {
+            await page.waitForFunction(
+              (time) => window.__GAME__.endingTime >= time,
+              {},
+              second,
+            );
+            await page.screenshot({
+              path: new URL(`escape-${second}.png`, output).pathname,
+            });
+          }
+          report.checks.push(
+            "Final checkout starts the three-beat escape scene",
+          );
+          if (fromFloor === 20) {
+            await page.setViewport({
+              width: 390,
+              height: 844,
+              deviceScaleFactor: 1,
+              isMobile: false,
+              hasTouch: false,
+            });
+            await sleep(100);
+            await page.screenshot({
+              path: new URL("escape-phone.png", output).pathname,
+            });
+          }
+        }
+        break;
+      }
+      if (g.floor === 10) {
+        await page.waitForSelector("#discovery-screen", { visible: true });
+        await page.screenshot({
+          path: new URL("basement-discovered.png", output).pathname,
+        });
+        assert.equal((await read()).visibleFloors, 20);
+        const frozen = (await read()).elapsed;
+        await sleep(500);
+        assert.equal((await read()).elapsed, frozen);
+        await page.click("#discovery-continue");
+        report.checks.push(
+          "Director rescue reveals the basement while gameplay waits for the reader",
+        );
+      }
       await page.waitForSelector("#upgrade-screen", { visible: true });
       const choices = await page.$$eval("#upgrade-options button", (buttons) =>
         buttons.map((b) => b.dataset.upgrade),
@@ -482,7 +529,18 @@ try {
       (g.vents.some(
         (v) => v.phaseState !== "safe" && distance(g.pos, [v.x, v.z]) < 1.8,
       ) ||
-        g.mines.some((m) => m.blast > 0 && distance(g.pos, [m.x, m.z]) < 2.2))
+        g.mines.some((m) => m.blast > 0 && distance(g.pos, [m.x, m.z]) < 2.2) ||
+        g.lobs.some(
+          (m) =>
+            m.duration - m.age < 0.3 &&
+            !m.hit &&
+            distance(g.pos, [m.x, m.z]) < m.radius + 0.5,
+        ) ||
+        g.waves.some(
+          (w) =>
+            w.radius > 0 &&
+            Math.abs(distance(g.pos, [w.x, w.z]) - w.radius) < 1.3,
+        ))
     )
       await page.keyboard.press("Space");
     const targets = [
@@ -557,12 +615,37 @@ try {
       `Floors ${fromFloor} to 20 cleared through actual movement and firing`,
       "Overtime collected through movement",
       "Shots defeat pursuing enemies",
-      "Repeated upgrades change the arsenal",
+      ...(fromFloor < 20 ? ["Between-floor upgrades change the arsenal"] : []),
       "Final boss defeated before checkout",
     );
     await page.waitForSelector("#result", { visible: true });
+    assert.ok(await page.$eval("#gold-reward", (el) => !el.hidden));
+    assert.equal((await read()).goldEnabled, true);
+    assert.ok(
+      await page.evaluate(() =>
+        JSON.parse(localStorage.getItem("hft-route-v1")).cleared.includes(19),
+      ),
+    );
+    report.checks.push(
+      "Real completion unlocks and equips the saved golden vacuum",
+    );
     if (fromFloor > 1) {
       await page.screenshot({ path: new URL("ending.png", output).pathname });
+      await page.click("#back-menu");
+      assert.equal(await page.$eval("#gold-toggle", (el) => el.hidden), false);
+      await page.click("#gold-toggle");
+      await page.reload({ waitUntil: "networkidle0" });
+      await page.waitForFunction(() => window.__READY__);
+      assert.equal((await read()).goldEnabled, false);
+      assert.equal(await page.$eval("#gold-toggle", (el) => el.hidden), false);
+      await page.click("#gold-toggle");
+      await page.waitForFunction(() => window.__GAME__.goldEnabled);
+      await page.screenshot({
+        path: new URL("gold-reward-menu.png", output).pathname,
+      });
+      report.checks.push(
+        "Completion reward remains unlocked after reload and its livery preference persists",
+      );
       assert.deepEqual(report.errors, []);
       report.result = "PASS";
     } else {

@@ -1,0 +1,358 @@
+{
+  "input": "Practice route unlocks are preloaded for a floor 19 continuation; real keyboard and pointer events, read-only combat telemetry.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Overhead-to-FPS camera interpolates continuously and settles",
+    "Visor pickup enters first person; real mouse look and firing work",
+    "Final checkout starts the three-beat escape scene",
+    "Floors 19 to 20 cleared through actual movement and firing",
+    "Overtime collected through movement",
+    "Shots defeat pursuing enemies",
+    "Between-floor upgrades change the arsenal",
+    "Final boss defeated before checkout",
+    "Real completion unlocks and equips the saved golden vacuum",
+    "Completion reward remains unlocked after reload and its livery preference persists"
+  ],
+  "floors": [
+    {
+      "floor": 19,
+      "seconds": 47.21666666666527,
+      "kills": 11,
+      "crumbs": 80,
+      "score": 4028,
+      "hp": 2,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 1,
+        "heart": 0,
+        "ricochet": 1,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 20,
+      "seconds": 63.56666666666434,
+      "kills": 10,
+      "crumbs": 58,
+      "score": 10722,
+      "hp": 3,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 2,
+        "magnet": 1,
+        "heart": 0,
+        "ricochet": 1,
+        "frost": 1
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 19,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        34
+      ],
+      "waypoint": [
+        4,
+        32
+      ],
+      "crumbs": 0,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 56,
+      "draws": 438
+    },
+    {
+      "floor": 19,
+      "elapsed": 7.2,
+      "pos": [
+        7.9,
+        21.4
+      ],
+      "waypoint": [
+        8,
+        20
+      ],
+      "crumbs": 8,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 2.6,
+      "fps": 60,
+      "draws": 418
+    },
+    {
+      "floor": 19,
+      "elapsed": 14.3,
+      "pos": [
+        10.6,
+        4.1
+      ],
+      "waypoint": [
+        12,
+        4
+      ],
+      "crumbs": 20,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 389
+    },
+    {
+      "floor": 19,
+      "elapsed": 21.3,
+      "pos": [
+        3.2,
+        5.9
+      ],
+      "waypoint": [
+        2,
+        6
+      ],
+      "crumbs": 34,
+      "hp": 4,
+      "kills": 5,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 363
+    },
+    {
+      "floor": 19,
+      "elapsed": 28.3,
+      "pos": [
+        27.5,
+        8.1
+      ],
+      "waypoint": [
+        28,
+        8
+      ],
+      "crumbs": 41,
+      "hp": 3,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 463
+    },
+    {
+      "floor": 19,
+      "elapsed": 35.3,
+      "pos": [
+        38,
+        7.8
+      ],
+      "waypoint": [
+        40,
+        8
+      ],
+      "crumbs": 56,
+      "hp": 3,
+      "kills": 8,
+      "overtime": 3.6,
+      "fps": 60,
+      "draws": 392
+    },
+    {
+      "floor": 19,
+      "elapsed": 42.4,
+      "pos": [
+        38.1,
+        12.5
+      ],
+      "waypoint": [
+        38,
+        14
+      ],
+      "crumbs": 71,
+      "hp": 3,
+      "kills": 9,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 435
+    },
+    {
+      "floor": 20,
+      "elapsed": 2,
+      "pos": [
+        12,
+        36.2
+      ],
+      "waypoint": [
+        12,
+        38
+      ],
+      "crumbs": 4,
+      "hp": 3,
+      "kills": 1,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 412
+    },
+    {
+      "floor": 20,
+      "elapsed": 9,
+      "pos": [
+        5.9,
+        30.9
+      ],
+      "waypoint": [
+        6,
+        30
+      ],
+      "crumbs": 14,
+      "hp": 3,
+      "kills": 2,
+      "overtime": 1.2,
+      "boss": 420,
+      "fps": 60,
+      "draws": 397
+    },
+    {
+      "floor": 20,
+      "elapsed": 16,
+      "pos": [
+        27.1,
+        26
+      ],
+      "waypoint": [
+        28,
+        26
+      ],
+      "crumbs": 27,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 450
+    },
+    {
+      "floor": 20,
+      "elapsed": 23.1,
+      "pos": [
+        26.1,
+        5.6
+      ],
+      "waypoint": [
+        26,
+        6
+      ],
+      "crumbs": 43,
+      "hp": 4,
+      "kills": 5,
+      "overtime": 1.4,
+      "boss": 298,
+      "fps": 60,
+      "draws": 431
+    },
+    {
+      "floor": 20,
+      "elapsed": 30.1,
+      "pos": [
+        25.9,
+        8.7
+      ],
+      "waypoint": [
+        26,
+        10
+      ],
+      "crumbs": 46,
+      "hp": 4,
+      "kills": 5,
+      "overtime": 3.3,
+      "boss": 252,
+      "fps": 60,
+      "draws": 409
+    },
+    {
+      "floor": 20,
+      "elapsed": 37.1,
+      "pos": [
+        25.9,
+        25.3
+      ],
+      "waypoint": [
+        26,
+        26
+      ],
+      "crumbs": 50,
+      "hp": 4,
+      "kills": 6,
+      "overtime": 0,
+      "boss": 140,
+      "fps": 60,
+      "draws": 374
+    },
+    {
+      "floor": 20,
+      "elapsed": 44.1,
+      "pos": [
+        16,
+        34.5
+      ],
+      "waypoint": [
+        16,
+        34
+      ],
+      "crumbs": 52,
+      "hp": 3,
+      "kills": 8,
+      "overtime": 6.5,
+      "boss": 140,
+      "fps": 60,
+      "draws": 355
+    },
+    {
+      "floor": 20,
+      "elapsed": 51.2,
+      "pos": [
+        30,
+        18.2
+      ],
+      "waypoint": [
+        30,
+        20
+      ],
+      "crumbs": 56,
+      "hp": 3,
+      "kills": 10,
+      "overtime": 0,
+      "boss": 140,
+      "fps": 60,
+      "draws": 383
+    },
+    {
+      "floor": 20,
+      "elapsed": 58.2,
+      "pos": [
+        26,
+        19.4
+      ],
+      "waypoint": [
+        26,
+        20
+      ],
+      "crumbs": 58,
+      "hp": 3,
+      "kills": 10,
+      "overtime": 2.4,
+      "boss": 83,
+      "fps": 60,
+      "draws": 409
+    }
+  ],
+  "result": "PASS"
+}

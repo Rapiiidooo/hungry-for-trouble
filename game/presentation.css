@@ -1,0 +1,479 @@
+#mission-card {
+  max-width: 425px;
+  padding: 12px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid #52607344;
+  border-bottom: 1px solid #52607344;
+  gap: 13px;
+}
+#mission-card b {
+  font-size: 17px;
+}
+#mission-card p {
+  font-size: 11px;
+  line-height: 1.6;
+}
+#mission-card .story-avatar {
+  flex-basis: 66px;
+  height: 66px;
+}
+#mission-steps {
+  font-size: 9px;
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 10px 0 19px;
+  color: #526073;
+}
+#mission-steps b {
+  color: #a93627;
+}
+#menu .lead {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+#menu .lead br {
+  display: none;
+}
+#menu h1 {
+  margin-bottom: 18px;
+}
+.route-strip {
+  grid-template-columns: repeat(var(--route-count, 10), 1fr);
+}
+#boss-bar {
+  top: auto;
+  bottom: auto;
+  right: auto;
+  width: 205px;
+  transform: translate(-50%, -100%);
+  background: #18283ceb;
+  border: 1px solid #ecaa8555;
+  border-bottom: 3px solid #c94732;
+  padding: 7px 9px;
+  color: #ffb4a5;
+  pointer-events: none;
+}
+#boss-bar > span {
+  display: block;
+  font-size: 15px;
+  letter-spacing: 0.6px;
+}
+#boss-bar > div {
+  height: 6px;
+}
+#boss-bar.exposed {
+  border-bottom-color: #efb546;
+  color: #ffe094;
+}
+#boss-bar.exposed #boss-fill {
+  background: #efb546;
+}
+#boss-state {
+  font-size: 7px;
+}
+@media (min-width: 701px) and (min-height: 561px) {
+  .visor-active #radio {
+    top: 216px;
+  }
+}
+#transit-effect {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: inset 0 0 12vw 4vw #18283c;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 25%,
+    #81acd748 68%,
+    #263650 100%
+  );
+}
+#shield-visor {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 2px #a8d9ff88,
+    inset 0 -40px 40px -38px #b4d9ff;
+}
+#shield-visor span {
+  position: absolute;
+  bottom: 29%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: #b4d9ff;
+  text-shadow: 0 2px 4px #18283c;
+}
+.discovery-panel {
+  width: 640px;
+}
+.discovery-panel h2 {
+  font-size: 62px;
+  margin: 20px 0;
+}
+.discovery-panel .story-card {
+  margin: 10px 0;
+  border: 0;
+  border-bottom: 2px solid #6c8fb8;
+}
+.discovery-panel > p {
+  font-size: 12px;
+}
+.discovery-panel .primary {
+  margin: 18px auto 0;
+}
+.service-lift {
+  position: relative;
+  width: 160px;
+  height: 145px;
+  margin: 0 auto 20px;
+  background: #18283c;
+  border: 7px solid #344158;
+  border-bottom: 0;
+  overflow: hidden;
+}
+.service-lift > span {
+  position: absolute;
+  top: 8px;
+  left: 65px;
+  font: 800 20px var(--display);
+  color: #efb546;
+}
+.service-lift i {
+  position: absolute;
+  top: 38px;
+  bottom: 0;
+  width: 46%;
+  background: repeating-linear-gradient(
+    90deg,
+    #7e91a8 0 12px,
+    #879bb3 12px 14px
+  );
+  border: 2px solid #b9cadd;
+  transition: transform 1.5s ease;
+}
+.service-lift i:nth-of-type(1) {
+  left: 0;
+}
+.service-lift i:nth-of-type(2) {
+  right: 0;
+}
+.service-lift b {
+  position: absolute;
+  top: 70px;
+  left: 40px;
+  font-size: 10px;
+  color: #efb546;
+}
+#discovery-screen:not([hidden]) .service-lift i:nth-of-type(1) {
+  animation: lift-left 1.6s ease 0.3s both;
+}
+#discovery-screen:not([hidden]) .service-lift i:nth-of-type(2) {
+  animation: lift-right 1.6s ease 0.3s both;
+}
+@keyframes lift-left {
+  to {
+    transform: translateX(-85%);
+  }
+}
+@keyframes lift-right {
+  to {
+    transform: translateX(85%);
+  }
+}
+#cinema {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  color: #f0f2f3;
+}
+.cinema-top {
+  position: absolute;
+  inset: 0 0 auto;
+  min-height: 64px;
+  background: #131e2a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 32px;
+  gap: 12px;
+}
+.cinema-top b {
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+#skip-ending {
+  pointer-events: auto;
+  border: 1px solid #93a9bd66;
+  color: #ccd9e8;
+  background: transparent;
+  padding: 9px 12px;
+  font-size: 9px;
+}
+.cinema-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #131e2a;
+  padding: 22px 32px;
+  text-align: center;
+}
+.cinema-caption h2 {
+  font: 900 38px/1 var(--display);
+  margin: 0 0 15px;
+  color: #efb546;
+}
+.cinema-caption .story-card {
+  justify-content: center;
+  background: none;
+  border: 0;
+  max-width: 640px;
+  margin: auto;
+  padding: 0;
+}
+.cinema-caption .story-card b {
+  color: #a8d9ff;
+}
+.cinema-caption .story-card p {
+  color: #f0f2f3;
+  font-size: 13px;
+}
+#gold-toggle {
+  font-size: 9px;
+  color: #765019;
+  padding: 10px 0 0;
+}
+#gold-reward {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  border: 1px solid #b9844266;
+  border-bottom: 3px solid #b98442;
+  padding: 12px;
+  margin-top: 18px;
+  text-align: left;
+  background: #e8ddbd;
+}
+#gold-reward b {
+  font: 800 21px var(--display);
+}
+#gold-reward p {
+  font-size: 11px;
+  margin: 4px 0;
+}
+#gold-reward small {
+  font-size: 7px;
+  color: #765019;
+}
+#gold-icon {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+#gold-icon img {
+  width: 100%;
+  height: 100%;
+  filter: sepia(0.65) saturate(1.8);
+}
+@media (max-width: 700px) {
+  #menu {
+    bottom: 7%;
+  }
+  #menu h1 {
+    font-size: clamp(59px, 17vw, 88px);
+    margin: 14px 0;
+  }
+  #menu .lead {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  #mission-card {
+    padding: 9px 0;
+    gap: 9px;
+  }
+  #mission-card .story-avatar {
+    flex-basis: 48px;
+    height: 48px;
+  }
+  #mission-card p {
+    font-size: 10px;
+    line-height: 1.5;
+  }
+  #mission-card b {
+    font-size: 15px;
+  }
+  #mission-steps {
+    font-size: 8px;
+    margin: 8px 0 13px;
+  }
+  #best {
+    margin-top: 10px;
+    font-size: 6px;
+  }
+  .touch-hint {
+    margin: 11px 0;
+  }
+  #boss-bar {
+    width: 168px;
+    padding: 5px 7px;
+  }
+  #boss-bar > span {
+    font-size: 12px;
+  }
+  #boss-state {
+    font-size: 6px;
+  }
+  .boss-encounter #radio,
+  .boss-encounter.first-person #radio {
+    top: 148px;
+  }
+  .boss-encounter #overtime {
+    top: 150px;
+  }
+  .boss-encounter #minimap {
+    top: 152px;
+  }
+  .multiplayer.boss-encounter #radio {
+    top: 195px;
+  }
+  .multiplayer.boss-encounter #peer-status {
+    top: 148px;
+  }
+  .route-strip {
+    grid-template-columns: repeat(10, 1fr);
+  }
+  .discovery-panel {
+    padding: 20px 16px;
+  }
+  .discovery-panel h2 {
+    font-size: 44px;
+    margin: 14px 0;
+  }
+  .discovery-panel .story-card {
+    gap: 9px;
+    padding: 9px;
+  }
+  .discovery-panel .story-card p {
+    font-size: 11px;
+  }
+  .discovery-panel > p {
+    font-size: 10px;
+  }
+  .service-lift {
+    height: 112px;
+    margin-bottom: 13px;
+  }
+  .cinema-top {
+    padding: 17px 14px;
+  }
+  .cinema-top b {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  #skip-ending {
+    font-size: 7px;
+  }
+  .cinema-caption {
+    padding: 22px 16px 30px;
+  }
+  .cinema-caption h2 {
+    font-size: 31px;
+  }
+  .cinema-caption .story-card p {
+    font-size: 12px;
+  }
+  #gold-reward {
+    gap: 9px;
+    padding: 9px;
+  }
+  #gold-reward b {
+    font-size: 17px;
+  }
+}
+@media (max-height: 560px) and (orientation: landscape) {
+  #menu {
+    top: 68px;
+    bottom: auto;
+    width: 53%;
+  }
+  #menu h1 {
+    font-size: 46px;
+    margin: 8px 0 10px;
+  }
+  #menu h1 em {
+    display: inline;
+  }
+  #menu .eyebrow,
+  #menu .lead,
+  #menu .touch-hint {
+    display: none;
+  }
+  #mission-card {
+    padding: 6px 0;
+  }
+  #mission-card p {
+    font-size: 9px;
+  }
+  #mission-card .story-avatar {
+    flex-basis: 39px;
+    height: 39px;
+  }
+  #mission-steps {
+    margin: 6px 0;
+    font-size: 8px;
+  }
+  .discovery-panel {
+    margin: auto;
+  }
+  .discovery-panel h2 {
+    font-size: 32px;
+    margin: 10px 0;
+  }
+  .service-lift {
+    display: none;
+  }
+  .discovery-panel .story-card {
+    padding: 8px;
+  }
+  .cinema-top {
+    min-height: 38px;
+    padding: 6px 18px;
+  }
+  .cinema-caption {
+    padding: 12px 22px;
+  }
+  .cinema-caption h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+  .cinema-caption .story-avatar {
+    flex-basis: 38px;
+    height: 38px;
+  }
+  .cinema-caption .story-card p {
+    font-size: 11px;
+  }
+  .boss-encounter #radio,
+  .boss-encounter.first-person #radio,
+  .boss-encounter #minimap,
+  .boss-encounter #overtime {
+    top: 85px;
+  }
+  .visor-active #radio {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #discovery-screen:not([hidden]) .service-lift i {
+    animation-duration: 0.01ms;
+    animation-delay: 0s;
+  }
+}

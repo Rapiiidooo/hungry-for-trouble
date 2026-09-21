@@ -1,6 +1,7 @@
 // Deterministic machinery state is shared by the client and daily replay verifier.
 const gap = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
 export function ventPhase(game, vent) {
+  if (game.boss?.kind === "core" && game.boss.hp <= 0) return "safe";
   const phase = (game.elapsed + vent.phase) % 5.6;
   return phase < 3.4 ? "safe" : phase < 4.6 ? "warning" : "active";
 }
