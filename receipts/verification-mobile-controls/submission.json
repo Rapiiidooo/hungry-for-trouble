@@ -1,0 +1,23 @@
+{
+  "result": "PASS",
+  "pull_request": "https://github.com/404-Repo/404-game-jam/pull/6",
+  "source_url": "https://github.com/Rapiiidooo/hungry-for-trouble",
+  "play_url": "https://trouble.rapidoai.dev/",
+  "gameplay_commit": "c2cf443402a7e5e91207d92809aae00e5d59be21",
+  "entry_commit": "ec038fae6352f1e84735f7cdfd96a8cf3454bae5",
+  "state": "OPEN",
+  "draft": false,
+  "mergeable": "MERGEABLE",
+  "wallet": "5HRAPidoCoZPYsLE2q7Ge8WWAfQ3XZpSYoz7aGYJYRmMQpt1",
+  "entry_matches_pushed_file": true,
+  "verdict_matches_unedited_gate": true,
+  "declarations_retained": 5,
+  "checks": [
+    {
+      "name": "Cursor Bugbot",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "acceptance": "Pending organizer review, gate rerun and merge."
+}
