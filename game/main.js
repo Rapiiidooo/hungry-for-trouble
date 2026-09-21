@@ -12,6 +12,7 @@ import {
 import { Sound } from "./audio.js";
 import { LEVELS } from "./levels.js";
 import { ViewRig } from "./view-rig.js";
+import { dragYaw, assistTouchAim } from "./touch-aim.js";
 import { receiptEffects } from "./combat-fx.js";
 import { RADIO, SPEAKERS, MISSION, portrait, storyCard } from "./story.js";
 import { campaignEffects } from "./campaign-fx.js";
@@ -122,6 +123,7 @@ let floorEffects,
   crew = [];
 let dashTaught = false;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const compactScreen = matchMedia("(max-width: 850px), (pointer: coarse)");
 const credits = createCredits(ui["credits-screen"], {
   reducedMotion,
   onExit: (reveal) => {
@@ -143,6 +145,7 @@ let fpsYaw = Math.PI,
   fpsPitch = 0,
   viewOverhead = false,
   wasFPS = false;
+let aimAssisted = false;
 let accumulator = 0,
   runKind = "campaign",
   practiceLevel = 0,
@@ -203,7 +206,8 @@ let dashQueued = false,
   pointer = new THREE.Vector2();
 const keys = new Set(),
   stickMove = { x: 0, z: 0 },
-  stickAim = { x: 0, z: 0, active: false };
+  stickAim = { x: 0, z: 0, active: false, held: false, lookDelta: 0 };
+const resetSticks = new Map();
 const follow = new THREE.Vector3(),
   aimPoint = new THREE.Vector3();
 const ray = new THREE.Raycaster(),
@@ -366,6 +370,8 @@ function toggleView() {
   viewOverhead = !viewOverhead;
   if (viewOverhead) releaseLook();
   else fpsYaw = game.player.angle;
+  fpsPitch = 0;
+  resetSticks.get("aim-stick")?.();
   pointerFire = false;
 }
 
@@ -554,7 +560,11 @@ function updateBossBar() {
   ui["boss-bar"].hidden = !visible;
   if (!visible) return;
   const half = ui["boss-bar"].offsetWidth / 2;
-  const minY = innerHeight < 560 ? 115 : innerWidth < 700 ? 205 : 155;
+  const minY = compactScreen.matches
+    ? ui.hud.querySelector(".hud-top").getBoundingClientRect().bottom +
+      ui["boss-bar"].offsetHeight +
+      12
+    : 155;
   ui["boss-bar"].style.left =
     `${clamp((point.x * 0.5 + 0.5) * innerWidth, half + 8, innerWidth - half - 8)}px`;
   ui["boss-bar"].style.top =
@@ -1443,7 +1453,15 @@ function clearInput() {
   pointerFire = false;
   dashQueued = false;
   Object.assign(stickMove, { x: 0, z: 0 });
-  Object.assign(stickAim, { x: 0, z: 0, active: false });
+  Object.assign(stickAim, {
+    x: 0,
+    z: 0,
+    active: false,
+    held: false,
+    lookDelta: 0,
+  });
+  aimAssisted = false;
+  for (const reset of resetSticks.values()) reset();
   for (const element of document.querySelectorAll(".stick i"))
     element.style.transform = "";
 }
@@ -1467,6 +1485,9 @@ async function start(fresh = true, upgrade, options = {}) {
   ui.game.classList.remove("briefing");
   wasFPS = false;
   fpsPitch = 0;
+  ui.game.classList.remove("map-open");
+  ui["map-toggle"].setAttribute("aria-expanded", "false");
+  ui["map-toggle"].setAttribute("aria-label", "Show map");
   await sound.start();
   if (fresh) {
     runKind = options.kind || "campaign";
@@ -1643,6 +1664,8 @@ function pause(value = !paused) {
   if (value) {
     releaseLook();
     sound.update(false, 0, game.map.level.theme);
+    ui["pause-status"].textContent =
+      `${game.map.level.name} · ${game.score.toLocaleString("en-US")} POINTS`;
   }
   accumulator = 0;
   clearInput();
@@ -1739,10 +1762,13 @@ function handleEvents(events) {
       fpsYaw = game.player.angle;
       fpsPitch = 0;
       pointerFire = false;
+      resetSticks.get("aim-stick")?.();
       burst(event.x, event.z, palette.blue, 50, 3);
       showMessage(
         "VAC CAM ONLINE",
-        "18 seconds of rapid fire. V switches your view.",
+        compactScreen.matches
+          ? "Hold the right side to fire. Drag sideways to look."
+          : "18 seconds of rapid fire. V switches your view.",
         3,
       );
       floatText("+24 AMMO", event.x, event.z);
@@ -2439,6 +2465,7 @@ function drawMap() {
 }
 
 function updateHud() {
+  const compact = compactScreen.matches;
   const nextKey = KEY_TYPES.find((key) =>
     game.keycards.some((card) => card.color === key.id && !card.collected),
   );
@@ -2463,6 +2490,33 @@ function updateHud() {
           ? `DEFEAT ${game.boss.name || "THE MANAGER"}`
           : "REACH THE CHECKOUT"
         : "CRUMBS TO COLLECT";
+  if (compact) {
+    ui.department.textContent = game.daily
+      ? "DAILY RUSH"
+      : game.multiplayer
+        ? game.multiplayer.kind === "coop"
+          ? "CO-OP"
+          : "VERSUS"
+        : `AISLE ${String(game.levelIndex + 1).padStart(2, "0")}`;
+    ui["goal-label"].textContent = game.daily
+      ? `WAVE ${game.wave}`
+      : game.collected < game.map.level.quota
+        ? "CRUMBS"
+        : nextKey
+          ? `FIND ${nextKey.label} ${nextKey.symbol}`
+          : game.boss?.hp > 0
+            ? "BEAT THE BOSS"
+            : "CHECKOUT →";
+  } else
+    ui.department.textContent = game.daily
+      ? `DAILY RUSH · ${game.daily.day}`
+      : game.map.level.department;
+  ui.hud.classList.toggle(
+    "quota-done",
+    !game.daily &&
+      game.multiplayer?.kind !== "versus" &&
+      game.collected >= game.map.level.quota,
+  );
   const time = Math.ceil(game.time);
   ui.clock.textContent = `${String(Math.floor(time / 60)).padStart(2, "0")}:${String(time % 60).padStart(2, "0")}`;
   ui.clock.parentElement.classList.toggle("urgent", time < 20);
@@ -2478,8 +2532,14 @@ function updateHud() {
   ui.health.classList.toggle("critical", game.player.hp === 1);
   ui["shield-count"].textContent =
     game.player.shield > 0
-      ? `SHIELD · ${game.player.shield} HIT${game.player.shield === 1 ? "" : "S"}`
+      ? compact
+        ? `◇ ${game.player.shield}`
+        : `SHIELD · ${game.player.shield} HIT${game.player.shield === 1 ? "" : "S"}`
       : "";
+  ui["shield-count"].setAttribute(
+    "aria-label",
+    `${game.player.shield} shield hits remaining`,
+  );
   ui.health.setAttribute("aria-label", `${game.player.hp} health`);
   ui.ammo.textContent =
     game.overtime > 0 ? "∞" : String(game.ammo).padStart(2, "0");
@@ -2499,15 +2559,25 @@ function updateHud() {
           : "CRUMBS REFILL AMMO";
   ui["visor-hud"].hidden = game.fpsTime <= 0;
   ui["crosshair"].hidden = !isFPS() || paused || game.state !== "playing";
+  ui["crosshair"].classList.toggle("assisted", aimAssisted && stickAim.held);
   ui["visor-time"].textContent = game.fpsTime.toFixed(1);
-  ui["view-toggle"].textContent = viewOverhead
-    ? "FIRST PERSON [V]"
-    : "OVERHEAD [V]";
+  ui["view-toggle"].textContent = compact
+    ? viewOverhead
+      ? "FPS VIEW"
+      : "TOP VIEW"
+    : viewOverhead
+      ? "FIRST PERSON [V]"
+      : "OVERHEAD [V]";
   ui["visor-hint"].textContent = matchMedia("(pointer: coarse)").matches
-    ? "Left stick moves · Right stick turns and fires"
+    ? "Right side: hold to fire, drag to look"
     : document.pointerLockElement
       ? "Mouse aims · Click fires · V changes view"
       : "Click to lock aim · Drag to aim if unavailable";
+  ui["aim-stick-label"].textContent = isFPS() ? "FIRE / LOOK" : "AIM / FIRE";
+  ui["aim-stick"].setAttribute(
+    "aria-label",
+    isFPS() ? "Hold to fire; drag sideways to look" : "Aim and fire",
+  );
   const dash = game.player.dash > 0;
   ui["dash-status"].innerHTML = dash
     ? "DODGING · PROTECTED"
@@ -2526,9 +2596,16 @@ function updateHud() {
   ui["dash-button"].classList.toggle("protecting", dash);
   ui["dash-lesson"].hidden =
     dashTaught || game.elapsed > 14 || paused || !!game.multiplayer;
-  ui.score.textContent = String(game.score).padStart(6, "0");
-  ui.combo.textContent =
-    game.comboTimer > 0 ? `${game.combo}× TAKEDOWN COMBO` : "NIGHT SHIFT SCORE";
+  ui.score.textContent = compact
+    ? game.score.toLocaleString("en-US")
+    : String(game.score).padStart(6, "0");
+  ui.combo.textContent = compact
+    ? game.comboTimer > 0
+      ? `${game.combo}× COMBO`
+      : "POINTS"
+    : game.comboTimer > 0
+      ? `${game.combo}× TAKEDOWN COMBO`
+      : "NIGHT SHIFT SCORE";
   ui.overtime.hidden = game.overtime <= 0;
   ui["overtime-time"].textContent = game.overtime.toFixed(1);
   ui["overtime-fill"].style.width =
@@ -2608,19 +2685,26 @@ function updateHud() {
       ? "SHARED AMMO BAG"
       : "CRUMBS REFILL AMMO";
     ui["clock-label"].textContent = "ROUND ENDS";
-    ui.combo.textContent = coop ? "SHARED SHIFT SCORE" : "SNACKDOWN SCORE";
+    ui.combo.textContent = compact
+      ? "POINTS"
+      : coop
+        ? "SHARED SHIFT SCORE"
+        : "SNACKDOWN SCORE";
     if (!coop) {
       ui.collected.textContent = game.player.kills;
       ui.quota.textContent = " / 7 KOs";
-      ui["goal-label"].textContent = "FIRST TO SEVEN";
+      ui["goal-label"].textContent = compact ? "KOs" : "FIRST TO SEVEN";
       ui["quota-fill"].style.width = `${(game.player.kills / 7) * 100}%`;
     } else if (game.collected >= game.map.level.quota && game.boss.hp <= 0)
-      ui["goal-label"].textContent = "BOTH VACUUMS TO CHECKOUT";
+      ui["goal-label"].textContent = compact
+        ? "BOTH TO CHECKOUT"
+        : "BOTH VACUUMS TO CHECKOUT";
   }
   drawMap();
 }
 
 function readInput() {
+  aimAssisted = false;
   if (viewRig.transitProgress < 0.85) {
     dashQueued = false;
     return {};
@@ -2635,9 +2719,18 @@ function readInput() {
     stickMove.z;
   let aim;
   if (isFPS()) {
-    if (stickAim.active) {
-      fpsYaw -= stickAim.x * TICK * 2.7;
-      fpsPitch = clamp(fpsPitch - stickAim.z * TICK * 0.65, -0.4, 0.4);
+    if (stickAim.held) {
+      fpsYaw += stickAim.lookDelta;
+      fpsPitch = 0;
+      const assisted = assistTouchAim(
+        game,
+        fpsYaw,
+        TICK,
+        Math.abs(stickAim.lookDelta) > 0.008,
+      );
+      fpsYaw = assisted.yaw;
+      aimAssisted = assisted.assisted;
+      stickAim.lookDelta = 0;
     }
     aim = fpsYaw;
     const lateral = x,
@@ -2654,7 +2747,7 @@ function readInput() {
     x,
     z,
     aim,
-    fire: pointerFire || stickAim.active,
+    fire: pointerFire || (isFPS() ? stickAim.held : stickAim.active),
     dash: dashQueued,
   };
   dashQueued = false;
@@ -2764,6 +2857,8 @@ function telemetry() {
     fpsTime: game.fpsTime,
     fpsYaw,
     fpsPitch,
+    touchAimAssist: aimAssisted,
+    touchFiring: isFPS() && stickAim.held,
     pointerLocked: !!document.pointerLockElement,
     runKind,
     dailyDay: game.daily?.day,
@@ -2832,7 +2927,10 @@ function frame(now) {
       accumulator -= TICK;
     }
   } else accumulator = 0;
-  if (wasFPS && !isFPS()) releaseLook();
+  if (wasFPS && !isFPS()) {
+    releaseLook();
+    resetSticks.get("aim-stick")?.();
+  }
   wasFPS = isFPS();
   ui.game.classList.toggle("first-person", isFPS());
   ui.game.classList.toggle("visor-active", game.fpsTime > 0);
@@ -2949,6 +3047,7 @@ function resize() {
   camera.bottom = -height / 2;
   camera.updateProjectionMatrix();
   fpsCamera.aspect = aspect;
+  fpsCamera.fov = compactScreen.matches ? (portrait ? 94 : 80) : 76;
   fpsCamera.updateProjectionMatrix();
   renderer.setPixelRatio(Math.min(devicePixelRatio, portrait ? 1.5 : 2));
   renderer.setSize(innerWidth, innerHeight, false);
@@ -2957,10 +3056,14 @@ function resize() {
 
 function bindStick(id, target, aiming) {
   const el = ui[id];
-  let pointerId = null;
+  let pointerId = null,
+    lastX = 0,
+    capturedBy = el;
   const move = (event) => {
     if (event.pointerId !== pointerId) return;
     event.preventDefault();
+    if (aiming && isFPS()) target.lookDelta += dragYaw(event.clientX - lastX);
+    lastX = event.clientX;
     const rect = el.getBoundingClientRect();
     const radius = rect.width * 0.33;
     let x = (event.clientX - rect.x - rect.width / 2) / radius;
@@ -2976,24 +3079,57 @@ function bindStick(id, target, aiming) {
     el.querySelector("i").style.transform =
       `translate(${x * radius}px,${z * radius}px)`;
   };
-  el.addEventListener("pointerdown", (event) => {
+  const begin = (event) => {
     if (pointerId !== null) return;
     pointerId = event.pointerId;
-    el.setPointerCapture(pointerId);
+    lastX = event.clientX;
+    if (aiming) target.held = true;
+    el.classList.add("held");
+    capturedBy = event.currentTarget;
+    capturedBy.setPointerCapture(pointerId);
     pointerKnown = false;
     move(event);
-  });
+  };
+  el.addEventListener("pointerdown", begin);
   el.addEventListener("pointermove", move);
-  const end = (event) => {
-    if (event.pointerId !== pointerId) return;
+  const reset = () => {
+    const released = pointerId;
     pointerId = null;
     target.x = target.z = 0;
-    if (aiming) target.active = false;
+    if (aiming) {
+      target.active = target.held = false;
+      target.lookDelta = 0;
+    }
+    el.classList.remove("held");
     el.querySelector("i").style.transform = "";
+    if (released !== null && capturedBy.hasPointerCapture(released))
+      capturedBy.releasePointerCapture(released);
+  };
+  resetSticks.set(id, reset);
+  const end = (event) => {
+    if (event.pointerId !== pointerId) return;
+    reset();
   };
   el.addEventListener("pointerup", end);
   el.addEventListener("pointercancel", end);
   el.addEventListener("lostpointercapture", end);
+  if (aiming) {
+    // A swipe can begin across the right half, leaving room to turn either way.
+    ui.world.addEventListener("pointerdown", (event) => {
+      if (
+        event.pointerType !== "mouse" &&
+        isFPS() &&
+        !paused &&
+        !building &&
+        event.clientX > innerWidth * 0.45
+      )
+        begin(event);
+    });
+    ui.world.addEventListener("pointermove", move);
+    ui.world.addEventListener("pointerup", end);
+    ui.world.addEventListener("pointercancel", end);
+    ui.world.addEventListener("lostpointercapture", end);
+  }
 }
 
 function bindInput() {
@@ -3178,6 +3314,11 @@ function bindInput() {
   ui["refresh-board"].onclick = refreshBoard;
   ui["daily-start"].onclick = startDaily;
   ui["view-toggle"].onclick = toggleView;
+  ui["map-toggle"].onclick = () => {
+    const open = ui.game.classList.toggle("map-open");
+    ui["map-toggle"].setAttribute("aria-expanded", String(open));
+    ui["map-toggle"].setAttribute("aria-label", open ? "Hide map" : "Show map");
+  };
   ui["score-form"].onsubmit = submitScore;
   ui["share-score"].onclick = async () => {
     const result = `Hungry for Trouble · Daily Rush ${game.daily.day}\n${game.score.toLocaleString("en-US")} points · ${game.kills} takedowns · ${game.state === "won" ? "SURVIVED" : `${game.elapsed.toFixed(1)} seconds`}\nCan you clean up better? ${location.origin}${location.pathname}`;
@@ -3192,7 +3333,9 @@ function bindInput() {
   };
   ui.sound.onclick = () => {
     const enabled = sound.toggle();
-    ui.sound.textContent = enabled ? "SOUND ON" : "SOUND OFF";
+    ui.sound.querySelector("span").textContent = enabled
+      ? "SOUND ON"
+      : "SOUND OFF";
     ui.sound.setAttribute("aria-pressed", String(enabled));
     if (enabled) sound.start();
   };
@@ -3281,7 +3424,10 @@ function bindInput() {
     event.preventDefault();
     dashQueued = true;
   });
-  addEventListener("resize", resize);
+  addEventListener("resize", () => {
+    for (const reset of resetSticks.values()) reset();
+    resize();
+  });
 }
 
 async function init() {

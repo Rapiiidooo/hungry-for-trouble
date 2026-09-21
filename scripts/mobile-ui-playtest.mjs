@@ -7,6 +7,7 @@ const require = createRequire(
 );
 const puppeteer = require("puppeteer");
 const baseline = process.argv.includes("--baseline");
+const hudOnly = process.argv.includes("--hud-only");
 const out = new URL(
   `../outputs/mobile-ui${baseline ? "-before" : ""}/`,
   import.meta.url,
@@ -132,11 +133,16 @@ try {
         move: rect("#move-stick"),
         aim: rect("#aim-stick"),
         score: rect(".score-block"),
+        pause: rect("#pause"),
+        objective: rect(".hud-top"),
+        map: rect("#minimap"),
         hearts: [...document.querySelectorAll(".heart")].map((el) => {
           const r = el.getBoundingClientRect();
           return { x: r.x, y: r.y, right: r.right, bottom: r.bottom };
         }),
-        shield: document.querySelector("#shield-count").textContent,
+        shield: document
+          .querySelector("#shield-count")
+          .getAttribute("aria-label"),
         shieldVisible:
           document.querySelector("#shield-count").getBoundingClientRect()
             .height > 0,
@@ -145,8 +151,8 @@ try {
     report.hud.push({ name, ...bounds });
     if (name !== "desktop") {
       check(
-        bounds.vitals.height <= 66,
-        `${name}: vitals must stay within 66 px`,
+        bounds.vitals.height <= 44 && bounds.vitals.bottom <= 52,
+        `${name}: vitals must occupy one top row within 44 px`,
       );
       if (loaded) {
         check(
@@ -161,13 +167,21 @@ try {
           `${name}: all eight hearts fit the panel`,
         );
         check(
-          bounds.shieldVisible && bounds.shield.includes("3 HITS"),
+          bounds.shieldVisible && bounds.shield.includes("3 shield hits"),
           `${name}: shield charges remain visible`,
         );
       }
       check(
-        bounds.vitals.right + 4 <= bounds.score.x,
-        `${name}: vitals and score must not overlap`,
+        bounds.vitals.right + 4 <= bounds.pause.x && bounds.map.width === 0,
+        `${name}: controls stay separate and the map starts collapsed`,
+      );
+      check(
+        bounds.objective.bottom <= 76,
+        `${name}: all permanent status stays in the top 76 px`,
+      );
+      check(
+        bounds.health.right < bounds.ammo.x,
+        `${name}: health and ammo remain separate`,
       );
       check(
         bounds.move.width >= 90 && bounds.aim.width >= 90,
@@ -182,7 +196,7 @@ try {
     ["shield", "magnet", "heart"],
     ["ricochet", "frost", "heart"],
   ];
-  for (const [name, width, height] of sizes) {
+  for (const [name, width, height] of hudOnly ? [] : sizes) {
     for (const [group, fixture] of sets.entries()) {
       const page = await open(name, width, height, fixture);
       await page.waitForSelector(
@@ -280,9 +294,11 @@ try {
     }
   }
   report.checks.push(
-    "Six viewport layouts captured, all eight upgrade illustrations inspected by geometry, eight-heart/shield fixtures fit, and original thumb target sizes retained",
+    hudOnly
+      ? "Six viewport HUD layouts and eight-heart/shield fixtures fit; thumb targets stay at least 90 px"
+      : "Six viewport layouts captured, all eight upgrade illustrations inspected by geometry, eight-heart/shield fixtures fit, and thumb targets stay at least 90 px",
   );
-  if (!baseline)
+  if (!baseline && !hudOnly)
     report.checks.push(
       "The last card can be reached and equipped in every viewport, entering the next aisle",
     );

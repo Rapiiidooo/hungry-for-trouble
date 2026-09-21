@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="./presentation.css" />
     <link rel="stylesheet" href="./credits.css" />
     <link rel="stylesheet" href="./locked-wing.css" />
+    <link rel="stylesheet" href="./mobile.css" />
     <script type="importmap">
       {
         "imports": {
@@ -93,7 +94,25 @@
           </button>
           <button id="pause" hidden aria-label="Pause">Ⅱ</button
           ><button id="sound" aria-label="Toggle sound" aria-pressed="true">
-            SOUND ON
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M3 9h4l5-4v14l-5-4H3z" fill="currentColor" />
+              <path
+                class="sound-waves"
+                d="M16 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <path
+                class="sound-muted"
+                d="m16 9 6 6m0-6-6 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            <span>SOUND ON</span>
           </button>
         </div>
       </header>
@@ -211,6 +230,24 @@
           height="156"
           aria-label="Map of crumbs, batteries and exit"
         ></canvas>
+        <button
+          id="map-toggle"
+          aria-label="Show map"
+          aria-expanded="false"
+          aria-controls="minimap"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          >
+            <path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zm6-3v15m6-12v15" />
+          </svg>
+        </button>
         <div id="touch-controls">
           <div id="move-stick" class="stick" aria-label="Move">
             <span>MOVE</span><i></i>
@@ -219,7 +256,7 @@
             DODGE
           </button>
           <div id="aim-stick" class="stick" aria-label="Aim and fire">
-            <span>AIM / FIRE</span><i></i>
+            <span id="aim-stick-label">AIM / FIRE</span><i></i>
           </div>
         </div>
         <div id="exit-label" hidden><span>EXIT</span> CHECKOUT</div>
@@ -389,6 +426,7 @@
         <div class="panel">
           <div class="eyebrow">TAKE A BREATHER</div>
           <h2>Game <em>paused.</em></h2>
+          <p id="pause-status"></p>
           <p id="pause-room-note" hidden>
             The room keeps running while you take a break.
           </p>
@@ -417,6 +455,13 @@
             <p class="dash-help">
               DASH is a short, protected burst in your movement direction.<br />Stand
               still to dash where you aim. It cannot pass through shelves.
+            </p>
+            <p class="dash-help">
+              Repair kits and checkout restore one heart. Eat crumbs to reload.
+            </p>
+            <p class="dash-help">
+              VAC CAM: hold the right side to fire, drag sideways to look. Left
+              pad moves. Tap TOP VIEW to switch back.
             </p>
           </details>
         </div>

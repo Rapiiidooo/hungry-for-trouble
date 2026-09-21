@@ -220,6 +220,7 @@ try {
   page = await browser.newPage();
   if (fromFloor > 1)
     await page.evaluateOnNewDocument((floor) => {
+      if (location.origin !== "http://localhost:3001") return;
       if (localStorage.getItem("hft-route-v1")) return;
       localStorage.setItem(
         "hft-route-v1",
@@ -412,7 +413,7 @@ try {
             type: "touchMove",
             touchPoints: [
               { ...points[0], y: points[0].y - 30 },
-              { ...points[1], x: points[1].x + 26 },
+              { ...points[1], x: points[1].x + 40 },
             ],
           });
           await sleep(400);
