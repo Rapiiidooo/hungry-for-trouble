@@ -145,6 +145,11 @@ try {
       after.shots > before.shots,
       "A centred held thumb fires without needing an aim offset",
     );
+    assert.equal(
+      after.coach.learned.visor,
+      true,
+      "Real visor firing completes its lesson",
+    );
     assert.equal(after.fpsPitch, 0);
     await send("touchMove", [{ ...aim, y: aim.y - 35 }]);
     await sleep(150);
@@ -230,6 +235,11 @@ try {
     const frozen = await read();
     await sleep(220);
     assert.equal((await read()).fpsTime, frozen.fpsTime);
+    assert.equal(
+      (await read()).coach.visible,
+      false,
+      "Coaching stays out of the pause menu",
+    );
     assert.ok(
       await page.$eval("#pause-status", (el) =>
         el.textContent.includes("POINTS"),

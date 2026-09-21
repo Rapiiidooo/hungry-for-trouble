@@ -1,0 +1,63 @@
+#field-tip {
+  position: fixed;
+  z-index: 14;
+  left: 50%;
+  bottom: 100px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  max-width: min(470px, calc(100vw - 28px));
+  padding: 10px 14px;
+  border: 1px solid #71809a;
+  border-bottom: 3px solid #efb546;
+  background: #1d2b40f5;
+  color: #f0f2f3;
+  box-shadow: 0 4px 0 #101a2b44;
+  pointer-events: none;
+  font:
+    600 13px/1.35 Arial,
+    sans-serif;
+}
+#field-tip[hidden] {
+  display: none;
+}
+#field-tip b {
+  color: #efb546;
+  font: 800 22px/1 monospace;
+  flex: 0 0 28px;
+  text-align: center;
+}
+#field-tip.confirmed {
+  border-bottom-color: #a4c0e0;
+}
+#field-tip.confirmed b {
+  color: #a4c0e0;
+}
+.lesson-target {
+  outline: 2px solid #efb546;
+  outline-offset: 4px;
+}
+#game.playing #dash-lesson {
+  display: none;
+}
+@media (max-width: 850px), (pointer: coarse) {
+  #field-tip {
+    bottom: max(140px, calc(env(safe-area-inset-bottom) + 130px));
+    padding: 8px 10px;
+    font-size: 12px;
+    max-width: calc(100vw - 36px);
+  }
+  #field-tip b {
+    font-size: 19px;
+    flex-basis: 24px;
+  }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  #field-tip {
+    bottom: 58px;
+    max-width: calc(100vw - 300px);
+    font-size: 11px;
+  }
+}

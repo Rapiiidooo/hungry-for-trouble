@@ -17,6 +17,8 @@ import { receiptEffects } from "./combat-fx.js";
 import { RADIO, SPEAKERS, MISSION, portrait, storyCard } from "./story.js";
 import { campaignEffects } from "./campaign-fx.js";
 import { presentationEffects } from "./presentation-fx.js";
+import { departmentScene } from "./departments.js";
+import { createFieldCoach } from "./field-coach.js";
 import {
   escapeScene,
   ESCAPE_SECONDS,
@@ -59,6 +61,12 @@ const ui = Object.fromEntries(
   [...document.querySelectorAll("[id]")].map((el) => [el.id, el]),
 );
 const sound = new Sound();
+const fieldCoach = createFieldCoach({
+  container: ui.game,
+  dashButton: ui["dash-button"],
+  aimStick: ui["aim-stick"],
+  ammoPanel: ui["ammo-panel"],
+});
 let networkSeen = 0;
 let peerModels = [],
   roomViewKey = "",
@@ -109,6 +117,7 @@ let viewRig,
 let damageBearing = 0,
   radioUntil = 0;
 let presentationFX,
+  departmentFX,
   lockFX,
   ending = null,
   endingDestination = "result",
@@ -1008,6 +1017,7 @@ async function makeMenu() {
 }
 
 async function buildWorld() {
+  departmentFX?.dispose();
   if (world) {
     scene.remove(world);
     world.traverse((node) => {
@@ -1036,14 +1046,7 @@ async function buildWorld() {
   beltMeshes = [];
   floating.splice(0).forEach((f) => f.el.remove());
   const theme = game.map.level.theme;
-  const accent = {
-    boiler: 0xd98652,
-    transit: 0x87a9d5,
-    packing: 0xc6a052,
-    security: 0xa49cbd,
-    core: 0x7ea8c1,
-    vault: 0xb49b70,
-  }[theme];
+  departmentFX = departmentScene({ world, game, ownedGeometry });
   const tiles = [],
     scale = 2 / prototypes.floor.userData.nativeSize.x;
   for (let row = 0; row < game.map.height; row++)
@@ -1058,18 +1061,9 @@ async function buildWorld() {
         y: -0.12 * scale,
       });
     }
-  instanceAsset("floor", tiles, world, (p) => {
-    if (game.map.level.map[p.row][p.col] === "#") return 0x8a8490;
-    if (theme === "ice") return (p.col + p.row) % 2 ? 0x94adca : 0xd2dfec;
-    if (theme === "warehouse") return (p.col + p.row) % 2 ? 0x778694 : 0xa4b0ba;
-    if (theme === "rush") return (p.col + p.row) % 2 ? 0x7a7270 : 0x999088;
-    if (theme === "food") return (p.col + p.row) % 2 ? 0xb1b7b8 : 0x7e94aa;
-    if (theme === "dock") return (p.col + p.row) % 2 ? 0x8491a4 : 0x6a7388;
-    if (theme === "conveyor") return (p.col + p.row) % 2 ? 0xabb5bb : 0x738099;
-    if (theme === "director") return (p.col + p.row) % 2 ? 0x75839a : 0xb2b7be;
-    if (accent) return (p.col + p.row) % 2 ? accent : 0x5d6b7b;
-    return (p.col + p.row) % 2 ? 0x738092 : 0x98a3b0;
-  });
+  departmentFX.dressFloor(
+    instanceAsset("floor", tiles, world, departmentFX.floorColor),
+  );
   const chunks = new Map();
   for (const wall of game.map.walls) {
     const key = `${Math.floor(wall.col / 5)},${Math.floor(wall.row / 5)}`;
@@ -1106,7 +1100,7 @@ async function buildWorld() {
       });
       if (front) object.rotation.y = front[2];
     }
-    if (theme === "warehouse" && !border) object.scale.y = 1.5;
+    departmentFX.dressFixture(object, border, wall);
     chunks.get(key).add(object);
   }
   for (const chunk of chunks.values()) {
@@ -1157,8 +1151,10 @@ async function buildWorld() {
       ring = makeRing(0.65, palette.blue);
     model.position.set(item.x, 0.35, item.z);
     ring.position.set(item.x, 0.03, item.z);
-    world.add(model, ring);
-    visorModels.push({ model, ring, i });
+    const sign = label("VAC CAM · 18s", "#c4e4ff", 2.4);
+    sign.position.set(item.x, 1.25, item.z);
+    world.add(model, ring, sign);
+    visorModels.push({ model, ring, sign, i });
   }
   if (game.map.belts.length) {
     // The conveyor reuses the verified floor module and moving crumb lights.
@@ -1414,11 +1410,11 @@ async function buildWorld() {
     sign.position.set(game.map.start.x + 2, 2.3, game.map.start.z - 3);
     world.add(sign);
   }
-  keyLight.color.setHex(
-    theme === "ice" ? 0xd9e9ff : theme === "boss" ? 0xffd7d0 : 0xf2f6ff,
-  );
-  fillLight.color.setHex(theme === "ice" ? 0xadc7e7 : 0xc2cbdf);
-  scene.background.setHex(theme === "ice" ? 0x344766 : palette.ink);
+  departmentFX.landmarks();
+  keyLight.color.setHex(departmentFX.theme.key);
+  fillLight.color.setHex(departmentFX.theme.fill);
+  scene.background.setHex(departmentFX.theme.sky);
+  fieldCoach.begin(game, runKind);
   follow.set(game.player.x, 0, game.player.z);
   const radio = game.daily
     ? {
@@ -1724,6 +1720,7 @@ function menu() {
 
 function handleEvents(events) {
   for (const event of events) {
+    fieldCoach.event(event, game, compactScreen.matches);
     sound.effect(event.type, game.collected);
     if (["key-found", "door-open", "door-locked"].includes(event.type)) {
       const key = keyType(event.color);
@@ -2242,9 +2239,11 @@ function updateModels(dt) {
       data.hp <= 0 ? 0.4 + Math.sin(clock * 8) * 0.3 : 0.8;
     peer.name.position.set(data.x, 1.35, data.z);
   }
-  for (const { model, ring, i } of visorModels) {
+  for (const { model, ring, sign, i } of visorModels) {
     const item = game.visors[i];
     model.visible = ring.visible = !item.collected;
+    sign.visible =
+      !item.collected && Math.hypot(item.x - p.x, item.z - p.z) < 8;
     model.position.y = 0.28 + Math.sin(clock * 3) * 0.1;
     model.rotation.y = clock * 0.7;
   }
@@ -2333,6 +2332,7 @@ function updateModels(dt) {
     if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
   }
   floorEffects?.update(game, clock, reducedMotion.matches);
+  departmentFX?.update();
   lockFX?.update(clock, reducedMotion.matches);
   presentationFX?.update(game, clock, viewRig.blend, reducedMotion.matches);
 }
@@ -2761,11 +2761,14 @@ function telemetry() {
     draws: renderer.info.render.calls,
     tris: renderer.info.render.triangles,
     geometries: renderer.info.memory.geometries,
+    textures: renderer.info.memory.textures,
     pos: [game.player.x, game.player.z],
     speed: Math.hypot(game.player.vx, game.player.vz),
     mode,
     paused,
     briefing: briefingRemaining > 0,
+    coach: fieldCoach.snapshot,
+    departmentStyle: departmentFX?.theme.name || null,
     credits: credits.snapshot,
     state: game.state,
     floor: game.levelIndex + 1,
@@ -3010,6 +3013,16 @@ function frame(now) {
   fx.geometry.attributes.color.needsUpdate = true;
   fx.geometry.setDrawRange(0, particles.length);
   if (clock > messageUntil) ui.message.classList.remove("show");
+  fieldCoach.update(game, {
+    dt,
+    active,
+    compact: compactScreen.matches,
+    firstPerson: isFPS(),
+    busy:
+      ui.message.classList.contains("show") ||
+      game.overtime > 0 ||
+      !ui["hazard-cue"].hidden,
+  });
   if (pendingOverlay && clock >= rescueUntil) {
     if (pendingOverlay === "credits-screen") credits.open(true);
     else ui[pendingOverlay].hidden = false;
@@ -3188,6 +3201,7 @@ function bindInput() {
     best = 0;
     bestFloor = 1;
     goldEnabled = false;
+    fieldCoach.reset();
     refreshProgressUI();
     applyLivery(menuHero);
     ui["reset-confirmation"].hidden = true;
