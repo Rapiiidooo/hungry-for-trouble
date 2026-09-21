@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "node_tests": 56,
+  "ship_modules": 45,
+  "ship_pages": 1,
+  "commands": [
+    "npm test",
+    "npm run check"
+  ]
+}

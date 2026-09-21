@@ -1,0 +1,656 @@
+{
+  "scope": "Real start and HUD; isolated checkout fixtures exercise the actual card renderer, all upgrade illustrations and real selection. Chrome phone emulation, not combat completion or a physical device. No score is posted.",
+  "checks": [
+    "Six viewport layouts captured, all eight upgrade illustrations inspected by geometry, eight-heart/shield fixtures fit, and thumb targets stay at least 90 px",
+    "The last card can be reached and equipped in every viewport, entering the next aisle"
+  ],
+  "issues": [],
+  "errors": [],
+  "hud": [
+    {
+      "name": "narrow",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 202,
+        "height": 42,
+        "right": 212,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 10,
+        "y": 50,
+        "width": 300,
+        "height": 22,
+        "right": 310,
+        "bottom": 72
+      },
+      "heart_slots": 4,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "0 shield hits remaining"
+    },
+    {
+      "name": "small",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 242,
+        "height": 42,
+        "right": 252,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 10,
+        "y": 50,
+        "width": 340,
+        "height": 22,
+        "right": 350,
+        "bottom": 72
+      },
+      "heart_slots": 4,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "0 shield hits remaining"
+    },
+    {
+      "name": "portrait",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 270,
+        "height": 42,
+        "right": 280,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 10,
+        "y": 50,
+        "width": 370,
+        "height": 22,
+        "right": 380,
+        "bottom": 72
+      },
+      "heart_slots": 4,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "0 shield hits remaining"
+    },
+    {
+      "name": "short-landscape",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 224,
+        "height": 42,
+        "right": 234,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 250,
+        "y": 16,
+        "width": 303,
+        "height": 22,
+        "right": 553,
+        "bottom": 38
+      },
+      "heart_slots": 4,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "0 shield hits remaining"
+    },
+    {
+      "name": "landscape",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 224,
+        "height": 42,
+        "right": 234,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 250,
+        "y": 16,
+        "width": 480,
+        "height": 22,
+        "right": 730,
+        "bottom": 38
+      },
+      "heart_slots": 4,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "0 shield hits remaining"
+    },
+    {
+      "name": "desktop",
+      "vitals": {
+        "x": 36,
+        "y": 617.15625,
+        "width": 257,
+        "height": 150.84375,
+        "right": 293,
+        "bottom": 768
+      },
+      "objective": {
+        "x": 153.59375,
+        "y": 27,
+        "width": 947.21875,
+        "height": 73,
+        "right": 1100.8125,
+        "bottom": 100
+      },
+      "heart_slots": 4,
+      "heart_slots_fit": true,
+      "health_ammo_separate": false,
+      "thumb_width": 0,
+      "shield": "0 shield hits remaining"
+    },
+    {
+      "name": "narrow-loaded",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 202,
+        "height": 42,
+        "right": 212,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 10,
+        "y": 50,
+        "width": 300,
+        "height": 22,
+        "right": 310,
+        "bottom": 72
+      },
+      "heart_slots": 8,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "3 shield hits remaining"
+    },
+    {
+      "name": "small-loaded",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 242,
+        "height": 42,
+        "right": 252,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 10,
+        "y": 50,
+        "width": 340,
+        "height": 22,
+        "right": 350,
+        "bottom": 72
+      },
+      "heart_slots": 8,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "3 shield hits remaining"
+    },
+    {
+      "name": "portrait-loaded",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 270,
+        "height": 42,
+        "right": 280,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 10,
+        "y": 50,
+        "width": 370,
+        "height": 22,
+        "right": 380,
+        "bottom": 72
+      },
+      "heart_slots": 8,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "3 shield hits remaining"
+    },
+    {
+      "name": "short-landscape-loaded",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 224,
+        "height": 42,
+        "right": 234,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 250,
+        "y": 16,
+        "width": 303,
+        "height": 22,
+        "right": 553,
+        "bottom": 38
+      },
+      "heart_slots": 8,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "3 shield hits remaining"
+    },
+    {
+      "name": "landscape-loaded",
+      "vitals": {
+        "x": 10,
+        "y": 6,
+        "width": 224,
+        "height": 42,
+        "right": 234,
+        "bottom": 48
+      },
+      "objective": {
+        "x": 250,
+        "y": 16,
+        "width": 480,
+        "height": 22,
+        "right": 730,
+        "bottom": 38
+      },
+      "heart_slots": 8,
+      "heart_slots_fit": true,
+      "health_ammo_separate": true,
+      "thumb_width": 96,
+      "shield": "3 shield hits remaining"
+    }
+  ],
+  "cards": [
+    {
+      "viewport": "narrow",
+      "key": "rapid",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "spread",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "pierce",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "shield",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "magnet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "ricochet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "frost",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "narrow",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "rapid",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "spread",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "pierce",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "shield",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "magnet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "ricochet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "frost",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "small",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "rapid",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "spread",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "pierce",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "shield",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "magnet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "ricochet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "frost",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "portrait",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "rapid",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "spread",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "pierce",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "shield",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "magnet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "ricochet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "frost",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "short-landscape",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "rapid",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "spread",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "pierce",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "shield",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "magnet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "ricochet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "frost",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "landscape",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "rapid",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "spread",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "pierce",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "shield",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "magnet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "ricochet",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "frost",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    },
+    {
+      "viewport": "desktop",
+      "key": "heart",
+      "overlaps": false,
+      "overflow": false,
+      "illustrationInside": true
+    }
+  ],
+  "result": "PASS"
+}

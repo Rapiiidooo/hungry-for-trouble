@@ -1,0 +1,40 @@
+{
+  "input": "Practice route unlocks are preloaded for a floor 2 continuation; real keyboard and pointer events, read-only combat telemetry.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Overhead-to-FPS camera interpolates continuously and settles",
+    "Visor pickup enters first person; real mouse look and firing work",
+    "Camera transition reverses mid-flight without snapping or pausing",
+    "Reduced motion changes view without a camera flight",
+    "Simultaneous touch movement, look and fire work in first person",
+    "Completed stages stay unlocked after reload and launch as practice"
+  ],
+  "floors": [],
+  "samples": [
+    {
+      "floor": 2,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        24
+      ],
+      "waypoint": [
+        6,
+        24
+      ],
+      "crumbs": 0,
+      "hp": 3,
+      "kills": 0,
+      "overtime": 0,
+      "keys": [],
+      "doors": 0,
+      "fps": 54,
+      "draws": 264
+    }
+  ],
+  "result": "PASS"
+}

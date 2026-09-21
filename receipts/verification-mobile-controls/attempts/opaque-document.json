@@ -1,0 +1,577 @@
+{
+  "input": "Practice route unlocks are preloaded for a floor 2 continuation; real keyboard and pointer events, read-only combat telemetry.",
+  "errors": [
+    "DOMException: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\n    at <anonymous> (:10:7)"
+  ],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Overhead-to-FPS camera interpolates continuously and settles",
+    "Visor pickup enters first person; real mouse look and firing work",
+    "Camera transition reverses mid-flight without snapping or pausing",
+    "Reduced motion changes view without a camera flight",
+    "Simultaneous touch movement, look and fire work in first person",
+    "Completed stages stay unlocked after reload and launch as practice"
+  ],
+  "floors": [],
+  "samples": [
+    {
+      "floor": 2,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        24
+      ],
+      "waypoint": [
+        6,
+        24
+      ],
+      "crumbs": 0,
+      "hp": 3,
+      "kills": 0,
+      "overtime": 0,
+      "keys": [],
+      "doors": 0,
+      "fps": 56,
+      "draws": 255
+    }
+  ],
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ [\n+   \"DOMException: SecurityError: Failed to read the 'localStorage' property from 'Window': Access is denied for this document.\\n\" +\n+     '    at <anonymous> (:10:7)'\n+ ]\n- []\n\n    at file://<repo>/scripts/playthrough.mjs:823:10",
+  "last": {
+    "fps": 60,
+    "draws": 218,
+    "tris": 134632,
+    "geometries": 175,
+    "pos": [
+      4,
+      24
+    ],
+    "speed": 0,
+    "mode": "playing",
+    "paused": false,
+    "briefing": false,
+    "credits": null,
+    "state": "playing",
+    "floor": 2,
+    "theme": "ice",
+    "hp": 3,
+    "maxHp": 3,
+    "ammo": 10,
+    "score": 0,
+    "collected": 0,
+    "quota": 46,
+    "overtime": 0,
+    "elapsed": 0,
+    "time": 120,
+    "shots": 0,
+    "kills": 0,
+    "dashCooldown": 0,
+    "upgrades": {
+      "rapid": 0,
+      "spread": 0,
+      "pierce": 0,
+      "shield": 0,
+      "magnet": 0,
+      "heart": 0,
+      "ricochet": 0,
+      "frost": 0
+    },
+    "angle": 0,
+    "map": [
+      "             #####  ",
+      "           ##E....# ",
+      "          #.....X.# ",
+      "        ###.......# ",
+      "       #B...#H#...# ",
+      "      #...#....B..# ",
+      "     #.#.#.##...##  ",
+      "    #H.#.#..####    ",
+      "    #.....E.#       ",
+      "  ###B......#       ",
+      " #.........#        ",
+      "#........A#         ",
+      "#.S..V...#          ",
+      "#......##           ",
+      " ######             ",
+      "                    "
+    ],
+    "exit": {
+      "x": 32,
+      "z": 4,
+      "screen": {
+        "x": 2383.9094367733333,
+        "y": 347.4446309284209
+      }
+    },
+    "playerScreen": {
+      "x": 414.5761034399998,
+      "y": 1524.781887917875
+    },
+    "enemies": [
+      {
+        "x": 26,
+        "z": 2,
+        "hp": 3,
+        "respawn": 0,
+        "kind": "hunter",
+        "screen": {
+          "x": 1961.9094367733333,
+          "y": 229.7109052294755
+        }
+      },
+      {
+        "x": 20,
+        "z": 16,
+        "hp": 3,
+        "respawn": 0,
+        "kind": "hunter",
+        "screen": {
+          "x": 1539.9094367733333,
+          "y": 1053.8469851220934
+        }
+      },
+      {
+        "x": 18,
+        "z": 22,
+        "hp": 3,
+        "respawn": 0,
+        "kind": "ambusher",
+        "screen": {
+          "x": 1399.2427701066665,
+          "y": 1407.0481622189295
+        }
+      }
+    ],
+    "batteries": [
+      {
+        "x": 16,
+        "z": 8,
+        "collected": false
+      },
+      {
+        "x": 30,
+        "z": 10,
+        "collected": false
+      },
+      {
+        "x": 10,
+        "z": 18,
+        "collected": false
+      }
+    ],
+    "crumbs": [
+      [
+        26,
+        2
+      ],
+      [
+        28,
+        2
+      ],
+      [
+        30,
+        2
+      ],
+      [
+        32,
+        2
+      ],
+      [
+        34,
+        2
+      ],
+      [
+        22,
+        4
+      ],
+      [
+        24,
+        4
+      ],
+      [
+        26,
+        4
+      ],
+      [
+        28,
+        4
+      ],
+      [
+        30,
+        4
+      ],
+      [
+        34,
+        4
+      ],
+      [
+        22,
+        6
+      ],
+      [
+        24,
+        6
+      ],
+      [
+        26,
+        6
+      ],
+      [
+        28,
+        6
+      ],
+      [
+        30,
+        6
+      ],
+      [
+        32,
+        6
+      ],
+      [
+        34,
+        6
+      ],
+      [
+        18,
+        8
+      ],
+      [
+        20,
+        8
+      ],
+      [
+        22,
+        8
+      ],
+      [
+        30,
+        8
+      ],
+      [
+        32,
+        8
+      ],
+      [
+        34,
+        8
+      ],
+      [
+        14,
+        10
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        18,
+        10
+      ],
+      [
+        22,
+        10
+      ],
+      [
+        24,
+        10
+      ],
+      [
+        26,
+        10
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        32,
+        10
+      ],
+      [
+        34,
+        10
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        16,
+        12
+      ],
+      [
+        20,
+        12
+      ],
+      [
+        26,
+        12
+      ],
+      [
+        28,
+        12
+      ],
+      [
+        30,
+        12
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        16,
+        14
+      ],
+      [
+        20,
+        14
+      ],
+      [
+        22,
+        14
+      ],
+      [
+        10,
+        16
+      ],
+      [
+        12,
+        16
+      ],
+      [
+        14,
+        16
+      ],
+      [
+        16,
+        16
+      ],
+      [
+        18,
+        16
+      ],
+      [
+        20,
+        16
+      ],
+      [
+        22,
+        16
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        14,
+        18
+      ],
+      [
+        16,
+        18
+      ],
+      [
+        18,
+        18
+      ],
+      [
+        20,
+        18
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        6,
+        20
+      ],
+      [
+        8,
+        20
+      ],
+      [
+        10,
+        20
+      ],
+      [
+        12,
+        20
+      ],
+      [
+        14,
+        20
+      ],
+      [
+        16,
+        20
+      ],
+      [
+        18,
+        20
+      ],
+      [
+        20,
+        20
+      ],
+      [
+        2,
+        22
+      ],
+      [
+        4,
+        22
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        8,
+        22
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        12,
+        22
+      ],
+      [
+        14,
+        22
+      ],
+      [
+        16,
+        22
+      ],
+      [
+        18,
+        22
+      ],
+      [
+        2,
+        24
+      ],
+      [
+        6,
+        24
+      ],
+      [
+        8,
+        24
+      ],
+      [
+        12,
+        24
+      ],
+      [
+        14,
+        24
+      ],
+      [
+        16,
+        24
+      ],
+      [
+        2,
+        26
+      ],
+      [
+        4,
+        26
+      ],
+      [
+        6,
+        26
+      ],
+      [
+        8,
+        26
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        12,
+        26
+      ]
+    ],
+    "gates": [],
+    "boss": null,
+    "keyring": [],
+    "keycards": [],
+    "doors": [],
+    "audio": {
+      "enabled": true,
+      "state": "running",
+      "score": "idle"
+    },
+    "multiplayer": null,
+    "firstPerson": false,
+    "viewBlend": 0,
+    "transitProgress": 1,
+    "cameraPosition": [
+      0.8780648800000017,
+      26,
+      22.00496981600001
+    ],
+    "shieldVisible": false,
+    "lobs": [],
+    "waves": [],
+    "visibleFloors": 10,
+    "endingTime": null,
+    "goldEnabled": false,
+    "shape": "DOGLEG",
+    "seed": 2774791069,
+    "repairs": [
+      {
+        "x": 26,
+        "z": 8,
+        "collected": false,
+        "respawn": 0
+      },
+      {
+        "x": 10,
+        "z": 14,
+        "collected": false,
+        "respawn": 0
+      }
+    ],
+    "hazards": [],
+    "fpsTime": 0,
+    "fpsYaw": 3.141592653589793,
+    "fpsPitch": 0,
+    "touchAimAssist": false,
+    "touchFiring": false,
+    "pointerLocked": false,
+    "runKind": "practice",
+    "dailyTicks": 0,
+    "visors": [
+      {
+        "x": 10,
+        "z": 24,
+        "collected": false,
+        "respawn": 0
+      }
+    ],
+    "shield": 0,
+    "portals": [],
+    "transportCooldown": 0,
+    "vents": [],
+    "mines": [],
+    "stock": [],
+    "unlocked": 2
+  }
+}

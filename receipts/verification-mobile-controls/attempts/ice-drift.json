@@ -1,0 +1,522 @@
+{
+  "scope": "Disposable practice unlock only; actual floor-two movement, visor pickup and FPS input with simultaneous CDP touches. No combat injection, shared score or claim of campaign completion. Chrome emulation, not a physical phone.",
+  "checks": [],
+  "errors": [],
+  "runs": [],
+  "result": "FAIL",
+  "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok((await read()).speed < 0.1)\n\n    at file://<repo>/scripts/mobile-fps-playtest.mjs:190:12",
+  "last": {
+    "fps": 60,
+    "draws": 170,
+    "tris": 150836,
+    "geometries": 203,
+    "pos": [
+      6.349465607154936,
+      26.6293673150448
+    ],
+    "speed": 0.6945065305678211,
+    "mode": "playing",
+    "paused": false,
+    "briefing": false,
+    "credits": null,
+    "state": "playing",
+    "floor": 2,
+    "theme": "ice",
+    "hp": 3,
+    "maxHp": 3,
+    "ammo": 34,
+    "score": 50,
+    "collected": 5,
+    "quota": 46,
+    "overtime": 0,
+    "elapsed": 5.066666666666654,
+    "time": 114.93333333333362,
+    "shots": 10,
+    "kills": 0,
+    "dashCooldown": 0.5333333333333325,
+    "upgrades": {
+      "rapid": 0,
+      "spread": 0,
+      "pierce": 0,
+      "shield": 0,
+      "magnet": 0,
+      "heart": 0,
+      "ricochet": 0,
+      "frost": 0
+    },
+    "angle": -0.8131,
+    "map": [
+      "             #####  ",
+      "           ##A....# ",
+      "          #..#..X.# ",
+      "        ###.......# ",
+      "       #..E...#...# ",
+      "      #B..#.....B.# ",
+      "     #.#.#.##H..##  ",
+      "    #.......####    ",
+      "    #....E..#       ",
+      "  ###..#....#       ",
+      " #.........#        ",
+      "#...#....H#         ",
+      "#.S....B.#          ",
+      "#....V.##           ",
+      " ######             ",
+      "                    "
+    ],
+    "exit": {
+      "x": 32,
+      "z": 4,
+      "screen": {
+        "x": 208.697810680548,
+        "y": 417.4045321468792
+      }
+    },
+    "playerScreen": {
+      "x": null,
+      "y": null
+    },
+    "enemies": [
+      {
+        "x": 20.089789078396223,
+        "z": 7.998315580455422,
+        "hp": 3,
+        "respawn": 0,
+        "kind": "ambusher",
+        "screen": {
+          "x": 124.34682615247277,
+          "y": 415.10539945633997
+        }
+      },
+      {
+        "x": 10.162541135626265,
+        "z": 13.999996804382228,
+        "hp": 3,
+        "respawn": 0,
+        "kind": "hunter",
+        "screen": {
+          "x": -30.252622141587885,
+          "y": 408.279102610933
+        }
+      },
+      {
+        "x": 10.000000100504437,
+        "z": 23.7495391709546,
+        "hp": 3,
+        "respawn": 0,
+        "kind": "hunter",
+        "screen": {
+          "x": 230.42366649865858,
+          "y": 388.07707267482317
+        }
+      }
+    ],
+    "batteries": [
+      {
+        "x": 14,
+        "z": 10,
+        "collected": false
+      },
+      {
+        "x": 32,
+        "z": 10,
+        "collected": false
+      },
+      {
+        "x": 14,
+        "z": 24,
+        "collected": false
+      }
+    ],
+    "crumbs": [
+      [
+        26,
+        2
+      ],
+      [
+        28,
+        2
+      ],
+      [
+        30,
+        2
+      ],
+      [
+        32,
+        2
+      ],
+      [
+        34,
+        2
+      ],
+      [
+        22,
+        4
+      ],
+      [
+        24,
+        4
+      ],
+      [
+        28,
+        4
+      ],
+      [
+        30,
+        4
+      ],
+      [
+        34,
+        4
+      ],
+      [
+        22,
+        6
+      ],
+      [
+        24,
+        6
+      ],
+      [
+        26,
+        6
+      ],
+      [
+        28,
+        6
+      ],
+      [
+        30,
+        6
+      ],
+      [
+        32,
+        6
+      ],
+      [
+        34,
+        6
+      ],
+      [
+        16,
+        8
+      ],
+      [
+        18,
+        8
+      ],
+      [
+        20,
+        8
+      ],
+      [
+        22,
+        8
+      ],
+      [
+        24,
+        8
+      ],
+      [
+        26,
+        8
+      ],
+      [
+        30,
+        8
+      ],
+      [
+        32,
+        8
+      ],
+      [
+        34,
+        8
+      ],
+      [
+        16,
+        10
+      ],
+      [
+        18,
+        10
+      ],
+      [
+        22,
+        10
+      ],
+      [
+        24,
+        10
+      ],
+      [
+        26,
+        10
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        30,
+        10
+      ],
+      [
+        34,
+        10
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        16,
+        12
+      ],
+      [
+        20,
+        12
+      ],
+      [
+        28,
+        12
+      ],
+      [
+        30,
+        12
+      ],
+      [
+        10,
+        14
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        14,
+        14
+      ],
+      [
+        16,
+        14
+      ],
+      [
+        18,
+        14
+      ],
+      [
+        20,
+        14
+      ],
+      [
+        22,
+        14
+      ],
+      [
+        10,
+        16
+      ],
+      [
+        12,
+        16
+      ],
+      [
+        14,
+        16
+      ],
+      [
+        16,
+        16
+      ],
+      [
+        18,
+        16
+      ],
+      [
+        20,
+        16
+      ],
+      [
+        22,
+        16
+      ],
+      [
+        10,
+        18
+      ],
+      [
+        12,
+        18
+      ],
+      [
+        16,
+        18
+      ],
+      [
+        18,
+        18
+      ],
+      [
+        20,
+        18
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        4,
+        20
+      ],
+      [
+        6,
+        20
+      ],
+      [
+        8,
+        20
+      ],
+      [
+        10,
+        20
+      ],
+      [
+        12,
+        20
+      ],
+      [
+        14,
+        20
+      ],
+      [
+        16,
+        20
+      ],
+      [
+        18,
+        20
+      ],
+      [
+        20,
+        20
+      ],
+      [
+        2,
+        22
+      ],
+      [
+        4,
+        22
+      ],
+      [
+        6,
+        22
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        12,
+        22
+      ],
+      [
+        14,
+        22
+      ],
+      [
+        16,
+        22
+      ],
+      [
+        2,
+        24
+      ],
+      [
+        12,
+        24
+      ],
+      [
+        16,
+        24
+      ],
+      [
+        2,
+        26
+      ],
+      [
+        4,
+        26
+      ],
+      [
+        12,
+        26
+      ]
+    ],
+    "gates": [],
+    "boss": null,
+    "keyring": [],
+    "keycards": [],
+    "doors": [],
+    "audio": {
+      "enabled": true,
+      "state": "running",
+      "score": "shift"
+    },
+    "multiplayer": null,
+    "firstPerson": true,
+    "viewBlend": 1,
+    "transitProgress": 1,
+    "cameraPosition": [
+      6.349465607154936,
+      0.7992073157817818,
+      26.6293673150448
+    ],
+    "shieldVisible": false,
+    "lobs": [],
+    "waves": [],
+    "visibleFloors": 10,
+    "endingTime": null,
+    "goldEnabled": false,
+    "shape": "DOGLEG",
+    "seed": 1129783460,
+    "repairs": [
+      {
+        "x": 26,
+        "z": 12,
+        "collected": false,
+        "respawn": 0
+      },
+      {
+        "x": 18,
+        "z": 22,
+        "collected": false,
+        "respawn": 0
+      }
+    ],
+    "hazards": [],
+    "fpsTime": 15.083333333333401,
+    "fpsYaw": -0.8130985043923369,
+    "fpsPitch": 0,
+    "touchAimAssist": false,
+    "touchFiring": false,
+    "pointerLocked": false,
+    "runKind": "practice",
+    "dailyTicks": 0,
+    "visors": [
+      {
+        "x": 10,
+        "z": 26,
+        "collected": true,
+        "respawn": 33.0833333333335
+      }
+    ],
+    "shield": 0,
+    "portals": [],
+    "transportCooldown": 0,
+    "vents": [],
+    "mines": [],
+    "stock": [],
+    "unlocked": 2
+  }
+}

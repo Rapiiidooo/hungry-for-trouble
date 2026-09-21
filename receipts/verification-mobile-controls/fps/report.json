@@ -1,0 +1,243 @@
+{
+  "scope": "Disposable practice unlock only; actual floor-two movement, visor pickup and FPS input with simultaneous CDP touches. No combat injection, shared score or claim of campaign completion. Chrome emulation, not a physical phone.",
+  "checks": [
+    "portrait: real visor, hold fire, pad and right-half swipes, stable horizon, two thumbs plus dodge, release/cancel, map, pause and view reversal",
+    "landscape: real visor, hold fire, pad and right-half swipes, stable horizon, two thumbs plus dodge, release/cancel, map, pause and view reversal",
+    "narrow: real visor, hold fire, pad and right-half swipes, stable horizon, two thumbs plus dodge, release/cancel, map, pause and view reversal"
+  ],
+  "errors": [],
+  "runs": [
+    {
+      "name": "portrait",
+      "pickup": {
+        "time": 2.3166666666666633,
+        "hp": 3
+      },
+      "after": {
+        "hp": 1,
+        "shots": 13,
+        "pitch": 0
+      },
+      "controls": [
+        {
+          "id": "move-stick",
+          "x": 10,
+          "y": 734,
+          "width": 96,
+          "height": 96,
+          "right": 106,
+          "bottom": 830
+        },
+        {
+          "id": "aim-stick",
+          "x": 284,
+          "y": 734,
+          "width": 96,
+          "height": 96,
+          "right": 380,
+          "bottom": 830
+        },
+        {
+          "id": "dash-button",
+          "x": 164,
+          "y": 786,
+          "width": 62,
+          "height": 44,
+          "right": 226,
+          "bottom": 830
+        },
+        {
+          "id": "view-toggle",
+          "x": 154,
+          "y": 731,
+          "width": 82,
+          "height": 44,
+          "right": 236,
+          "bottom": 775
+        },
+        {
+          "id": "map-toggle",
+          "x": 336,
+          "y": 84,
+          "width": 44,
+          "height": 44,
+          "right": 380,
+          "bottom": 128
+        },
+        {
+          "id": "pause",
+          "x": 290,
+          "y": 6,
+          "width": 44,
+          "height": 44,
+          "right": 334,
+          "bottom": 50
+        },
+        {
+          "id": "sound",
+          "x": 336,
+          "y": 6,
+          "width": 44,
+          "height": 44,
+          "right": 380,
+          "bottom": 50
+        }
+      ]
+    },
+    {
+      "name": "landscape",
+      "pickup": {
+        "time": 2.533333333333329,
+        "hp": 3
+      },
+      "after": {
+        "hp": 3,
+        "shots": 13,
+        "pitch": 0
+      },
+      "controls": [
+        {
+          "id": "move-stick",
+          "x": 10,
+          "y": 280,
+          "width": 96,
+          "height": 96,
+          "right": 106,
+          "bottom": 376
+        },
+        {
+          "id": "aim-stick",
+          "x": 738,
+          "y": 280,
+          "width": 96,
+          "height": 96,
+          "right": 834,
+          "bottom": 376
+        },
+        {
+          "id": "dash-button",
+          "x": 391,
+          "y": 332,
+          "width": 62,
+          "height": 44,
+          "right": 453,
+          "bottom": 376
+        },
+        {
+          "id": "view-toggle",
+          "x": 381,
+          "y": 277,
+          "width": 82,
+          "height": 44,
+          "right": 463,
+          "bottom": 321
+        },
+        {
+          "id": "map-toggle",
+          "x": 790,
+          "y": 56,
+          "width": 44,
+          "height": 44,
+          "right": 834,
+          "bottom": 100
+        },
+        {
+          "id": "pause",
+          "x": 744,
+          "y": 6,
+          "width": 44,
+          "height": 44,
+          "right": 788,
+          "bottom": 50
+        },
+        {
+          "id": "sound",
+          "x": 790,
+          "y": 6,
+          "width": 44,
+          "height": 44,
+          "right": 834,
+          "bottom": 50
+        }
+      ]
+    },
+    {
+      "name": "narrow",
+      "pickup": {
+        "time": 2.066666666666664,
+        "hp": 3
+      },
+      "after": {
+        "hp": 3,
+        "shots": 13,
+        "pitch": 0
+      },
+      "controls": [
+        {
+          "id": "move-stick",
+          "x": 10,
+          "y": 458,
+          "width": 96,
+          "height": 96,
+          "right": 106,
+          "bottom": 554
+        },
+        {
+          "id": "aim-stick",
+          "x": 214,
+          "y": 458,
+          "width": 96,
+          "height": 96,
+          "right": 310,
+          "bottom": 554
+        },
+        {
+          "id": "dash-button",
+          "x": 129,
+          "y": 510,
+          "width": 62,
+          "height": 44,
+          "right": 191,
+          "bottom": 554
+        },
+        {
+          "id": "view-toggle",
+          "x": 119,
+          "y": 455,
+          "width": 82,
+          "height": 44,
+          "right": 201,
+          "bottom": 499
+        },
+        {
+          "id": "map-toggle",
+          "x": 266,
+          "y": 84,
+          "width": 44,
+          "height": 44,
+          "right": 310,
+          "bottom": 128
+        },
+        {
+          "id": "pause",
+          "x": 220,
+          "y": 6,
+          "width": 44,
+          "height": 44,
+          "right": 264,
+          "bottom": 50
+        },
+        {
+          "id": "sound",
+          "x": 266,
+          "y": 6,
+          "width": 44,
+          "height": 44,
+          "right": 310,
+          "bottom": 50
+        }
+      ]
+    }
+  ],
+  "result": "PASS"
+}

@@ -1,0 +1,19 @@
+=== 404 JAM VERDICT ===
+url             https://trouble.rapidoai.dev/
+utc             2026-09-21T20:42:08.509Z
+commit          c2cf443402a7e5e91207d92809aae00e5d59be21
+viewport        390x844 @3x phone, real touch, Android Chrome UA
+network         4G: 4 Mbps down, 1 Mbps up, 60 ms latency, CPU 2x slower
+ready           2.1 s   budget 20 s   PASS
+weight          3.5 MB   budget 10 MB   PASS
+started         yes (tap on #start)
+moved           8.7 m   needs 1 m   PASS
+peak draws      262   budget 900   PASS
+peak tris       568,176   budget 1,500,000   PASS
+median fps      60 (ANGLE (Apple, ANGLE Metal Renderer: Apple M5 Max, Unspecified Version))
+errors          0   PASS
+404s            0   PASS
+external deps   none   cdn: fonts.googleapis.com, fonts.gstatic.com
+outside folder  none, every file came from the game folder
+RESULT: PASS
+=== END ===
