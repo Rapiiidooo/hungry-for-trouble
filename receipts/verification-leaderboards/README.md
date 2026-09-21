@@ -18,4 +18,6 @@ Fifteen screenshots retain representative layouts and the actual act-one ending.
 
 ## Official gate
 
-The final local phone/4G gate is archived here after the gameplay commit. A gate against a deployed public URL remains submission work.
+The unmodified official harness passes against gameplay commit `d3cdd7a964fa2d48fc562b10248b1441d01ddba3` at `http://localhost:3001/`. The [original verdict](jam/verdict.txt) is copied byte for byte from `jam-console.txt`; JSON and screenshots are in `jam/`.
+
+Phone viewport 390×844 at 3× under the harness's 4G profile: **5.6 seconds** ready, **2.7 MB**, **8.7 metres** of real-touch movement, **262** peak draw calls, **568,176** peak triangles, no errors and no 404s. The 60 FPS median uses Chrome on the local Apple M5 Max, not a physical phone. A gate against a deployed public URL remains submission work.
