@@ -1,15 +1,24 @@
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import path from "node:path";
 import { setImmediate } from "node:timers/promises";
+import { clientAddress } from "./client-address.mjs";
 import { challengeFor, verifyReplay, RULESET } from "../game/daily.js";
 import {
   verifyCampaign,
+  restoreCampaign,
   CAMPAIGN_RULESET,
   CAMPAIGN_BOARD,
 } from "../game/campaign.js";
 
-export async function createLeaderboard({ file, now = Date.now } = {}) {
+const replayHash = (stages) =>
+  createHash("sha256").update(JSON.stringify(stages)).digest("hex");
+
+export async function createLeaderboard({
+  file,
+  now = Date.now,
+  trustedProxies = new Set(),
+} = {}) {
   let boards = {};
   try {
     boards = JSON.parse(await readFile(file, "utf8"));
@@ -111,7 +120,7 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         send(res, 404, { error: "Unknown endpoint" });
         return true;
       }
-      const ip = req.socket.remoteAddress;
+      const ip = clientAddress(req, trustedProxies);
       const limit = limits.get(ip) || { start: now(), count: 0 };
       limits.set(ip, limit);
       if (++limit.count > 30 || attempts.size >= 2000) {
@@ -131,7 +140,9 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         );
       }
       const campaign = url.pathname.startsWith("/api/campaign/");
+      const resuming = url.pathname === "/api/campaign/resume";
       const create =
+        resuming ||
         url.pathname === (campaign ? "/api/campaign/runs" : "/api/runs");
       const match = /^\/api\/(?:campaign\/)?runs\/([a-f0-9-]{36})\/score$/.exec(
         url.pathname,
@@ -158,7 +169,10 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         bytes = 0;
       for await (const chunk of req) {
         bytes += chunk.length;
-        if (bytes > (campaign && !create ? 12 * 1024 * 1024 : 512000)) {
+        if (
+          bytes >
+          (campaign && (!create || resuming) ? 12 * 1024 * 1024 : 512000)
+        ) {
           send(res, 413, { error: "Replay too large" });
           return true;
         }
@@ -177,12 +191,31 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         const config = campaign
           ? { seed: submitted.seed, ruleset: CAMPAIGN_RULESET }
           : challengeFor(day);
+        let creditTicks = 0,
+          prefix = null;
+        if (resuming) {
+          const restored = await restoreCampaign(
+            submitted,
+            submitted.stages,
+            setImmediate,
+          );
+          creditTicks = restored.ticks;
+          const atStart = restored.game.state === "playing";
+          const count = submitted.stages.length - Number(atStart);
+          prefix = {
+            count,
+            hash: replayHash(submitted.stages.slice(0, count)),
+            atStart,
+            upgrade: atStart ? submitted.stages.at(-1).upgrade : undefined,
+          };
+        }
         attempts.set(id, {
           player,
           config,
           campaign,
-          created: now(),
+          created: now() - (creditTicks * 1000) / 60,
           expires: now() + (campaign ? 180 : 15) * 60000,
+          prefix,
         });
         send(res, 201, { id, config });
         return true;
@@ -202,6 +235,15 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         return true;
       }
       let result;
+      if (run.prefix) {
+        const { count, hash, atStart, upgrade } = run.prefix;
+        if (
+          !Array.isArray(submitted.stages) ||
+          replayHash(submitted.stages.slice(0, count)) !== hash ||
+          (atStart && submitted.stages[count]?.upgrade !== upgrade)
+        )
+          throw new Error("Invalid resumed campaign history");
+      }
       run.verifying = true;
       try {
         result = campaign

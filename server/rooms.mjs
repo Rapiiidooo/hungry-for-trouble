@@ -6,8 +6,13 @@ import {
   MATCH_TICK,
 } from "../game/multiplayer-sim.js";
 import { unpackInput } from "../game/daily.js";
+import { clientAddress } from "./client-address.mjs";
 
-export function createRooms({ now = Date.now, automatic = true } = {}) {
+export function createRooms({
+  now = Date.now,
+  automatic = true,
+  trustedProxies = new Set(),
+} = {}) {
   const rooms = new Map(),
     limits = new Map();
   const fail = (status, message) => {
@@ -137,7 +142,7 @@ export function createRooms({ now = Date.now, automatic = true } = {}) {
       if (!parts) fail(404, "Room not found. Check the code.");
       const [, code, action] = parts;
       if (!code || action === "join") {
-        const ip = req.socket.remoteAddress,
+        const ip = clientAddress(req, trustedProxies),
           limit = limits.get(ip) || { time: now(), count: 0 };
         if (now() - limit.time > 60000) {
           limit.time = now();

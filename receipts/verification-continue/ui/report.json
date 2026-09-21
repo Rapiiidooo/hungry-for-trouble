@@ -1,0 +1,264 @@
+{
+  "checks": [
+    "A real new campaign saves before movement and resumes at its aisle start after menu and reload",
+    "Continue restores earned spread, health, ammo, seed and score; canceling New Campaign preserves the save",
+    "Continue works with real touch and fits four viewports; Level Select keeps the campaign checkpoint",
+    "Closing at checkout retains the completed floor and offered upgrade, then saves the next aisle",
+    "Settings reset deletes the checkpoint; incompatible and corrupt saves fail safely and can be replaced"
+  ],
+  "errors": [],
+  "fixture": "Disposable browser and score store. Earned aisle-two and pending-upgrade saves are created by deterministic simulation of genuine aisle-one inputs, then preloaded into IndexedDB. Browser checks exercise real controls and reloads; this is not a full combat playthrough.",
+  "desktop": {
+    "start": {
+      "x": 100.796875,
+      "y": 582.5999755859375,
+      "width": 290,
+      "height": 53,
+      "top": 582.5999755859375,
+      "right": 390.796875,
+      "bottom": 635.5999755859375,
+      "left": 100.796875
+    },
+    "newRun": {
+      "x": 231.53125,
+      "y": 643.5999755859375,
+      "width": 67.8125,
+      "height": 36,
+      "top": 643.5999755859375,
+      "right": 299.34375,
+      "bottom": 679.5999755859375,
+      "left": 231.53125
+    },
+    "best": {
+      "x": 100.796875,
+      "y": 809.5999755859375,
+      "width": 182.25,
+      "height": 10,
+      "top": 809.5999755859375,
+      "right": 283.046875,
+      "bottom": 819.5999755859375,
+      "left": 100.796875
+    },
+    "menu": {
+      "x": 100.796875,
+      "y": 147.60000610351562,
+      "width": 550,
+      "height": 672,
+      "top": 147.60000610351562,
+      "right": 650.796875,
+      "bottom": 819.6000061035156,
+      "left": 100.796875
+    },
+    "header": {
+      "x": 38,
+      "y": 27,
+      "width": 1364,
+      "height": 44,
+      "top": 27,
+      "right": 1402,
+      "bottom": 71,
+      "left": 38
+    },
+    "summary": {
+      "x": 100.796875,
+      "y": 654.3968505859375,
+      "width": 109.734375,
+      "height": 14.390625,
+      "top": 654.3968505859375,
+      "right": 210.53125,
+      "bottom": 668.7874755859375,
+      "left": 100.796875
+    },
+    "overflow": false
+  },
+  "phone": {
+    "start": {
+      "x": 27.296875,
+      "y": 562.921875,
+      "width": 335.390625,
+      "height": 51,
+      "top": 562.921875,
+      "right": 362.6875,
+      "bottom": 613.921875,
+      "left": 27.296875
+    },
+    "newRun": {
+      "x": 158.03125,
+      "y": 621.921875,
+      "width": 67.8125,
+      "height": 36,
+      "top": 621.921875,
+      "right": 225.84375,
+      "bottom": 657.921875,
+      "left": 158.03125
+    },
+    "best": {
+      "x": 27.296875,
+      "y": 776.921875,
+      "width": 148.234375,
+      "height": 8,
+      "top": 776.921875,
+      "right": 175.53125,
+      "bottom": 784.921875,
+      "left": 27.296875
+    },
+    "menu": {
+      "x": 27.296875,
+      "y": 307.625,
+      "width": 335.390625,
+      "height": 477.296875,
+      "top": 307.625,
+      "right": 362.6875,
+      "bottom": 784.921875,
+      "left": 27.296875
+    },
+    "header": {
+      "x": 22,
+      "y": 19,
+      "width": 346,
+      "height": 44,
+      "top": 19,
+      "right": 368,
+      "bottom": 63,
+      "left": 22
+    },
+    "summary": {
+      "x": 27.296875,
+      "y": 632.71875,
+      "width": 109.734375,
+      "height": 14.390625,
+      "top": 632.71875,
+      "right": 137.03125,
+      "bottom": 647.109375,
+      "left": 27.296875
+    },
+    "overflow": false
+  },
+  "small-phone": {
+    "start": {
+      "x": 27.296875,
+      "y": 373.203125,
+      "width": 335.390625,
+      "height": 51,
+      "top": 373.203125,
+      "right": 362.6875,
+      "bottom": 424.203125,
+      "left": 27.296875
+    },
+    "newRun": {
+      "x": 158.03125,
+      "y": 432.203125,
+      "width": 67.8125,
+      "height": 36,
+      "top": 432.203125,
+      "right": 225.84375,
+      "bottom": 468.203125,
+      "left": 158.03125
+    },
+    "best": {
+      "x": 27.296875,
+      "y": 587.203125,
+      "width": 148.234375,
+      "height": 8,
+      "top": 587.203125,
+      "right": 175.53125,
+      "bottom": 595.203125,
+      "left": 27.296875
+    },
+    "menu": {
+      "x": 27.296875,
+      "y": 117.90625,
+      "width": 335.390625,
+      "height": 477.296875,
+      "top": 117.90625,
+      "right": 362.6875,
+      "bottom": 595.203125,
+      "left": 27.296875
+    },
+    "header": {
+      "x": 22,
+      "y": 19,
+      "width": 346,
+      "height": 44,
+      "top": 19,
+      "right": 368,
+      "bottom": 63,
+      "left": 22
+    },
+    "summary": {
+      "x": 27.296875,
+      "y": 443,
+      "width": 109.734375,
+      "height": 14.390625,
+      "top": 443,
+      "right": 137.03125,
+      "bottom": 457.390625,
+      "left": 27.296875
+    },
+    "overflow": false
+  },
+  "landscape": {
+    "start": {
+      "x": 42.1875,
+      "y": 190.34375,
+      "width": 270,
+      "height": 41,
+      "top": 190.34375,
+      "right": 312.1875,
+      "bottom": 231.34375,
+      "left": 42.1875
+    },
+    "newRun": {
+      "x": 172.921875,
+      "y": 231.34375,
+      "width": 67.8125,
+      "height": 36,
+      "top": 231.34375,
+      "right": 240.734375,
+      "bottom": 267.34375,
+      "left": 172.921875
+    },
+    "best": {
+      "x": 42.1875,
+      "y": 347.34375,
+      "width": 182.25,
+      "height": 10,
+      "top": 347.34375,
+      "right": 224.4375,
+      "bottom": 357.34375,
+      "left": 42.1875
+    },
+    "menu": {
+      "x": 42.1875,
+      "y": 68,
+      "width": 447.3125,
+      "height": 289.34375,
+      "top": 68,
+      "right": 489.5,
+      "bottom": 357.34375,
+      "left": 42.1875
+    },
+    "header": {
+      "x": 24,
+      "y": 14,
+      "width": 796,
+      "height": 44,
+      "top": 14,
+      "right": 820,
+      "bottom": 58,
+      "left": 24
+    },
+    "summary": {
+      "x": 42.1875,
+      "y": 242.140625,
+      "width": 109.734375,
+      "height": 14.390625,
+      "top": 242.140625,
+      "right": 151.921875,
+      "bottom": 256.53125,
+      "left": 42.1875
+    },
+    "overflow": false
+  },
+  "result": "PASS"
+}

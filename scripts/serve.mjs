@@ -1,11 +1,14 @@
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { trustedAddresses } from "../server/client-address.mjs";
 import { createRooms } from "../server/rooms.mjs";
-const rooms = createRooms();
+const trustedProxies = trustedAddresses(process.env.TRUSTED_PROXY_IPS);
+const rooms = createRooms({ trustedProxies });
 import { createLeaderboard } from "../server/leaderboard.mjs";
 const api = await createLeaderboard({
   file: path.resolve(process.env.LEADERBOARD_FILE || "data/leaderboard.json"),
+  trustedProxies,
 });
 const root = path.resolve("game");
 const port = Number(process.env.PORT || 3001);
@@ -18,10 +21,21 @@ const types = {
   ".mp3": "audio/mpeg",
   ".json": "application/json",
   ".svg": "image/svg+xml",
+  ".webp": "image/webp",
 };
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    if (req.method === "GET" && url.pathname === "/healthz") {
+      res.writeHead(200, {
+        "Content-Type": "application/json",
+        "Cache-Control": "no-store",
+      });
+      res.end('{"status":"ok"}');
+      return;
+    }
     if (await rooms(req, res, url)) return;
     if (await api(req, res, url)) return;
     const file = path.resolve(

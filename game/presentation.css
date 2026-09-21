@@ -5,6 +5,33 @@
   margin: 0 0 20px;
   color: #526073;
 }
+.continue-details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  margin-top: 8px;
+}
+#save-summary {
+  font-size: 9px;
+  color: #526073;
+  line-height: 1.6;
+}
+#new-campaign {
+  padding: 5px 0;
+  font-size: 9px;
+  min-height: 36px;
+}
+#new-run-confirmation {
+  position: absolute;
+  z-index: 9;
+  inset: auto 0 0;
+  padding: 20px;
+  background: var(--cream);
+  border-bottom: 4px solid var(--red);
+  box-shadow: 0 8px 32px #18283c55;
+  font-size: 12px;
+}
 #game:not(.playing) header button {
   background: var(--cream);
   min-height: 44px;
@@ -579,10 +606,19 @@
   }
 }
 @media (max-height: 560px) and (orientation: landscape) {
+  .continue-details {
+    margin-top: 0;
+  }
+  #menu .menu-save {
+    margin-top: 8px;
+    gap: 6px;
+  }
   #menu {
     top: 68px;
     bottom: auto;
     width: 53%;
+    max-height: calc(100% - 96px);
+    overflow-y: auto;
   }
   #menu h1 {
     font-size: 46px;

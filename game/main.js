@@ -25,6 +25,12 @@ import {
 import { KEY_TYPES, keyType, keyIcon } from "./locks.js";
 import { lockEffects } from "./lock-effects.js";
 import { createCredits } from "./credits.js";
+import { restoreCampaign, CAMPAIGN_RULESET } from "./campaign.js";
+import {
+  checkpointStore,
+  checkpointCompatible,
+  makeCheckpoint,
+} from "./checkpoint.js";
 import { ventPhase } from "./machines.js";
 import { RoomClient } from "./room-client.js";
 import { newMatch } from "./multiplayer-sim.js";
@@ -145,6 +151,11 @@ let accumulator = 0,
 let campaignRun = null,
   boardScope = "daily",
   boardRequest = 0;
+const saves = checkpointStore();
+let savedCampaign = null,
+  saveWrites = Promise.resolve(),
+  saveError = "",
+  restoring = false;
 let selectedStage = 0,
   dailyConfig = null,
   submitting = false,
@@ -398,6 +409,95 @@ function refreshProgressUI() {
   ui["gold-toggle"].hidden = !progress.cleared.includes(19);
   ui["gold-toggle"].textContent = `GOLD VACUUM: ${goldEnabled ? "ON" : "OFF"}`;
   ui["gold-toggle"].setAttribute("aria-pressed", String(goldEnabled));
+  refreshContinue();
+}
+
+function refreshContinue() {
+  ui.start.innerHTML = savedCampaign
+    ? "CONTINUE <span>▶</span>"
+    : "PLAY <span>▶</span>";
+  ui["new-campaign"].hidden = !savedCampaign;
+  ui["save-summary"].hidden = !savedCampaign && !saveError;
+  ui["save-summary"].textContent =
+    saveError ||
+    (savedCampaign
+      ? `AISLE ${String(savedCampaign.floor).padStart(2, "0")} · ${savedCampaign.phase === "cleared" ? "UPGRADE READY" : LEVELS[savedCampaign.floor - 1].name.toUpperCase()}`
+      : "");
+  ui["pause-save-note"].textContent =
+    runKind === "campaign"
+      ? saveError ||
+        `Continue returns to the start of aisle ${game.levelIndex + 1} with your saved kit.`
+      : "Unlocked aisles stay saved. Your campaign save is kept.";
+  ui["pause-menu-label"].textContent =
+    runKind === "campaign" ? "SAVE & MAIN MENU" : "MAIN MENU";
+}
+
+function saveCampaign() {
+  if (runKind !== "campaign" || !campaignRun) return;
+  const value = makeCheckpoint(campaignRun.id, game, campaignRun.stages);
+  saveWrites = saveWrites
+    .then(() => saves.write(value))
+    .then(() => {
+      savedCampaign = value;
+      saveError = "";
+      refreshContinue();
+    })
+    .catch(() => {
+      saveError =
+        "Autosave unavailable. Keep this tab open to finish your shift.";
+      refreshContinue();
+    });
+}
+
+function clearCampaign() {
+  saveWrites = saveWrites
+    .then(() => saves.clear())
+    .then(() => {
+      savedCampaign = null;
+      saveError = "";
+      refreshContinue();
+    })
+    .catch(() => {
+      saveError = "Your browser could not clear the saved shift.";
+      refreshContinue();
+    });
+  return saveWrites;
+}
+
+async function continueCampaign() {
+  if (building || restoring || !savedCampaign) return;
+  restoring = true;
+  ui.start.disabled = true;
+  ui["new-campaign"].disabled = true;
+  ui.start.textContent = "RESTORING SHIFT…";
+  const checkpoint = savedCampaign;
+  await sound.start();
+  try {
+    const restored = await restoreCampaign(
+      checkpoint,
+      checkpoint.stages,
+      () => new Promise((resolve) => setTimeout(resolve, 0)),
+    );
+    await start(true, null, { checkpoint, restored });
+    if (game.state === "playing") pause(true);
+  } catch {
+    saveError =
+      "This saved shift could not be restored. You can start a new campaign.";
+  } finally {
+    restoring = false;
+    ui.start.disabled = false;
+    ui["new-campaign"].disabled = false;
+    refreshContinue();
+  }
+}
+
+function requestCampaign() {
+  if (building || restoring) return;
+  if (savedCampaign) {
+    menu();
+    ui["new-run-confirmation"].hidden = false;
+    ui["keep-campaign"].focus();
+  } else start(true, null, { briefing: true });
 }
 
 function finishEnding() {
@@ -1374,33 +1474,55 @@ async function start(fresh = true, upgrade, options = {}) {
     dailyAttempt = options.attempt || null;
     dailyLog = [];
     campaignRun = null;
-    game = options.room
-      ? Object.assign(
-          newMatch(options.room.kind, options.room.seed, options.room.players),
-          options.snapshot,
-          { selfId: options.selfId },
-        )
-      : dailyAttempt
-        ? newDaily(dailyAttempt.config)
-        : newGame(practiceLevel, {
-            seed: crypto.getRandomValues(new Uint32Array(1))[0],
-            ...(runKind === "practice" ? { baseHp: 3, ammo: 10 } : {}),
-          });
+    game =
+      options.restored?.game ||
+      (options.room
+        ? Object.assign(
+            newMatch(
+              options.room.kind,
+              options.room.seed,
+              options.room.players,
+            ),
+            options.snapshot,
+            { selfId: options.selfId },
+          )
+        : dailyAttempt
+          ? newDaily(dailyAttempt.config)
+          : newGame(practiceLevel, {
+              seed: crypto.getRandomValues(new Uint32Array(1))[0],
+              ...(runKind === "practice" ? { baseHp: 3, ammo: 10 } : {}),
+            }));
     if (runKind === "campaign") {
-      const run = { stages: [{ inputs: [] }], error: null };
+      const run = {
+        id:
+          options.checkpoint?.id ||
+          Array.from(crypto.getRandomValues(new Uint32Array(4)), (n) =>
+            n.toString(16).padStart(8, "0"),
+          ).join(""),
+        stages: structuredClone(options.checkpoint?.stages || [{ inputs: [] }]),
+        error: null,
+      };
       campaignRun = run;
       // Register without delaying Play; record from the very first simulation tick.
-      run.ready = api("/api/campaign/runs", { seed: game.seed }).catch(
-        (error) => {
-          run.error = error.message;
-          return null;
-        },
-      );
+      run.ready = api(
+        options.checkpoint ? "/api/campaign/resume" : "/api/campaign/runs",
+        options.checkpoint
+          ? {
+              seed: game.seed,
+              ruleset: CAMPAIGN_RULESET,
+              stages: options.checkpoint.stages,
+            }
+          : { seed: game.seed },
+        options.checkpoint ? 120000 : 12000,
+      ).catch((error) => {
+        run.error = error.message;
+        return null;
+      });
     }
-    runKills = 0;
-    runCrumbs = 0;
-    runShots = 0;
-    runTime = 0;
+    runKills = options.restored?.kills || 0;
+    runCrumbs = options.restored?.crumbs || 0;
+    runShots = options.restored?.shots || 0;
+    runTime = options.restored?.time || 0;
   } else {
     const next = nextLevel(game, upgrade);
     if (!next) {
@@ -1414,6 +1536,8 @@ async function start(fresh = true, upgrade, options = {}) {
     if (campaignRun) campaignRun.stages.push({ upgrade, inputs: [] });
     game = next;
   }
+  saveCampaign();
+  ui["new-run-confirmation"].hidden = true;
   for (const id of [
     "menu",
     "hero-label",
@@ -1454,6 +1578,7 @@ async function start(fresh = true, upgrade, options = {}) {
     : `Start over from aisle ${runKind === "practice" ? practiceLevel + 1 : 1}.`;
   try {
     await buildWorld();
+    if (game.state === "cleared") handleEvents([]);
     if (game.multiplayer) {
       ui["radio-line"].textContent =
         game.multiplayer.kind === "coop"
@@ -1464,6 +1589,7 @@ async function start(fresh = true, upgrade, options = {}) {
     }
     if (
       (options.briefing || game.levelIndex === 20) &&
+      game.state === "playing" &&
       !game.daily &&
       !game.multiplayer
     ) {
@@ -1482,7 +1608,7 @@ async function start(fresh = true, upgrade, options = {}) {
         "mop",
         mission,
       );
-    } else
+    } else if (game.state === "playing")
       showMessage(
         game.daily ? "DAILY RUSH" : game.map.level.name,
         game.daily
@@ -1783,6 +1909,7 @@ function handleEvents(events) {
     unlock(progress, game.levelIndex);
   refreshProgressUI();
   if (game.state === "cleared") {
+    saveCampaign();
     ui["upgrade-screen"].hidden = false;
     ui["chapter-story"].hidden = ![9, 14].includes(game.levelIndex);
     if (game.levelIndex === 9)
@@ -1839,6 +1966,7 @@ function handleEvents(events) {
     return;
   }
   if (!["lost", "won"].includes(game.state)) return;
+  if (runKind === "campaign") clearCampaign();
   const won = game.state === "won",
     previousBest = best;
   if (runKind === "campaign") {
@@ -2866,7 +2994,14 @@ function bindStick(id, target, aiming) {
 }
 
 function bindInput() {
-  ui.start.onclick = () => start(true, null, { briefing: true });
+  ui.start.onclick = () =>
+    savedCampaign ? continueCampaign() : requestCampaign();
+  ui["new-campaign"].onclick = requestCampaign;
+  ui["keep-campaign"].onclick = () => {
+    ui["new-run-confirmation"].hidden = true;
+    ui.start.focus();
+  };
+  ui["replace-campaign"].onclick = () => start(true, null, { briefing: true });
   ui["open-settings"].onclick = () => {
     ui["settings-screen"].hidden = false;
     ui["reset-confirmation"].hidden = true;
@@ -2893,15 +3028,22 @@ function bindInput() {
     ui["reset-save"].hidden = false;
     ui["reset-save"].focus();
   };
-  ui["confirm-reset"].onclick = () => {
+  ui["confirm-reset"].onclick = async () => {
+    ui["confirm-reset"].disabled = true;
     try {
+      await saveWrites;
+      await saves.clear();
       for (const key of ["hft-route-v1", "hft-record-v1", "hft-gold-v1"])
         localStorage.removeItem(key);
     } catch {
       ui["settings-status"].textContent =
         "This browser could not reset its saved data.";
       return;
+    } finally {
+      ui["confirm-reset"].disabled = false;
     }
+    savedCampaign = null;
+    saveError = "";
     progress.unlocked = 0;
     progress.cleared = [];
     best = 0;
@@ -2993,7 +3135,10 @@ function bindInput() {
   ui["back-menu"].onclick = menu;
   ui.pause.onclick = () => pause();
   ui.resume.onclick = () => pause(false);
-  ui["pause-menu"].onclick = menu;
+  ui["pause-menu"].onclick = async () => {
+    await saveWrites;
+    menu();
+  };
   ui["open-route"].onclick = ui["pause-route"].onclick = openRoute;
   ui["route-close"].onclick = () => {
     ui["route-screen"].hidden = true;
@@ -3021,8 +3166,7 @@ function bindInput() {
       ui[`board-${next}`].focus();
     };
   }
-  ui["board-campaign-start"].onclick = () =>
-    start(true, null, { briefing: true });
+  ui["board-campaign-start"].onclick = requestCampaign;
   ui["daily-close"].onclick = () => {
     boardRequest++;
     ui["daily-screen"].hidden = true;
@@ -3256,6 +3400,15 @@ async function init() {
     /* Optional cosmetic preference. */
   }
   applyLivery(menuHero);
+  try {
+    const checkpoint = await saves.read();
+    if (checkpointCompatible(checkpoint)) savedCampaign = checkpoint;
+    else if (checkpoint)
+      saveError =
+        "Your saved shift belongs to an older version. Unlocked aisles are kept.";
+  } catch {
+    saveError = "Autosave unavailable in this browser.";
+  }
   refreshProgressUI();
   bindInput();
   resize();
@@ -3266,7 +3419,7 @@ async function init() {
     ui["open-settings"].disabled =
     ui["open-rooms"].disabled =
       false;
-  ui.start.innerHTML = "PLAY <span>▶</span>";
+  refreshContinue();
   const savedRoom = rooms.saved();
   ui["room-reconnect"].hidden = !savedRoom;
   if (savedRoom)

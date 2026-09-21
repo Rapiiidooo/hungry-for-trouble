@@ -7,10 +7,11 @@ export const CAMPAIGN_RULESET = "campaign-2";
 // Replay versions change; the all-time board keeps its existing records.
 export const CAMPAIGN_BOARD = "campaign-1:all";
 
-export async function verifyCampaign(
+async function replayCampaign(
   config,
   stages,
   yieldTurn = async () => {},
+  checkpoint = false,
 ) {
   if (
     config.ruleset !== CAMPAIGN_RULESET ||
@@ -26,12 +27,19 @@ export async function verifyCampaign(
   for (const [index, stage] of stages.entries()) {
     if (!stage || typeof stage !== "object")
       throw new Error("Invalid campaign stage");
-    validateInputs(stage.inputs, Math.ceil(LEVELS[index].time / TICK) + 1);
+    if (!(
+      checkpoint &&
+      index === stages.length - 1 &&
+      Array.isArray(stage.inputs) &&
+      !stage.inputs.length
+    ))
+      validateInputs(stage.inputs, Math.ceil(LEVELS[index].time / TICK) + 1);
   }
   let game = newGame(0, { seed: config.seed });
   let ticks = 0,
     kills = 0,
-    crumbs = 0;
+    crumbs = 0,
+    shots = 0;
   for (const [index, stage] of stages.entries()) {
     if (index === 0) {
       if (stage.upgrade != null) throw new Error("Invalid starting equipment");
@@ -56,6 +64,22 @@ export async function verifyCampaign(
     }
     kills += game.kills;
     crumbs += game.collected;
+    shots += game.shots;
+  }
+  if (checkpoint) {
+    if (
+      game.state !== "cleared" &&
+      !(game.state === "playing" && game.elapsed === 0)
+    )
+      throw new Error("Invalid campaign checkpoint");
+    return {
+      game,
+      ticks,
+      kills: kills - game.kills,
+      crumbs: crumbs - game.collected,
+      shots: shots - game.shots,
+      time: ticks * TICK - game.elapsed,
+    };
   }
   if (!["lost", "won"].includes(game.state))
     throw new Error("Finish the campaign run before submitting");
@@ -68,3 +92,9 @@ export async function verifyCampaign(
     survived: game.state === "won",
   };
 }
+
+export const verifyCampaign = (config, stages, yieldTurn) =>
+  replayCampaign(config, stages, yieldTurn);
+
+export const restoreCampaign = (config, stages, yieldTurn) =>
+  replayCampaign(config, stages, yieldTurn, true);

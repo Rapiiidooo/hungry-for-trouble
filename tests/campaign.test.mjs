@@ -5,7 +5,12 @@ import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { createLeaderboard } from "../server/leaderboard.mjs";
-import { verifyCampaign, CAMPAIGN_RULESET } from "../game/campaign.js";
+import {
+  verifyCampaign,
+  restoreCampaign,
+  CAMPAIGN_RULESET,
+} from "../game/campaign.js";
+import { makeCheckpoint, checkpointCompatible } from "../game/checkpoint.js";
 import {
   newGame,
   nextLevel,
@@ -75,6 +80,130 @@ function run(clearFirst = false) {
 }
 const short = run(),
   longer = run(true);
+
+test("checkpoints reconstruct earned equipment, health, ammo and score at aisle boundaries", async () => {
+  const completed = [longer.stages[0]];
+  const checkout = await restoreCampaign(config, completed);
+  assert.equal(checkout.game.state, "cleared");
+  const expected = nextLevel(checkout.game, "spread");
+  const stages = [...completed, { upgrade: "spread", inputs: [] }];
+  const restored = await restoreCampaign(config, stages);
+  assert.deepEqual(restored.game, expected);
+  assert.equal(restored.kills, checkout.game.kills);
+  assert.equal(restored.crumbs, checkout.game.collected);
+  const save = makeCheckpoint("test-shift", restored.game, stages);
+  assert.equal(checkpointCompatible(save), true);
+  assert.equal(checkpointCompatible({ ...save, ruleset: "obsolete" }), false);
+  assert.equal(checkpointCompatible({ ...save, floor: 100 }), false);
+  stages[1].inputs.push([1, 0, 0, null, 0]);
+  assert.deepEqual(
+    save.stages[1].inputs,
+    [],
+    "Saving freezes the log before this aisle starts",
+  );
+  await assert.rejects(restoreCampaign(config, stages), /checkpoint/);
+  await assert.rejects(restoreCampaign(config, short.stages), /checkpoint/);
+  await assert.rejects(
+    restoreCampaign(config, [
+      { inputs: [] },
+      { upgrade: "spread", inputs: [] },
+    ]),
+    /Invalid replay/,
+  );
+  assert.throws(
+    () => makeCheckpoint("dead", short.game, short.stages),
+    /boundary/,
+  );
+});
+
+test("a resumed campaign survives server expiry, verifies its prefix and clocks only new gameplay", async () => {
+  const directory = await mkdtemp(path.join(os.tmpdir(), "hft-resume-"));
+  let clock = Date.parse("2026-09-21T12:00:00Z");
+  let api = await createLeaderboard({
+    file: path.join(directory, "scores.json"),
+    now: () => clock,
+  });
+  const server = http.createServer((req, res) =>
+    api(req, res, new URL(req.url, "http://localhost")),
+  );
+  await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  let cookie;
+  const request = async (url, body) => {
+    const response = await fetch(base + url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(cookie ? { Cookie: cookie } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+    cookie ||= response.headers.get("set-cookie")?.split(";")[0];
+    return { status: response.status, data: await response.json() };
+  };
+  const checkpoint = {
+    ...config,
+    stages: [longer.stages[0], { upgrade: "spread", inputs: [] }],
+  };
+  try {
+    await request("/api/campaign/runs", { seed: config.seed });
+    clock += 7 * 86400000;
+    api = await createLeaderboard({
+      file: path.join(directory, "scores.json"),
+      now: () => clock,
+    });
+    const resumed = await request("/api/campaign/resume", checkpoint);
+    assert.equal(resumed.status, 201);
+    const endpoint = `/api/campaign/runs/${resumed.data.id}/score`;
+    const payload = {
+      name: "CONTINUED",
+      score: 9999999,
+      stages: longer.stages,
+    };
+    assert.equal(
+      (await request(endpoint, payload)).status,
+      400,
+      "New gameplay cannot be fast-forwarded",
+    );
+    const altered = structuredClone(longer.stages);
+    altered[0].inputs[0][1] = altered[0].inputs[0][1] === 1000 ? -1000 : 1000;
+    clock += 300000;
+    assert.match(
+      (await request(endpoint, { ...payload, stages: altered })).data.error,
+      /history/,
+    );
+    const accepted = await request(endpoint, payload);
+    assert.equal(accepted.status, 200);
+    assert.equal(accepted.data.score, longer.game.score);
+    assert.equal((await request(endpoint, payload)).status, 409);
+    assert.equal(
+      (await request("/api/campaign/resume", { ...checkpoint, ruleset: "old" }))
+        .status,
+      400,
+    );
+    assert.equal(
+      (
+        await request("/api/campaign/resume", {
+          ...config,
+          stages: short.stages,
+        })
+      ).status,
+      400,
+    );
+    const pending = await request("/api/campaign/resume", {
+      ...config,
+      stages: [longer.stages[0]],
+    });
+    assert.equal(
+      pending.status,
+      201,
+      "Pending upgrade choices can also resume",
+    );
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+    await rm(directory, { recursive: true, force: true });
+  }
+});
 
 test("campaign replay follows real checkouts and offered upgrades, rejecting skipped or unfinished stages", async () => {
   let yields = 0;

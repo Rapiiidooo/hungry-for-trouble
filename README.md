@@ -20,6 +20,8 @@ Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installat
 
 A new campaign starts with ten shots. Crumbs refill ammunition and advance the collection goal. Once the goal is met, reach the marked checkout. Batteries give eight seconds of invulnerability, free spread shots and reversed enemy pursuit. White/red repair kits restore one heart and remain available when health is full. Checkout restores one heart on departure. Pick one upgrade between aisles; the cards show before/after mechanics and exact stats. Campaign records and unlocked aisles are saved in this browser. Vac Cam goggles grant 18 seconds of first-person play, extra ammunition and faster firing. Click to lock mouse aim, or drag if pointer lock is unavailable. The right touch stick turns and fires. V returns to overhead while keeping the fire-rate bonus.
 
+**Continue** resumes the current campaign at the start of the latest aisle, with its earned equipment, health, ammunition and score. Autosave also preserves a completed aisle while an upgrade is still waiting to be chosen. Resuming opens the pause screen so enemies cannot hit before you are ready. **New campaign** asks before replacing the save. Daily Rush and Level Select keep the campaign checkpoint; a campaign loss or final victory ends it. Saving uses this browser's IndexedDB and does not transfer between devices or website addresses. A storage failure is reported instead of silently claiming a successful save.
+
 Dash gives a short protected burst in your movement direction, or your aim direction when stationary. It recharges in 1.2 seconds and cannot cross shelves. Blue trails and the Dodge button show protection and recharge. Gold batteries announce Overtime with an original faster musical theme, a timer, a gold border and flashing enemies marked **CHOMP**. Touch those enemies to scrap them; bosses still require their attack windows. The last two seconds warn you to make space.
 
 ## The escape route
@@ -58,7 +60,7 @@ Act-two stock is interactive: dash into or shoot a yellow stock cart to launch i
 
 Eight capped upgrade types support different builds: faster firing, spread, piercing, a warranty shield, crumb attraction, extra health, wall ricochets and freezing shots that interrupt attacks. Ricochet, spread, piercing and frost combine. Original robot portraits identify MOP-3, BUFF-0 and SHELF CONTROL; the current radio message can be reread in the pause menu. The title keeps one short objective. Pressing Play opens a six-second exchange with MOP-3 before the timer and enemies move; Start Now skips it. The mission remains available under Mission & Controls in pause. Rescues at floors 10 and 15 lead into the next chapter. Completing floor 20 powers down the store and stages a nine-second crew escape at sunrise, with an original musical payoff and a skippable conversation. It unlocks a saved golden vacuum livery, switchable on the title screen without affecting combat. Boss health follows the boss in both camera views. Warranty charges create a visible shield dome, with an impact flash and break effect; Vac Cam uses a matching visor indicator.
 
-The title's Settings gear includes replayable **Credits** and **Reset local save**. Reset requires confirmation and clears this browser's route, personal record and gold livery; shared scores and the player alias remain. Credits can be paused or skipped, honour reduced motion and attribute Atlas exploration separately from the media actually used in the game. Opening them from Settings does not reveal the hidden route.
+The title's Settings gear includes replayable **Credits** and **Reset local save**. Reset requires confirmation and clears this browser's saved campaign, route, personal record and gold livery; shared scores and the player alias remain. Credits can be paused or skipped, honour reduced motion and attribute Atlas exploration separately from the media actually used in the game. Opening them from Settings does not reveal the hidden route.
 
 ## Daily Rush and shared scores
 
@@ -66,9 +68,9 @@ The title's trophy opens **Daily** and **General** leaderboards. Daily Rush is a
 
 Both boards are a real HTTP service shared by browsers using the same server. The server issues attempts, replays the exact quantized inputs at 60 ticks per second and calculates scores itself. Campaign verification also replays floor transitions and checks that each upgrade was actually offered. A submitted score number is never trusted. Names are aliases, not authenticated accounts; cookie resets create a new identity. Replay validation catches impossible inputs and fabricated scores, but is not bot detection or a complete anti-cheat system.
 
-Accepted entries are written atomically to `data/leaderboard.json`, which is ignored by Git. This is a single-server design: use one Node process and a persistent writable disk. Server restarts preserve scores and expire unfinished attempts. Keep the ruleset identifiers in `game/daily.js` and `game/campaign.js` in sync with future scoring or gameplay changes.
+Accepted entries are written atomically to `data/leaderboard.json`, which is ignored by Git. This is a single-server design: use one Node process and a persistent writable disk. Server restarts preserve scores and expire unfinished attempts. A campaign checkpoint can obtain a new attempt by replaying its completed history; the server binds that history to the new attempt and clocks subsequent gameplay independently. Equipment and points are reconstructed from inputs, never trusted from a saved score field. Keep the ruleset identifiers in `game/daily.js` and `game/campaign.js` in sync with future scoring or gameplay changes.
 
-For eventual hosting, run `npm start` with `HOST=0.0.0.0`, the host's `PORT`, and `LEADERBOARD_FILE` pointing to persistent storage. Put HTTPS in front of the service and preserve the request Host header. The built-in request limit uses the direct peer address, so a reverse proxy shares that limit unless the deployment adds trusted proxy handling. Hosting only `game/` on a static service supports solo play; both boards and multiplayer rooms require the Node server. No remote service has been deployed.
+For hosting, run `npm start` with `HOST=0.0.0.0`, the host's `PORT`, and `LEADERBOARD_FILE` pointing to persistent storage. Put HTTPS in front of the service and preserve the request Host header. If using a proxy, configure `TRUSTED_PROXY_IPS` with its exact addresses and have it overwrite `X-Real-IP` with the actual client address. Both API limits ignore this header from any other peer. `/healthz` reports service health without exposing deployment metadata. Hosting only `game/` on a static service supports solo play; both boards and multiplayer rooms require the Node server. Host inventories, credentials and operational configuration belong outside this public repository.
 
 ## Two-player rooms
 
@@ -100,6 +102,7 @@ node scripts/playthrough.mjs --from=21 --out=locked-wing
 node scripts/presentation-playtest.mjs
 node scripts/onboarding-playtest.mjs
 node scripts/leaderboard-playtest.mjs
+node scripts/continue-playtest.mjs
 node scripts/credits-playtest.mjs
 node scripts/playthrough.mjs --from=10 --credits --out=credits-director
 node scripts/multiplayer-playtest.mjs

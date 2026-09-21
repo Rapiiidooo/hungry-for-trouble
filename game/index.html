@@ -103,6 +103,19 @@
         <button id="start" class="primary" disabled>
           WARMING UP… <span>▶</span>
         </button>
+        <div class="continue-details">
+          <small id="save-summary" role="status" hidden></small>
+          <button id="new-campaign" class="text-button" hidden>
+            NEW CAMPAIGN
+          </button>
+        </div>
+        <div id="new-run-confirmation" hidden>
+          <p>Replace your saved shift? Unlocked aisles stay saved.</p>
+          <div class="reset-actions">
+            <button id="replace-campaign" class="secondary">START NEW</button>
+            <button id="keep-campaign" class="secondary">KEEP MY SHIFT</button>
+          </div>
+        </div>
         <div class="menu-secondary">
           <button id="open-route" disabled>
             <span>▣</span> LEVEL SELECT
@@ -391,8 +404,11 @@
             </button>
           </div>
           <button id="pause-menu" class="pause-action menu-action">
-            <b>MAIN MENU</b
-            ><small>Leave this run. Unlocked aisles stay saved.</small>
+            <b id="pause-menu-label">SAVE &amp; MAIN MENU</b
+            ><small id="pause-save-note"
+              >Continue returns to the start of this aisle with your saved
+              kit.</small
+            >
           </button>
           <details class="pause-help">
             <summary>MISSION &amp; CONTROLS</summary>
@@ -499,8 +515,8 @@
           <div class="save-settings">
             <b>LOCAL SAVE</b>
             <p>
-              Reset unlocked aisles, your personal best and the gold vacuum on
-              this device.
+              Reset your saved shift, unlocked aisles, personal best and gold
+              vacuum on this device.
             </p>
             <small
               >Shared leaderboard scores and your callsign stay saved.</small
