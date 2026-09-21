@@ -85,6 +85,10 @@ Both modes use overhead play, keyboard/mouse and dual touch sticks. Pausing only
 
 The server calculates movement, collisions, damage and results at 60 Hz. Clients send bounded controls through HTTP polling and receive snapshots; they never supply trusted positions or scores. A short visual prediction smooths motion without changing authoritative state. Rooms and their opaque session tokens are temporary, expire when idle and do not survive server restart. Room codes and callsigns are invitations and aliases, not account authentication. Keep one Node process for this implementation; it has passed local two-client checks with simulated 4G and public HTTPS room checks. It has not been load-tested.
 
+## Traffic measurement
+
+The published domain uses an asynchronous, cookieless Umami tracker through same-origin endpoints. It counts pageviews and estimated visitors, referring sites, devices and approximate location. Query strings, room invitations, hashes and detailed referrer paths are excluded. Browser Do Not Track and Global Privacy Control are respected; local previews are not tracked. The dashboard requires the owner's existing analytics login. Gameplay, callsigns and scores are not recorded by this tracker. [Analytics verification](receipts/verification-analytics/README.md) documents the payload and failure checks.
+
 ## Development and verification
 
 ```bash
@@ -106,6 +110,7 @@ node scripts/onboarding-playtest.mjs
 node scripts/leaderboard-playtest.mjs
 node scripts/continue-playtest.mjs
 node scripts/atlas-playtest.mjs
+node scripts/analytics-playtest.mjs
 node scripts/credits-playtest.mjs
 node scripts/playthrough.mjs --from=10 --credits --out=credits-director
 node scripts/multiplayer-playtest.mjs

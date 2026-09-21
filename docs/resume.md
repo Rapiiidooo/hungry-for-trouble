@@ -2,6 +2,8 @@
 
 ## Current state
 
+Active follow-up: the owner requested traffic analytics. A production-only Umami tracker and scoped private proxy are implemented; payload/privacy/failure checks pass. The new analytics release must be deployed, pass the official phone gate and replace the existing entry's commit/verdict. See `tasks/traffic-analytics.md`. This explicitly requested update supersedes the earlier instruction to freeze the submitted runtime for this scoped change.
+
 Delivery is complete. The live game is [trouble.rapidoai.dev](https://trouble.rapidoai.dev/), the public source is [Rapiiidooo/hungry-for-trouble](https://github.com/Rapiiidooo/hungry-for-trouble), and the official entry is [PR #6](https://github.com/404-Repo/404-game-jam/pull/6), opened on 21 September 2026. Deployed and submitted gameplay commit: `2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6`. Preserve that runtime while the organizers review it. Later commits only save receipts and delivery documentation.
 
 Continue and all three Atlas creations are included. The 51 Node checks, 43-module shipping check, focused Atlas playback/portrait probe and public phone/4G gate pass. Public browser checks cover Continue, shared General scores and both room modes with touch/reconnect. The test score survived restart and a compressed backup, then was removed. HTTPS and the certificate-renewal dry run pass. Public evidence is in `receipts/verification-release/`; private operations remain outside this repository. The finished task trackers were removed. No permission or information is pending.

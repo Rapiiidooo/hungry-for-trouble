@@ -1,0 +1,11 @@
+{
+  "scope": "Disposable browser contexts run the actual game and live Umami tracker under an intercepted production origin. Game requests go to the local preview; analytics collection is intercepted and never creates visitor records. Real controls check startup when tracking is blocked or fails.",
+  "checks": [
+    "Actual tracker sends a pageview with origin-only referrer and no query/hash, identifier, custom data or cookies; real game input works",
+    "DNT, Global Privacy Control, Umami local opt-out and local preview produce no tracking requests",
+    "Real game startup and movement still work with a blocked tracker or a 503 collection response"
+  ],
+  "errors": [],
+  "trackerBytes": 4655,
+  "result": "PASS"
+}
