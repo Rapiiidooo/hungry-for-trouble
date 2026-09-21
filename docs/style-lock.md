@@ -17,7 +17,7 @@
 
 The user rejected the previous acid-green and petrol palette as generic and AI-styled. Menus should resemble printed supermarket posters and price tickets: white price tickets, red ink, blue lettering and firm offset shadows. Avoid neon green, cyan glow and glassy dashboard panels. Keep the existing typography and layout.
 
-HUD damage uses brighter salmon `#ff8065` and shield feedback uses pale blue `#a4c0e0`, both readable against the dark HUD. White text and tomato buttons retain readable contrast. Concrete blue-grey floors and blue freezer aisles give the departments distinct moods. The user also rejected white enamel in the later theme review; neutral enamel white supersedes it.
+HUD damage uses brighter salmon `#ff8065` and shield feedback uses pale blue `#a4c0e0`, both readable against the dark HUD. White text and tomato buttons retain readable contrast. Concrete blue-grey floors and blue freezer aisles give the departments distinct moods. The user also rejected the cream treatment in the later theme review; neutral enamel white supersedes it.
 
 Verified asset modules and their original generation references retain their historical colours. `recolorEnamel()` in `game/main.js` maps their cached materials into this palette during assembly, before actor baking. Apply it to future scenery and articulated actors too; do not rewrite historical receipts. Native SVG upgrade illustrations use the same enamel colours.
 
@@ -56,7 +56,7 @@ The final boss uses the Director at 1.35 scale. Armoured trolleys reuse the veri
 - Firing produces a brief nozzle kick, a short tracer and a clear enemy hit reaction.
 - Overtime changes the player's silhouette or scale, lighting, enemy behaviour and sound immediately.
 - Damage is a brief local effect; the camera never rolls and screen shake stays restrained.
-- The start screen has one obvious campaign play button, with optional escape-route and daily-rush buttons.
+- The start screen has one obvious campaign play button, with optional escape-route, daily-rush and two-player buttons.
 - Health loss shows a red heart beside the player; ammunition remains readable in portrait and landscape.
 - Upgrade illustrations convey their effect before reading the description, and the escape route announces both bosses.
 - Drone warnings precede their projectiles; late stages introduce mechanical changes, not only new floor colours.
@@ -68,3 +68,5 @@ Eight later floors use seeded room footprints with exterior void: dogleg, loadin
 Receipts use original canvas sprite artwork with a red border, white paper, ink lines and motion trails at body height. Red targeting lines announce drone fire. Damage direction appears around the FPS crosshair. These are functional combat effects, not imported meshes. Repair kits reuse the verified battery with white/red materials and a heart label; MOP-3 reuses the polisher geometry at the final checkout.
 
 Upgrade cards diagram the actual mechanic before and after, alongside numeric changes. The radio tells a short rescue story without stopping play. Camera changes interpolate position, orientation and projection over 850 ms, reverse continuously and honour reduced motion. Resizing does not advance a transition.
+
+Multiplayer reuses the verified vacuum, with blue host trim and red guest trim, a name label and ground ring. A downed vacuum tips sideways and its repair ring pulses. Partner health, revival/respawn status and the shared ammunition bag remain visible. Enemy player shots are red; allied shots are blue. Empty space between touch controls must pass pointer events to the game canvas.

@@ -1,6 +1,8 @@
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { createRooms } from "../server/rooms.mjs";
+const rooms = createRooms();
 import { createLeaderboard } from "../server/leaderboard.mjs";
 const api = await createLeaderboard({
   file: path.resolve(process.env.LEADERBOARD_FILE || "data/leaderboard.json"),
@@ -20,6 +22,7 @@ const types = {
 const server = http.createServer(async (req, res) => {
   try {
     const url = new URL(req.url, "http://localhost");
+    if (await rooms(req, res, url)) return;
     if (await api(req, res, url)) return;
     const file = path.resolve(
       root,

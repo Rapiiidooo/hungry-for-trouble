@@ -1,0 +1,277 @@
+.menu-secondary .room-entry {
+  min-height: 38px;
+  min-width: 0;
+  display: block;
+}
+.menu-secondary .room-entry small {
+  margin-top: 6px;
+}
+.room-panel {
+  width: min(690px, 95vw);
+}
+.room-panel > p {
+  max-width: 520px;
+  margin: 12px auto 22px;
+}
+.room-panel label {
+  display: block;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #526073;
+}
+.room-panel input {
+  user-select: text;
+  display: block;
+  width: 100%;
+  border: 1px solid #9eafc2;
+  background: #fff;
+  color: #263650;
+  padding: 12px;
+  margin: 6px 0 15px;
+  font:
+    700 17px "DM Sans",
+    sans-serif;
+}
+.room-modes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 20px;
+}
+.room-modes button {
+  padding: 18px;
+  text-align: left;
+  background: #263650;
+  color: #f0f2f3;
+  border: 0;
+  border-bottom: 4px solid #6c8fb8;
+  cursor: pointer;
+}
+.room-modes button:last-child {
+  border-color: #c94732;
+}
+.room-modes b {
+  display: block;
+  font:
+    800 26px "Barlow Condensed",
+    sans-serif;
+}
+.room-modes span {
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 7px;
+  color: #dce3eb;
+}
+.room-join {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+  border-top: 1px solid #aebccb;
+  padding-top: 16px;
+}
+.room-join input {
+  margin-bottom: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+.room-join button {
+  margin: 0;
+  padding: 13px 20px;
+  font-size: 12px;
+}
+#room-status {
+  min-height: 20px;
+  color: #a33125;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 13px 0 0;
+}
+#room-code {
+  display: block;
+  color: #263650;
+  font:
+    900 58px "Barlow Condensed",
+    sans-serif;
+  letter-spacing: 0.16em;
+  user-select: all;
+}
+#room-roster {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: flex;
+  gap: 12px;
+}
+#room-roster li {
+  background: #dce3eb;
+  border-left: 4px solid #6c8fb8;
+  flex: 1;
+  padding: 15px 10px;
+  font-weight: 800;
+}
+#room-roster li:nth-child(2) {
+  border-color: #c94732;
+}
+#room-roster small {
+  display: block;
+  font-size: 9px;
+  color: #526073;
+  margin-top: 6px;
+}
+#room-start {
+  width: 100%;
+}
+#room-start:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+#room-result {
+  margin: 12px 0;
+}
+#room-result[hidden] {
+  display: none;
+}
+#room-rematch {
+  width: 100%;
+}
+#peer-status {
+  position: absolute;
+  top: 116px;
+  left: 24px;
+  padding: 10px 14px;
+  background: #192a40ed;
+  border-left: 3px solid #6c8fb8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  max-width: 350px;
+}
+#peer-status[hidden],
+#room-connection[hidden] {
+  display: none;
+}
+#room-connection {
+  position: absolute;
+  top: 48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 14px;
+  background: #9d3027;
+  color: #fff;
+  max-width: 85vw;
+  z-index: 10;
+  text-align: center;
+}
+.multiplayer #radio {
+  top: 170px;
+}
+.multiplayer .score-block small {
+  color: #b6c8de;
+}
+@media (max-width: 700px) {
+  .room-panel {
+    padding: 25px 20px;
+  }
+  .room-panel h2 {
+    font-size: 41px;
+  }
+  .room-modes {
+    gap: 8px;
+  }
+  .room-modes button {
+    padding: 12px;
+  }
+  .room-modes b {
+    font-size: 23px;
+  }
+  .room-modes span {
+    font-size: 10px;
+  }
+  #peer-status {
+    top: 148px;
+    left: 12px;
+    font-size: 10px;
+    max-width: 230px;
+    padding: 8px;
+  }
+  .multiplayer #radio {
+    top: 198px;
+  }
+}
+@media (max-height: 560px) {
+  .room-panel {
+    width: min(800px, 95vw);
+    padding: 16px;
+  }
+  .room-panel .eyebrow {
+    display: none;
+  }
+  .room-panel h2 {
+    margin: 8px 0;
+    font-size: 34px;
+  }
+  #room-setup:not([hidden]) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 18px;
+  }
+  #room-setup > p,
+  #room-reconnect {
+    grid-column: 1 / -1;
+    margin: 4px 0 8px;
+  }
+  #room-setup > label {
+    grid-column: 1;
+  }
+  .room-modes {
+    grid-column: 2;
+    grid-row: span 2;
+    margin: 0;
+  }
+  .room-modes button {
+    padding: 12px;
+  }
+  .room-join {
+    grid-column: 1;
+    padding-top: 0;
+    border: 0;
+  }
+  .room-panel input {
+    margin-bottom: 0;
+    padding: 9px;
+  }
+  #room-description {
+    margin: 4px 0 8px;
+  }
+  #room-code {
+    font-size: 42px;
+    line-height: 1.1;
+  }
+  #room-roster {
+    margin: 8px 0;
+  }
+  #room-roster li {
+    padding: 10px;
+  }
+  .room-panel .primary {
+    margin-top: 8px;
+    padding: 12px 18px;
+  }
+  .room-join .primary {
+    margin-top: 0;
+  }
+  #room-status:empty {
+    display: none;
+  }
+  #peer-status {
+    top: 110px;
+    left: 18px;
+  }
+  .multiplayer #radio {
+    display: none;
+  }
+}

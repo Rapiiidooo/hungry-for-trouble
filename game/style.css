@@ -648,11 +648,12 @@ footer {
     align-items: flex-end;
     justify-content: space-between;
     gap: 15px;
-    pointer-events: auto;
+    pointer-events: none;
     touch-action: none;
     user-select: none;
   }
   .stick {
+    pointer-events: auto;
     width: 108px;
     height: 108px;
     flex-shrink: 0;
@@ -692,6 +693,7 @@ footer {
     border-color: #efb54680;
   }
   #dash-button {
+    pointer-events: auto;
     width: 64px;
     height: 42px;
     border-radius: 25px;

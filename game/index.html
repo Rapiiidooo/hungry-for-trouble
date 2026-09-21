@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="./style.css" />
     <link rel="stylesheet" href="./arcade.css" />
     <link rel="stylesheet" href="./feel.css" />
+    <link rel="stylesheet" href="./multiplayer.css" />
     <script type="importmap">
       {
         "imports": {
@@ -57,6 +58,9 @@
           </button>
           <button id="open-daily" disabled>
             <span>◷</span> DAILY RUSH <small>90 SECONDS · WORLD SCORES</small>
+          </button>
+          <button id="open-rooms" class="room-entry" disabled>
+            <span>2P · MULTIPLAYER</span><small>CO-OP & VERSUS</small>
           </button>
         </div>
         <div class="controls">
@@ -154,14 +158,77 @@
           </div>
         </aside>
         <div id="run-badge"></div>
+        <div id="peer-status" hidden></div>
+        <div id="room-connection" hidden role="status"></div>
         <div id="floating-fx" aria-hidden="true"></div>
       </section>
       <div id="message" role="status" aria-live="polite"></div>
       <div id="hit-flash"></div>
+      <section id="room-screen" class="overlay" hidden>
+        <div class="panel room-panel">
+          <div class="eyebrow">TWO EMPLOYEES. TWICE THE LIABILITY.</div>
+          <h2>Bring a <em>colleague.</em></h2>
+          <div id="room-setup">
+            <button id="room-reconnect" class="text-button" hidden>
+              Reconnect to your room
+            </button>
+            <p>
+              Host a private room or join a friend with their six-character
+              code.
+            </p>
+            <label
+              >YOUR CALLSIGN<input
+                id="room-name"
+                maxlength="16"
+                value="VAC-1"
+                autocomplete="nickname"
+            /></label>
+            <div class="room-modes">
+              <button id="create-coop">
+                <b>SHARED SHIFT</b
+                ><span
+                  >Share ammo, revive your partner and take down management
+                  together.</span
+                >
+              </button>
+              <button id="create-versus">
+                <b>SNACKDOWN</b
+                ><span
+                  >First to 7 KOs. Steal the crumbs. Three minutes to settle the
+                  score.</span
+                >
+              </button>
+            </div>
+            <div class="room-join">
+              <label
+                >ROOM CODE<input
+                  id="join-code"
+                  maxlength="6"
+                  placeholder="ABC234"
+                  autocomplete="off" /></label
+              ><button id="join-room" class="primary">JOIN ROOM</button>
+            </div>
+          </div>
+          <div id="room-lobby" hidden>
+            <p id="room-description"></p>
+            <small>ROOM CODE</small><strong id="room-code"></strong>
+            <button id="copy-room" class="text-button">Copy invite link</button>
+            <ul id="room-roster"></ul>
+            <button id="room-start" class="primary" disabled>
+              WAITING FOR A COLLEAGUE
+            </button>
+          </div>
+          <p id="room-status" role="status"></p>
+          <button id="room-close" class="text-button">Back</button>
+        </div>
+      </section>
       <section id="pause-screen" class="overlay" hidden>
         <div class="panel">
           <div class="eyebrow">UNPAID BREAK</div>
           <h2>Dust can <em>wait.</em></h2>
+          <p id="pause-room-note" hidden>
+            The room keeps running while you take a break.
+          </p>
           <button id="resume" class="primary">
             BACK TO WORK <span>▶</span></button
           ><button id="pause-retry" class="text-button">
@@ -187,6 +254,10 @@
           <div id="result-eyebrow" class="eyebrow">PERFORMANCE REVIEW</div>
           <h2 id="result-title">You <em>suck.</em></h2>
           <p id="result-comment">Occupational hazard. No compensation.</p>
+          <div id="room-result" hidden>
+            <button id="room-rematch" class="primary">REMATCH</button>
+            <p id="room-rematch-note"></p>
+          </div>
           <strong id="final-score">0</strong><small id="result-stats"></small>
           <form id="score-form" hidden>
             <label for="score-name">NAME ON THE BOARD</label>

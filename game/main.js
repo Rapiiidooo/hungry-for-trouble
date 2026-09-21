@@ -13,6 +13,8 @@ import { LEVELS } from "./levels.js";
 import { ViewRig } from "./view-rig.js";
 import { receiptEffects } from "./combat-fx.js";
 import { RADIO } from "./story.js";
+import { RoomClient } from "./room-client.js";
+import { newMatch } from "./multiplayer-sim.js";
 import { upgradeArt, upgradeStats } from "./upgrade-art.js";
 import {
   TICK,
@@ -36,6 +38,30 @@ const ui = Object.fromEntries(
   [...document.querySelectorAll("[id]")].map((el) => [el.id, el]),
 );
 const sound = new Sound();
+let networkSeen = 0;
+let peerModels = [],
+  roomViewKey = "",
+  roomBusy = false;
+const rooms = new RoomClient({
+  lobby: drawLobby,
+  round: (room, snapshot, selfId) =>
+    start(true, null, { kind: room.kind, room, snapshot, selfId }),
+  snapshot: applyRoomSnapshot,
+  connection: (message) => {
+    ui["room-status"].textContent = message;
+    ui["room-connection"].textContent = message
+      ? "Connection interrupted. Retrying…"
+      : "";
+    ui["room-connection"].hidden = !message;
+  },
+  disconnected: (message) => {
+    menu();
+    ui["room-screen"].hidden = false;
+    ui["room-setup"].hidden = false;
+    ui["room-lobby"].hidden = true;
+    ui["room-status"].textContent = message;
+  },
+});
 const palette = {
   ink: 0x263650,
   cream: 0xf0f2f3,
@@ -154,6 +180,128 @@ const isFPS = () =>
   game.fpsTime > 0 &&
   !viewOverhead;
 const activeCamera = () => viewRig?.camera || camera;
+
+function drawLobby(room, selfId) {
+  const key = JSON.stringify([room.code, room.phase, room.players, room.host]);
+  if (key === roomViewKey) return;
+  roomViewKey = key;
+  ui["room-setup"].hidden = true;
+  ui["room-lobby"].hidden = false;
+  ui["room-code"].textContent = room.code;
+  ui["room-description"].textContent =
+    room.kind === "coop"
+      ? "Shared Shift: one ammo bag, two vacuums, no friendly fire."
+      : "Snackdown: first to 7 KOs, or the most KOs after three minutes.";
+  ui["room-roster"].replaceChildren();
+  for (let i = 0; i < 2; i++) {
+    const member = room.players[i],
+      li = document.createElement("li"),
+      small = document.createElement("small");
+    li.append(document.createTextNode(member ? member.name : "VACANCY"));
+    small.textContent = !member
+      ? "WAITING FOR A COLLEAGUE"
+      : `${member.id === selfId ? "YOU · " : ""}${member.connected ? "CONNECTED" : "RECONNECTING"}`;
+    li.append(small);
+    ui["room-roster"].append(li);
+  }
+  const host = selfId === room.host,
+    ready = room.players.length === 2 && room.players.every((p) => p.connected);
+  ui["room-start"].disabled = !host || !ready;
+  ui["room-start"].textContent = !ready
+    ? "WAITING FOR A COLLEAGUE"
+    : !host
+      ? "WAITING FOR THE HOST"
+      : "START THE MATCH";
+  ui["room-close"].textContent = "Leave room";
+  ui["room-rematch"].disabled = !host || !ready;
+  ui["room-rematch-note"].textContent = !ready
+    ? "Your colleague left. Return to the menu to create another room."
+    : host
+      ? "Same colleagues. Fresh floorplan."
+      : "Waiting for the host to start a rematch.";
+}
+
+async function joinRoom(kind, code) {
+  if (roomBusy) return;
+  roomBusy = true;
+  ui["room-status"].textContent = "Connecting…";
+  for (const id of ["create-coop", "create-versus", "join-room"])
+    ui[id].disabled = true;
+  try {
+    await sound.start();
+    await rooms.connect(kind, ui["room-name"].value.trim(), code);
+  } catch (error) {
+    ui["room-status"].textContent = error.message;
+  } finally {
+    roomBusy = false;
+    for (const id of ["create-coop", "create-versus", "join-room"])
+      ui[id].disabled = false;
+  }
+}
+
+function applyRoomSnapshot(snapshot) {
+  if (!game.multiplayer || building || mode !== "playing") return;
+  const selfId = game.selfId;
+  Object.assign(game, snapshot);
+  networkSeen = clock;
+  const localEvents = snapshot.events.filter(
+    (event) =>
+      !["damage", "heal", "overtime", "shot", "crumb", "dash"].includes(
+        event.type,
+      ) || event.playerId === selfId,
+  );
+  for (const event of localEvents) {
+    if (event.type === "revive")
+      showMessage(
+        "BACK ON THE CLOCK",
+        event.playerId === selfId
+          ? "Your colleague repaired you."
+          : "Your partner is back in the fight.",
+        2,
+      );
+    if (event.type === "knockout")
+      showMessage(
+        `${event.victim} CLEANED OUT`,
+        "Dropped crumbs refill your ammo.",
+        2,
+      );
+  }
+  handleEvents(localEvents);
+}
+
+function finishRoom() {
+  const coop = game.multiplayer.kind === "coop",
+    won = coop ? game.state === "won" : game.multiplayer.winner === game.selfId;
+  ui["result-eyebrow"].textContent = coop ? "SHARED SHIFT" : "SNACKDOWN";
+  ui["result-title"].innerHTML =
+    game.multiplayer.reason === "draw"
+      ? "Dirty <em>draw.</em>"
+      : won
+        ? "Clean <em>victory.</em>"
+        : "Cleaned <em>out.</em>";
+  ui["result-comment"].textContent =
+    game.multiplayer.reason === "disconnect"
+      ? "A colleague disconnected. Return for another shift."
+      : coop
+        ? won
+          ? "Management removed. Both vacuums checked out together."
+          : "The store won this shift. Keep your colleague close for a repair."
+        : "Every KO spills ammo. Leave nothing for your colleague.";
+  ui["final-score"].textContent = coop
+    ? game.score.toLocaleString("en-US")
+    : `${game.player.kills} KOs`;
+  ui["result-stats"].textContent = game.players
+    .map((p) => `${p.name}: ${p.kills} KOs · ${p.deaths} DOWN`)
+    .join(" / ");
+  ui["score-form"].hidden =
+    ui["share-score"].hidden =
+    ui["score-status"].hidden =
+    ui["share-output"].hidden =
+      true;
+  ui["room-result"].hidden = false;
+  ui.retry.hidden = true;
+  ui.result.hidden = false;
+}
 
 function releaseLook() {
   if (document.pointerLockElement === ui.world) document.exitPointerLock();
@@ -556,6 +704,7 @@ async function buildWorld() {
   visorModels = [];
   repairModels = [];
   friend = null;
+  peerModels = [];
   beltMeshes = [];
   floating.splice(0).forEach((f) => f.el.remove());
   const theme = game.map.level.theme;
@@ -713,6 +862,31 @@ async function buildWorld() {
     if (node.name === "wheel") node.userData.spinning = true;
   });
   world.add(hero);
+  if (game.multiplayer) {
+    markEmissive(hero);
+    const tint =
+      game.players[0].id === game.selfId ? palette.blue : palette.red;
+    hero.traverse((n) => {
+      if (n.isMesh && n.material.color.getHex() === palette.red)
+        n.material.color.setHex(tint);
+    });
+    for (const peer of game.players.filter((p) => p.id !== game.selfId)) {
+      const model = compactActor(
+        await ASSET("assets/vacuum.js", { keepHierarchy: true }),
+      );
+      markEmissive(model);
+      const color = game.players[0].id === peer.id ? palette.blue : palette.red;
+      model.traverse((n) => {
+        if (n.isMesh && n.material.color.getHex() === palette.red)
+          n.material.color.setHex(color);
+      });
+      model.position.set(peer.x, 0, peer.z);
+      const ring = makeRing(0.65, color),
+        name = label(peer.name, "#f0f2f3", 2.3);
+      world.add(model, ring, name);
+      peerModels.push({ id: peer.id, model, ring, name });
+    }
+  }
   weapon?.removeFromParent();
   const gunSource = compactActor(
     await ASSET("assets/vacuum.js", { keepHierarchy: true }),
@@ -761,11 +935,11 @@ async function buildWorld() {
     name.position.set(game.map.exit.x, 1.65, game.map.exit.z);
     world.add(name);
   }
-  exitModel.visible = !game.daily;
-  const checkoutLabel = label("CHECKOUT", "#f4ead6", 2.5);
+  exitModel.visible = !game.daily && game.multiplayer?.kind !== "versus";
+  const checkoutLabel = label("CHECKOUT", "#f0f2f3", 2.5);
   checkoutLabel.position.set(game.map.exit.x, 2.05, game.map.exit.z);
   world.add(checkoutLabel);
-  checkoutLabel.visible = !game.daily;
+  checkoutLabel.visible = !game.daily && game.multiplayer?.kind !== "versus";
   for (const gate of game.map.gates) {
     const model = cloneAsset("freezer");
     model.position.set(gate.x, 0, gate.z);
@@ -796,7 +970,7 @@ async function buildWorld() {
     manager.position.set(game.boss.x, 3.7, game.boss.z);
     world.add(manager);
   }
-  shotPool = pool(palette.gold, 160);
+  shotPool = pool(game.multiplayer ? 0xffffff : palette.gold, 160);
   receiptFX = receiptEffects(world, ownedGeometry);
   world.add(shotPool);
   keyLight.color.setHex(
@@ -860,11 +1034,17 @@ async function start(fresh = true, upgrade, options = {}) {
     practiceLevel = options.level || 0;
     dailyAttempt = options.attempt || null;
     dailyLog = [];
-    game = dailyAttempt
-      ? newDaily(dailyAttempt.config)
-      : newGame(practiceLevel, {
-          seed: crypto.getRandomValues(new Uint32Array(1))[0],
-        });
+    game = options.room
+      ? Object.assign(
+          newMatch(options.room.kind, options.room.seed, options.room.players),
+          options.snapshot,
+          { selfId: options.selfId },
+        )
+      : dailyAttempt
+        ? newDaily(dailyAttempt.config)
+        : newGame(practiceLevel, {
+            seed: crypto.getRandomValues(new Uint32Array(1))[0],
+          });
     runKills = 0;
     runCrumbs = 0;
     runShots = 0;
@@ -890,6 +1070,7 @@ async function start(fresh = true, upgrade, options = {}) {
     "result",
     "route-screen",
     "daily-screen",
+    "room-screen",
   ])
     ui[id].hidden = true;
   mode = "playing";
@@ -898,8 +1079,23 @@ async function start(fresh = true, upgrade, options = {}) {
   ui.hud.hidden = false;
   ui.pause.hidden = false;
   ui.game.classList.add("playing");
+  ui.game.classList.toggle("multiplayer", !!game.multiplayer);
+  ui["room-result"].hidden = true;
+  ui.retry.hidden = false;
+  ui["peer-status"].hidden = !game.multiplayer;
+  ui["pause-room-note"].hidden = !game.multiplayer;
+  ui["pause-retry"].hidden = !!game.multiplayer;
+  ui["pause-route"].hidden = !!game.multiplayer;
   try {
     await buildWorld();
+    if (game.multiplayer) {
+      ui["radio-line"].textContent =
+        game.multiplayer.kind === "coop"
+          ? "Shared ammo. Stay beside a downed partner for two seconds to revive them."
+          : "First to 7 KOs. Batteries grant five seconds of invincibility. Grab the dropped crumbs.";
+      ui["run-badge"].textContent =
+        `${game.multiplayer.kind === "coop" ? "SHARED SHIFT" : "SNACKDOWN"} · ROOM ${options.room.code}`;
+    }
     showMessage(
       game.daily ? "DAILY RUSH" : game.map.level.name,
       game.daily
@@ -924,6 +1120,8 @@ function pause(value = !paused) {
 }
 
 function menu() {
+  rooms.leave();
+  roomViewKey = "";
   clearInput();
   mode = "menu";
   viewRig.reset();
@@ -941,9 +1139,10 @@ function menu() {
     "upgrade-screen",
     "route-screen",
     "daily-screen",
+    "room-screen",
   ])
     ui[id].hidden = true;
-  ui.game.classList.remove("playing", "overtime");
+  ui.game.classList.remove("playing", "overtime", "multiplayer");
   ui.message.classList.remove("show");
   resize();
 }
@@ -1065,6 +1264,10 @@ function handleEvents(events) {
   lastState = game.state;
   clearInput();
   releaseLook();
+  if (game.multiplayer) {
+    finishRoom();
+    return;
+  }
   if (!game.daily && ["cleared", "won"].includes(game.state))
     unlock(progress, game.levelIndex);
   if (game.state === "cleared") {
@@ -1136,9 +1339,22 @@ function handleEvents(events) {
   ui.result.hidden = false;
 }
 
+function renderActor(actor) {
+  if (!game.multiplayer) return actor;
+  // Extrapolation is visual only; the server snapshot remains the gameplay authority.
+  const age = Math.min(0.12, Math.max(0, clock - networkSeen));
+  const x = actor.x + actor.vx * age,
+    z = actor.z + actor.vz * age;
+  return {
+    ...actor,
+    x: canStand(game, x, actor.z) ? x : actor.x,
+    z: canStand(game, actor.x, z) ? z : actor.z,
+  };
+}
+
 function updateModels(dt) {
   if (!hero) return;
-  const p = game.player,
+  const p = renderActor(game.player),
     moving = Math.hypot(p.vx, p.vz),
     overtime = game.overtime > 0;
   const scale = overtime ? 1.23 + Math.sin(clock * 23) * 0.015 : 1;
@@ -1150,7 +1366,9 @@ function updateModels(dt) {
   hero.rotation.set(
     Math.sin(clock * 22) * moving * 0.003,
     p.angle,
-    Math.cos(clock * 14) * moving * 0.004,
+    game.multiplayer && p.hp <= 0
+      ? -0.6
+      : Math.cos(clock * 14) * moving * 0.004,
   );
   hero.scale.setScalar(scale);
   hero.visible = halo.visible = viewRig.blend < 0.75;
@@ -1234,6 +1452,19 @@ function updateModels(dt) {
     ring.material.opacity = game.player.hp < game.player.maxHp ? 0.8 : 0.3;
   }
   if (friend) friend.rotation.y = Math.sin(clock * 2) * 0.3;
+  for (const peer of peerModels) {
+    const data = renderActor(game.players.find((p) => p.id === peer.id));
+    peer.model.position.lerp(
+      vector.set(data.x, 0.02, data.z),
+      Math.min(1, dt * 20),
+    );
+    peer.model.rotation.set(0, data.angle, data.hp <= 0 ? -0.6 : 0);
+    peer.ring.position.set(data.x, 0.04, data.z);
+    peer.ring.scale.setScalar(data.hp <= 0 ? 1.35 : 1);
+    peer.ring.material.opacity =
+      data.hp <= 0 ? 0.4 + Math.sin(clock * 8) * 0.3 : 0.8;
+    peer.name.position.set(data.x, 1.35, data.z);
+  }
   for (const { model, ring, i } of visorModels) {
     const item = game.visors[i];
     model.visible = ring.visible = !item.collected;
@@ -1280,6 +1511,7 @@ function updateModels(dt) {
   }
   const open =
     !game.daily &&
+    game.multiplayer?.kind !== "versus" &&
     game.collected >= game.map.level.quota &&
     (!game.boss || game.boss.hp <= 0);
   if (exitModel.userData.open !== open) {
@@ -1311,8 +1543,20 @@ function updateModels(dt) {
       transform.scale.set(0.7, 0.7, 3);
       transform.updateMatrix();
       batch.setMatrixAt(i, transform.matrix);
+      if (game.multiplayer)
+        batch.setColorAt(
+          i,
+          new THREE.Color(
+            b.owner === game.selfId
+              ? palette.gold
+              : game.multiplayer.kind === "coop"
+                ? palette.blue
+                : palette.red,
+          ),
+        );
     }
     batch.instanceMatrix.needsUpdate = true;
+    if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
   }
 }
 
@@ -1333,9 +1577,10 @@ function updateCamera(dt, advance = true) {
     camera.position.copy(target).add(new THREE.Vector3(6, 11, 15));
     camera.lookAt(target);
   } else {
+    const visual = renderActor(game.player);
     const margin = portrait ? 4 : 8;
-    const x = clamp(game.player.x, margin, (game.map.width - 1) * 2 - margin);
-    const z = clamp(game.player.z - 1.2, 5, (game.map.height - 1) * 2 - 5);
+    const x = clamp(visual.x, margin, (game.map.width - 1) * 2 - margin);
+    const z = clamp(visual.z - 1.2, 5, (game.map.height - 1) * 2 - 5);
     follow.lerp(vector.set(x, 0, z), Math.min(1, dt * 7));
     const shake = Math.max(game.shake, viewKick);
     camera.position
@@ -1398,7 +1643,7 @@ function drawMap() {
     }
   for (const g of game.map.gates)
     mark(g, gateClosed(game, g.col, g.row) ? "#ff8065" : "#a4c0e0", 5);
-  if (!game.daily)
+  if (!game.daily && game.multiplayer?.kind !== "versus")
     mark(
       game.map.exit,
       game.collected >= game.map.level.quota ? "#efb546" : "#a4c0e0",
@@ -1407,6 +1652,9 @@ function drawMap() {
   for (const e of game.enemies)
     if (e.respawn <= 0) mark(e, game.overtime > 0 ? "#a4c0e0" : "#ff8065", 4);
   if (game.boss?.hp > 0) mark(game.boss, "#ff8065", 8);
+  for (const p of game.players || [])
+    if (p.id !== game.selfId)
+      mark(p, game.multiplayer.kind === "coop" ? "#a4c0e0" : "#ff6046", 6);
   mark(game.player, "#fff", 5);
 }
 
@@ -1442,7 +1690,7 @@ function updateHud() {
   ui.ammo.textContent =
     game.overtime > 0 ? "∞" : String(game.ammo).padStart(2, "0");
   ui["ammo-fill"].style.width =
-    `${game.overtime > 0 ? 100 : (game.ammo / 99) * 100}%`;
+    `${game.overtime > 0 ? 100 : (game.ammo / (game.multiplayer?.kind === "coop" ? 150 : 99)) * 100}%`;
   ui["ammo-panel"].classList.toggle(
     "low-ammo",
     game.ammo < 10 && game.overtime <= 0,
@@ -1490,6 +1738,32 @@ function updateHud() {
   ui["damage-direction"].hidden = clock >= damageUntil || viewRig.blend < 0.8;
   ui["damage-direction"].style.transform =
     `rotate(${fpsYaw - damageBearing}rad)`;
+  if (game.multiplayer) {
+    const coop = game.multiplayer.kind === "coop",
+      peer = game.players.find((p) => p.id !== game.selfId);
+    ui["peer-status"].textContent =
+      `${peer.name} · ${peer.hp > 0 ? "♥".repeat(peer.hp) : coop ? `DOWN · ${peer.revive.toFixed(1)} / 2s REVIVE` : `RESPAWN ${Math.ceil(peer.respawn)}s`} · ${peer.kills} KOs`;
+    ui["heal-hint"].textContent =
+      game.player.hp <= 0
+        ? coop
+          ? `DOWN · PARTNER REPAIR ${game.player.revive.toFixed(1)} / 2s`
+          : `RESPAWN IN ${Math.ceil(game.player.respawn)}s`
+        : coop
+          ? "♥ KITS +1 · STAY NEAR PARTNER TO REVIVE"
+          : "♥ KITS +1 · KOs DROP CRUMBS";
+    ui["ammo-hint"].textContent = coop
+      ? "SHARED AMMO BAG"
+      : "CRUMBS REFILL AMMO";
+    ui["clock-label"].textContent = "ROUND ENDS";
+    ui.combo.textContent = coop ? "SHARED SHIFT SCORE" : "SNACKDOWN SCORE";
+    if (!coop) {
+      ui.collected.textContent = game.player.kills;
+      ui.quota.textContent = " / 7 KOs";
+      ui["goal-label"].textContent = "FIRST TO SEVEN";
+      ui["quota-fill"].style.width = `${(game.player.kills / 7) * 100}%`;
+    } else if (game.collected >= game.map.level.quota && game.boss.hp <= 0)
+      ui["goal-label"].textContent = "BOTH VACUUMS TO CHECKOUT";
+  }
   drawMap();
 }
 
@@ -1585,6 +1859,18 @@ function telemetry() {
       ? { ...game.boss, screen: screenPosition(game.boss.x, 0.4, game.boss.z) }
       : null,
     audio: { enabled: sound.enabled, state: sound.ctx?.state || "idle" },
+    multiplayer: game.multiplayer
+      ? {
+          ...game.multiplayer,
+          code: rooms.room?.code,
+          selfId: game.selfId,
+          players: game.players.map((p) => ({
+            ...p,
+            screen: screenPosition(p.x, 0.4, p.z),
+          })),
+          roomPhase: rooms.room?.phase,
+        }
+      : null,
     firstPerson: isFPS(),
     viewBlend: viewRig.blend,
     shape: game.map.level.shape,
@@ -1623,7 +1909,10 @@ function frame(now) {
   }
   const active =
     mode === "playing" && !paused && !building && game.state === "playing";
-  if (active) {
+  if (game.multiplayer && mode === "playing") {
+    rooms.controls(packInput(active ? readInput() : {}));
+    accumulator = 0;
+  } else if (active) {
     accumulator += dt;
     while (accumulator >= TICK && game.state === "playing" && !building) {
       const packed = packInput(readInput());
@@ -1649,6 +1938,7 @@ function frame(now) {
     const pos = screenPosition(game.map.exit.x, 2.4, game.map.exit.z);
     const open =
       !game.daily &&
+      game.multiplayer?.kind !== "versus" &&
       game.collected >= game.map.level.quota &&
       (!game.boss || game.boss.hp <= 0);
     ui["exit-label"].hidden = !open;
@@ -1766,6 +2056,51 @@ function bindStick(id, target, aiming) {
 
 function bindInput() {
   ui.start.onclick = () => start();
+  ui["open-rooms"].onclick = () => {
+    ui["room-screen"].hidden = false;
+    ui["room-setup"].hidden = !!rooms.session;
+    ui["room-lobby"].hidden = !rooms.session;
+    ui["room-close"].textContent = rooms.session ? "Leave room" : "Back";
+    ui["room-status"].textContent = "";
+  };
+  ui["room-reconnect"].onclick = async () => {
+    await sound.start();
+    rooms.reconnect();
+  };
+  ui["create-coop"].onclick = () => joinRoom("coop");
+  ui["create-versus"].onclick = () => joinRoom("versus");
+  ui["join-room"].onclick = () => {
+    const code = ui["join-code"].value.trim().toUpperCase();
+    if (!/^[A-Z2-9]{6}$/.test(code)) {
+      ui["room-status"].textContent = "Enter the six-character room code.";
+      return;
+    }
+    joinRoom(null, code);
+  };
+  ui["room-close"].onclick = () => {
+    rooms.leave();
+    roomViewKey = "";
+    ui["room-screen"].hidden = true;
+  };
+  const startRoom = async () => {
+    try {
+      await rooms.start();
+    } catch (error) {
+      ui["room-status"].textContent = ui["room-rematch-note"].textContent =
+        error.message;
+    }
+  };
+  ui["room-start"].onclick = ui["room-rematch"].onclick = startRoom;
+  ui["copy-room"].onclick = async () => {
+    const link = `${location.origin}${location.pathname}?room=${rooms.room.code}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      ui["copy-room"].textContent = "Invite copied";
+    } catch {
+      ui["room-status"].textContent =
+        `Share room code ${rooms.room.code} with your colleague.`;
+    }
+  };
   const retry = () =>
     runKind === "daily"
       ? startDaily()
@@ -1826,6 +2161,7 @@ function bindInput() {
     if (event.code === "Escape" && !event.repeat) {
       if (!ui["route-screen"].hidden) ui["route-screen"].hidden = true;
       else if (!ui["daily-screen"].hidden) ui["daily-screen"].hidden = true;
+      else if (!ui["room-screen"].hidden) ui["room-close"].click();
       else pause();
     }
     if (event.code === "KeyV" && !event.repeat) toggleView();
@@ -1835,12 +2171,12 @@ function bindInput() {
   addEventListener("keyup", (event) => keys.delete(event.code));
   addEventListener("blur", () => {
     clearInput();
-    if (mode === "playing") pause(true);
+    if (mode === "playing" && !game.multiplayer) pause(true);
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       clearInput();
-      pause(true);
+      if (!game.multiplayer) pause(true);
     }
   });
   ui.world.addEventListener("pointermove", (event) => {
@@ -1993,8 +2329,20 @@ async function init() {
   bindInput();
   resize();
   ui.start.disabled = false;
-  ui["open-route"].disabled = ui["open-daily"].disabled = false;
+  ui["open-route"].disabled =
+    ui["open-daily"].disabled =
+    ui["open-rooms"].disabled =
+      false;
   ui.start.innerHTML = "START THE NIGHT SHIFT <span>▶</span>";
+  const savedRoom = rooms.saved();
+  ui["room-reconnect"].hidden = !savedRoom;
+  if (savedRoom)
+    ui["room-reconnect"].textContent = `Reconnect to room ${savedRoom.code}`;
+  const invited = new URLSearchParams(location.search).get("room");
+  if (invited && /^[A-Z2-9]{6}$/.test(invited)) {
+    ui["join-code"].value = invited;
+    ui["room-screen"].hidden = false;
+  }
   window.__READY__ = true;
   window.__START__ = () => start();
   requestAnimationFrame(frame);

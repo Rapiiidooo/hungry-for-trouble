@@ -16,4 +16,4 @@ Exercise two independent browser clients creating/joining/starting a real room, 
 
 ## State
 
-Not started. Finish and record the current feel/story verification first. Atlas integration belongs to that pass and is waiting for explicit workspace-catalog access approval.
+Implemented and integrated. The 23 Node checks and 31-module shipping check pass. Two independent browser clients completed both modes, rematches, reconnects, real phone touch, simulated 4G and short-outage recovery. Reports are being archived in `receipts/verification-multiplayer/`. Remaining: record the exact-commit official local phone gate, then remove this completed tracker. Atlas integration is tracked separately in `tasks/atlas-assets.md`.

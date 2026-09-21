@@ -1,0 +1,16 @@
+{
+  "commands": [
+    {
+      "command": "npm test",
+      "result": "PASS",
+      "tests": 23
+    },
+    {
+      "command": "npm run check",
+      "result": "PASS",
+      "modules": 31
+    }
+  ],
+  "scope": "Local Node and HTTP integration checks. Browser and official gate results have separate reports.",
+  "atlas_runtime_assets": 0
+}

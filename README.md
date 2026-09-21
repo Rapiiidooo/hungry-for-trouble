@@ -8,7 +8,7 @@ SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqua
 npm run dev
 ```
 
-Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installation or API key is required to run the game and its leaderboard server. The complete static browser build is in `game/`, including Three.js and its license. Google Fonts is optional; system fonts provide a fallback.
+Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installation or API key is required to run the game, leaderboard and room server. The complete static browser build is in `game/`, including Three.js and its license. Google Fonts is optional; system fonts provide a fallback.
 
 | Action                     | Desktop               | Touch                    |
 | -------------------------- | --------------------- | ------------------------ |
@@ -43,7 +43,18 @@ The leaderboard is a real HTTP service shared by browsers using the same server.
 
 Accepted entries are written atomically to `data/leaderboard.json`, which is ignored by Git. This is a single-server design: use one Node process and a persistent writable disk. Server restarts preserve scores and expire unfinished attempts. Keep the ruleset identifier in `game/daily.js` in sync with any future scoring or gameplay changes.
 
-For eventual hosting, run `npm start` with `HOST=0.0.0.0`, the host's `PORT`, and `LEADERBOARD_FILE` pointing to persistent storage. Put HTTPS in front of the service and preserve the request Host header. The built-in request limit uses the direct peer address, so a reverse proxy shares that limit unless the deployment adds trusted proxy handling. Hosting only `game/` on a static service supports the campaign; Daily Rush clearly reports that its server is unavailable. No remote service has been deployed.
+For eventual hosting, run `npm start` with `HOST=0.0.0.0`, the host's `PORT`, and `LEADERBOARD_FILE` pointing to persistent storage. Put HTTPS in front of the service and preserve the request Host header. The built-in request limit uses the direct peer address, so a reverse proxy shares that limit unless the deployment adds trusted proxy handling. Hosting only `game/` on a static service supports the campaign; the daily board and multiplayer rooms require the Node server. No remote service has been deployed.
+
+## Two-player rooms
+
+Choose **2P · Multiplayer**, enter a callsign and host a mode. Give your colleague the six-character room code or use **Copy invite link**. Both players must use the same running server. The host starts the match and can start a rematch with a fresh floorplan. The local preview can be played through two separate browser tabs or profiles.
+
+- **Shared Shift:** collect 60 crumbs, defeat the Manager and reach checkout together within 3½ minutes. Share ammunition and battery bonuses. Friendly fire is disabled. Stay beside a downed colleague for two seconds to revive them with three hearts. Both vacuums going down ends the shift.
+- **Snackdown:** first to seven KOs wins, or the most KOs after three minutes. Equal totals draw. KOs spill crumbs; respawning takes three seconds and grants two seconds of protection. Batteries give five seconds of invulnerability and free spread fire.
+
+Both modes use overhead play, keyboard/mouse and dual touch sticks. Pausing only stops your controls; the shared match continues. Reloading the page offers **Reconnect to your room**. Brief connection loss retries automatically; a player missing for 15 seconds ends the match. Leaving is explicit. Room scores never enter Daily Rush or campaign records.
+
+The server calculates movement, collisions, damage and results at 60 Hz. Clients send bounded controls through HTTP polling and receive snapshots; they never supply trusted positions or scores. A short visual prediction smooths motion without changing authoritative state. Rooms and their opaque session tokens are temporary, expire when idle and do not survive server restart. Room codes and callsigns are invitations and aliases, not account authentication. Keep one Node process for this implementation; it has been checked locally with two browser clients and simulated 4G, not on a public deployment under load.
 
 ## Development and verification
 
@@ -57,10 +68,12 @@ node scripts/playthrough.mjs --fps
 node scripts/playthrough.mjs --daily
 node scripts/arcade-playtest.mjs
 node scripts/feel-playtest.mjs
+node scripts/multiplayer-playtest.mjs
+node scripts/multiplayer-playtest.mjs --coop
 ```
 
 The simulation tests use Node's built-in test runner. The shipping and browser checks use the adjacent official `404-game-recipe` checkout; browser scripts expect local Google Chrome on macOS. Browser checks require the development server. `playthrough.mjs` finishes the campaign using real keyboard and pointer events with read-only telemetry. `touch-playtest.mjs` checks simultaneous movement, firing and dash, release, cancellation, pause and rotation.
 
 The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits); their catalog download is waiting for the owner’s workspace-access approval and they are not yet used at runtime.
 
-For the next development session, read [docs/resume.md](docs/resume.md). Hosting and contest submission have not been performed.
+For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. Hosting and contest submission have not been performed.

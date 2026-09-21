@@ -1,0 +1,60 @@
+{
+  "checks": [
+    "Landscape reconnect controls fit and restore the existing private lobby after a reload",
+    "Real taps create and leave rooms in portrait and landscape, with choices and lobby fitting without scrolling"
+  ],
+  "errors": [],
+  "viewports": [
+    {
+      "name": "portrait",
+      "width": 390,
+      "scroll": 390,
+      "panel": {
+        "x": 14,
+        "y": 126.140625,
+        "width": 362,
+        "height": 591.71875,
+        "top": 126.140625,
+        "right": 376,
+        "bottom": 717.859375,
+        "left": 14
+      },
+      "lobby": {
+        "x": 14,
+        "y": 147.640625,
+        "width": 362,
+        "height": 548.71875,
+        "top": 147.640625,
+        "right": 376,
+        "bottom": 696.359375,
+        "left": 14
+      }
+    },
+    {
+      "name": "landscape",
+      "width": 844,
+      "scroll": 844,
+      "panel": {
+        "x": 22,
+        "y": 54.34375,
+        "width": 800,
+        "height": 281.296875,
+        "top": 54.34375,
+        "right": 822,
+        "bottom": 335.640625,
+        "left": 22
+      },
+      "lobby": {
+        "x": 22,
+        "y": 22,
+        "width": 800,
+        "height": 347.484375,
+        "top": 22,
+        "right": 822,
+        "bottom": 369.484375,
+        "left": 22
+      }
+    }
+  ],
+  "result": "PASS"
+}
