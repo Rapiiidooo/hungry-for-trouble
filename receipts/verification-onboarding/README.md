@@ -16,4 +16,6 @@ This pass does not claim another complete campaign or multiplayer browser run. T
 
 ## Official gate
 
-The exact-commit local phone gate is the final archival step. Its original verdict and captures will be retained in `jam/`. A gate against the deployed URL remains submission work.
+The unmodified official harness passes on gameplay commit `df414d1621fb164e49a1e9a09ba846304623afc7` at `http://localhost:3001/`. The [original verdict](jam/verdict.txt) is copied byte for byte from `jam-console.txt`; its JSON and screenshots are in `jam/`. The first real tap opens the briefing, then the real held finger moves the robot after it finishes.
+
+Phone viewport 390×844 at 3×, 4G profile: **5.6 seconds** ready, **2.7 MB**, **8.7 metres** moved, **262** peak draw calls and **568,176** peak triangles. No errors or 404s. The 60 FPS median uses Chrome on the local Apple M5 Max, not a physical phone. A gate against the deployed URL remains submission work.
