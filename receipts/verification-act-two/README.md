@@ -46,4 +46,6 @@ Representative captures include the two-act map, portrait boss, landscape contro
 
 ## Official gate
 
-The unmodified phone/4G gate will be run against the local URL after creating the gameplay commit. Its exact commit, unedited verdict, JSON and screenshots will be stored in `jam/`. The final deployed URL will need its own gate run before entry submission.
+The unmodified official phone/4G gate passes for gameplay commit `4a298bd3618eb362b3c677e6f77f0fc288f9564e`. Readiness is 5.5 seconds, transfer is 2.6 MB and real finger input moves 8.7 m. Peak cost is 296 draw calls and 574,668 triangles; median reported frame rate is 60 fps, with zero console errors or missing resources. The original printed block is preserved in [jam/verdict.txt](jam/verdict.txt), alongside the complete JSON and loaded/started/moving screenshots.
+
+This run uses a 390 × 844 phone viewport at 3× device scale, 4 Mbps down, 1 Mbps up, 60 ms latency and 2× CPU slowdown on Chrome with the local Apple M5 Max renderer. It covers the opening solo aisle. The later-floor and multiplayer reports above have separate scopes. A physical-phone playtest and the final deployed-URL gate remain outstanding before entry submission.

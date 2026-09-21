@@ -2,7 +2,7 @@
 
 ## Current state
 
-The twenty-floor expansion is implemented and browser-tested. It adds a second act, four boss milestones, machinery, three enemy behaviours, two upgrades, robot portraits, clearer dash and original Overtime music. The 34 Node checks and 33-module ship check pass; detailed evidence is in `receipts/verification-act-two/README.md`. The exact-commit local phone gate is the remaining checkpoint in `tasks/act-two.md`. Atlas catalog publication is authorized **only after actual contest submission**; keep the Atlas project private until then. Its catalog download and integration remain deferred in `tasks/atlas-assets.md`. Public hosting, push and submission are not authorized yet.
+The twenty-floor expansion is complete and locally verified at gameplay commit `4a298bd3618eb362b3c677e6f77f0fc288f9564e`. It adds a second act, four boss milestones, machinery, three enemy behaviours, two upgrades, robot portraits, clearer dash and original Overtime music. The 34 Node checks, 33-module ship check and official local phone gate pass; evidence is in `receipts/verification-act-two/README.md`. Atlas catalog publication is authorized **only after actual contest submission**; keep the Atlas project private until then. Its catalog download and integration remain deferred in `tasks/atlas-assets.md`. Public hosting, push and submission are not authorized yet.
 
 Local preview: `http://localhost:3001`. Current server tool session: `98607`, command `npm run dev` / `node scripts/serve.mjs`. Identify its exact PID before restarting only this server. The abandoned coffin game and its port 3000 process remain separate. Game and repository text are English; conversation is French.
 
@@ -37,7 +37,7 @@ Thirty-four Node checks pass, including 3,600 seeded maps and a separate 1,407-m
 
 The latest focused probe verifies actual cart pushes, transport, flour and Overtime music on all ten new scenes (peak sampled 486 draws, 982,250 triangles). Smoke stabilizes at 210 geometries across eight retries. Touch, FPS receipt combat, a replay-accepted daily run and independent board reads pass. Both two-browser modes pass a complete match, rematch, reload reconnect, phone controls, shaped 4G and outage recovery. Portrait/landscape HUD, map and ending were visually inspected. The FPS probe ended the run before visor expiry; earlier expiry/reversal checks remain in `verification-feel/`.
 
-The previous official phone gate in `receipts/verification-multiplayer/jam/` certifies the earlier ten-floor commit `18dfa76c2a4d5bf334dff21028d2e0ee6043c2d7`. Record a new exact-commit verdict for this expansion before marking its task complete.
+The official local phone/4G gate passes at gameplay commit `4a298bd3618eb362b3c677e6f77f0fc288f9564e`: 5.5-second readiness, 2.6 MB, 8.7 m of real touch movement, peak 296 draws and 574,668 triangles, zero errors or missing resources. The untouched verdict, JSON and three captures are in `receipts/verification-act-two/jam/`. This covers the opening solo aisle with Chrome phone emulation, shaped 4G and 2× CPU slowdown on the local Apple M5 Max. It does not replace a physical-device playtest or the final live-URL gate.
 
 Browser bindings were unavailable after the Browser skill's documented discovery. Checks use the adjacent recipe's Puppeteer and local Google Chrome. Keep `isMobile` unchanged across rotation; changing it reloads the page. Tests close their own browser processes.
 
