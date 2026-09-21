@@ -1,0 +1,13 @@
+{
+  "updatedAt": "2026-09-21T19:59:20.063800+00:00",
+  "entryPullRequest": "https://github.com/404-Repo/404-game-jam/pull/6",
+  "playUrl": "https://trouble.rapidoai.dev/",
+  "sourceUrl": "https://github.com/Rapiiidooo/hungry-for-trouble",
+  "gameplayCommit": "30083a239c0c1c9739a50636e89a8525dfe647da",
+  "previousGameplayCommit": "be00e56e4e73ccbbd27891e6efa1fb93bad00614",
+  "wallet": "5HRAPidoCoZPYsLE2q7Ge8WWAfQ3XZpSYoz7aGYJYRmMQpt1",
+  "reason": "Owner-requested phone HUD and upgrade illustration fixes; game rules, scoring and saves unchanged",
+  "status": "Existing entry updated; organizer review and gate rerun pending",
+  "verdict": "PASS",
+  "verdictFile": "jam/verdict.txt"
+}

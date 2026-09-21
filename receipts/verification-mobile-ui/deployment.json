@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "playUrl": "https://trouble.rapidoai.dev/",
+  "gameplayCommit": "30083a239c0c1c9739a50636e89a8525dfe647da",
+  "healthStatus": 200,
+  "publicFilesMatchCommittedBytes": [
+    {
+      "path": "arcade.css",
+      "sha256": "c3743371b1820fc95155c1287f93dd58637999f1e18edd2ad591d9ff8bb1e659"
+    },
+    {
+      "path": "feel.css",
+      "sha256": "05c88821ef030899be3754349284d5efe5434d360c0430fa9703152ce24fe137"
+    },
+    {
+      "path": "upgrade-art.js",
+      "sha256": "9cc6b86cd10f72498abc8fcc4081290d6fd402a58b868cc046654c8e9445c7ca"
+    }
+  ]
+}
