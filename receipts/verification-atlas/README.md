@@ -23,4 +23,4 @@ The soundtrack loads after a player gesture and uses a 350 ms tail/intro crossfa
 - A separate Sound component fixture follows a complete real-time loop, observes nonzero output without restarting its source, switches to Overtime and back, and checks a deliberately undecodable response falling back to synthesized music. These are actual Web Audio measurements, not subjective listening: audio input is unavailable in this environment.
 - The first probe used one instantaneous RMS sample and failed during a quiet frame; the next identical playback passed. The final probe samples a 400 ms window to distinguish musical rests from persistent silence. No game audio change was made to suppress that test failure. Screenshots were visually inspected at desktop and phone sizes.
 
-The final public-URL gate must name the release commit that includes these files. Earlier Continue gates remain historical evidence for their own commit.
+The [final public-URL gate](../verification-release/README.md) passes for submitted commit `2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6`, which includes these files. Earlier Continue gates remain historical evidence for their own commit.

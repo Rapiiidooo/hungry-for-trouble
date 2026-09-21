@@ -1,6 +1,6 @@
 # 404 Game Jam readiness
 
-This records the rules supplied by the user, not a submitted entry or a claim of eligibility. Recheck the official repository before preparing the final public entry. Dedicated VM hosting is authorized and the verified build is deployed over public HTTPS. The owner also authorized public source publication and direct submission after implementation and verification, and confirmed eligibility.
+Submitted on 21 September 2026 in [official PR #6](https://github.com/404-Repo/404-game-jam/pull/6), with [public source](https://github.com/Rapiiidooo/hungry-for-trouble) and [live HTTPS play](https://trouble.rapidoai.dev/). Gameplay commit: `2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6`. The owner confirmed eligibility and authorized publication/submission. The PR awaits organizer review and their gate rerun. Rules were checked against the official repository before submission.
 
 ## Entry and receipts
 
@@ -16,7 +16,7 @@ Run the Node service when hosting: a static-only deployment cannot provide the r
 
 ## What makes this entry different
 
-Draft `what_i_found`: a supermarket vacuum eats its ammunition, then spends the same trail of crumbs fighting the store's bureaucracy. A stolen surveillance visor moves that chase into first person. In Shared Shift, both vacuums consume one ammunition bag and repair each other; in Snackdown, defeating a colleague spills the ammunition that can fuel the next chase.
+Submitted `what_i_found`: Your vacuum reloads by eating the crumbs that mark its escape route, so shooting spends what you just cleaned. A stolen surveillance visor briefly turns the same maze into a first-person firefight. Co-op partners share one ammo bag and repair each other; versus rivals spill their ammunition when defeated, feeding the next chase.
 
 This describes the implemented mechanics; it does not claim nobody else has tried them. Judges compare originality with the other shortlisted games.
 
@@ -33,10 +33,10 @@ Stage one is blind visual pairing, about six pairs per entry with three judges. 
 
 Total: **10 TAO**, paid in TAO to one Bittensor wallet per team within thirty days of the announcement. Dollar figures are indicative only. Ten entrants from the shortlist and honourable mentions receive an Atlas licence. The supplied community-vote window is **27 September to 28 September, 12:00 UTC**, one entrant account and one vote, excluding one's own entry.
 
-The user retains ownership. The supplied terms include a non-exclusive promotional licence to 404 and eligibility/rights requirements. Team membership, eligibility, rights declarations and the receiving wallet must be confirmed by the entrant when submitting. Do not invent these details.
+The user retains ownership. The supplied terms include a non-exclusive promotional licence to 404 and eligibility/rights requirements. The entrant confirmed eligibility and the entry lists team `Rapiiidooo`, public contact `@Rapido_ai` and wallet `later`, as permitted by the official template. A payout address will be needed if the organizers request one.
 
-## Remaining delivery work
+## Completed delivery
 
 The owner superseded the earlier Atlas timing condition with immediate permission for the three existing creations. They are now integrated and declared in `receipts/atlas/runtime-assets.json`, with focused evidence in `receipts/verification-atlas/`. The graph is private again; the three published catalog assets remain available without any public project link.
 
-The dedicated VM and HTTPS address are live. DNS, TLS and a certificate-renewal dry run pass. The owner confirmed eligibility and authorized direct submission after the final checks. Publish the audited source with its real history, deploy the exact gameplay commit, run its official public-URL gate and attach the unedited verdict to the entry PR. Use the authenticated GitHub handle, its public X contact and `wallet: "later"`; no private wallet or contact details need to be guessed. Keep the submitted commit stable after opening the entry.
+The dedicated server and HTTPS address are live. The final public-URL gate passes with 2.1-second readiness, 3.5 MB, real touch movement, zero errors and zero missing files. Its exact block is pasted into the PR. [Release evidence](../receipts/verification-release/README.md) also records public Continue, shared scoring, co-op/versus touch/reconnect, restart persistence and backup cleanup. The source keeps its real development history, with the first commit after the opening date. All private operational details remain outside this repository. Keep the submitted gameplay commit stable during review; later documentation receipts do not change it.

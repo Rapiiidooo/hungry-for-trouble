@@ -4,6 +4,10 @@
 
 The user requested the next original maze-chase/shooter game after rejecting the previous game's contract-heavy progression and similar-feeling districts. This build prioritizes the action loop before menus and progression. The initial checkpoint is commit `986b0b5`. Sections below preserve successive historical checkpoints. The twenty-floor rescue is documented in [verification-act-two/README.md](verification-act-two/README.md); the subsequent five-floor key-and-lock chapter is in [verification-locked-wing/README.md](verification-locked-wing/README.md).
 
+## Submitted release
+
+The game is live at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/) and submitted in [official PR #6](https://github.com/404-Repo/404-game-jam/pull/6). [Public release evidence](verification-release/README.md) records the final gate and live browser checks for gameplay commit `2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6`. [Atlas integration](verification-atlas/README.md) declares the three media files now used at runtime. Later sections retain their original historical scope, including earlier Atlas and hosting limitations that are now resolved.
+
 ## Visual references
 
 Built-in ImageGen generated the original isolated references in `references/`. Prompts are recorded in `reference-prompts.json` and `reference-prompts-2.json`. Each exact prompt is assembled as:
