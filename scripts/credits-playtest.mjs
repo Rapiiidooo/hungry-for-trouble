@@ -28,13 +28,39 @@ page.on("console", (e) => {
   if (e.type() === "error") report.errors.push(e.text());
 });
 try {
-  await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
+  await page.setViewport({
+    width: 1440,
+    height: 900,
+    deviceScaleFactor: 1,
+  });
   await page.goto("http://localhost:3001/", { waitUntil: "networkidle0" });
   await page.waitForFunction(() => window.__READY__);
   await page.click("#open-settings");
   await page.click("#open-credits");
   await page.waitForFunction(() => window.__GAME__.credits?.elapsed > 1);
   await shot("opening-desktop");
+  const at = (time) =>
+    page.waitForFunction(
+      (value) => window.__GAME__.credits.elapsed >= value,
+      { timeout: 30000 },
+      time,
+    );
+  const robot = (gag) =>
+    page.$eval(`[data-gag="${gag}"]`, (el) => ({
+      x: el.getBoundingClientRect().x,
+      facing: new DOMMatrix(
+        getComputedStyle(el.querySelector(".credit-machine")).transform,
+      ).a,
+      pose: [...el.querySelectorAll("*")]
+        .map(
+          (part) =>
+            part.getAttribute("style") + part.getAttribute("transform"),
+        )
+        .join(";"),
+      caption: getComputedStyle(el.querySelector(".credit-caption"))
+        .opacity,
+      visible: !el.hidden,
+    }));
   const text = await page.$eval("#credits-roll", (el) => el.textContent);
   for (const name of [
     "Rapido",
@@ -47,40 +73,73 @@ try {
     "Lyria",
     "Gemini",
     "Web Audio",
+    "INSPIRATIONS",
   ])
     assert.ok(text.includes(name), name);
   assert.ok(
     text.includes("not used in this build"),
     "Atlas studies are attributed accurately",
   );
+  await at(5.8);
+  const braking = await robot("brake");
+  await at(7.6);
+  const stopped = await robot("brake");
+  assert.ok(braking.visible && stopped.visible);
+  assert.ok(
+    Math.abs(stopped.x - braking.x) < 1,
+    "The vacuum holds its position after braking",
+  );
+  assert.equal(stopped.caption, "1");
   await page.click("#credits-pause");
   const paused = await page.evaluate(() => window.__GAME__.credits.elapsed);
+  const frozen = await robot("brake");
   await sleep(450);
   assert.equal(
     await page.evaluate(() => window.__GAME__.credits.elapsed),
     paused,
   );
+  assert.deepEqual(
+    await robot("brake"),
+    frozen,
+    "Pause freezes the vacuum, wheels, dust and caption too",
+  );
+  await shot("braking-desktop");
   await page.click("#credits-pause");
   await page.waitForFunction(
     (time) => window.__GAME__.credits.elapsed > time + 0.3,
     {},
     paused,
   );
-  await page.waitForFunction(() => window.__GAME__.credits.elapsed > 13);
-  const traffic = await page.$eval(
-    ".credit-vacuum",
-    (el) => el.style.transform,
+  await at(10.2);
+  assert.ok(
+    (await robot("brake")).x > stopped.x + 10,
+    "The stopped vacuum accelerates away",
   );
-  await sleep(300);
-  assert.notEqual(
-    await page.$eval(".credit-vacuum", (el) => el.style.transform),
-    traffic,
+  await at(21);
+  const peeking = await robot("peek");
+  assert.ok(peeking.visible && peeking.facing < 0);
+  await shot("peek-desktop");
+  await at(24.5);
+  const turned = await robot("peek");
+  assert.ok(
+    turned.x > peeking.x && turned.facing > 0,
+    "The second vacuum turns and leaves through its entrance",
   );
   await shot("crew-desktop");
   report.checks.push(
-    "Credits roll, passing vacuum gags and pause/resume work; tool credits distinguish Atlas studies from runtime media",
+    "The braking gag holds for its caption, pause freezes every effect, and the peeking vacuum turns back; tool attribution remains accurate",
   );
   await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+  await at(35.5);
+  const reversing = await robot("reverse");
+  await shot("reverse-phone");
+  await at(40.5);
+  const backedUp = await robot("reverse");
+  assert.ok(reversing.visible && backedUp.visible);
+  assert.ok(
+    backedUp.x < reversing.x && backedUp.facing > 0,
+    "The third vacuum travels backwards with its face still pointing right",
+  );
   await shot("crew-phone");
   const bounds = await page.evaluate(() =>
     ["credits-pause", "credits-skip"].map((id) =>
@@ -89,12 +148,23 @@ try {
   );
   assert.ok(
     bounds.every(
-      (r) => r.left >= 0 && r.right <= 390 && r.bottom <= 844 && r.height >= 44,
+      (r) =>
+        r.left >= 0 && r.right <= 390 && r.bottom <= 844 && r.height >= 44,
     ),
   );
+  await at(49);
+  assert.equal(
+    await page.evaluate(() => window.__GAME__.credits.finished),
+    false,
+    "The roll lasts longer than the previous 48 seconds",
+  );
   await page.waitForFunction(() => window.__GAME__.credits.finished, {
-    timeout: 50000,
+    timeout: 20000,
   });
+  report.duration = await page.evaluate(
+    () => window.__GAME__.credits.elapsed,
+  );
+  assert.ok(report.duration >= 60 && report.duration < 60.2);
   assert.match(
     await page.$eval("#credits-finale", (el) => el.textContent),
     /Rapido/,
@@ -102,9 +172,12 @@ try {
   assert.equal(await page.$eval("#credits-twist", (el) => el.hidden), true);
   await shot("made-by-phone");
   await page.click("#credits-continue");
-  assert.equal(await page.$eval("#settings-screen", (el) => el.hidden), false);
+  assert.equal(
+    await page.$eval("#settings-screen", (el) => el.hidden),
+    false,
+  );
   report.checks.push(
-    "The natural ending shows Made by Rapido; manual credits do not spoil the basement and return to Settings",
+    "The reverse gag and phone controls work; the 60-second ending shows Made by Rapido without spoiling the basement",
   );
   await page.emulateMediaFeatures([
     { name: "prefers-reduced-motion", value: "reduce" },
@@ -120,7 +193,10 @@ try {
     transform,
   );
   assert.equal(
-    await page.$eval(".credits-traffic", (el) => getComputedStyle(el).display),
+    await page.$eval(
+      ".credits-traffic",
+      (el) => getComputedStyle(el).display,
+    ),
     "none",
   );
   await page.mouse.move(190, 420);
@@ -128,6 +204,12 @@ try {
   await sleep(300);
   assert.ok(await page.$eval("#credits-window", (el) => el.scrollTop > 0));
   await shot("reduced-motion-phone");
+  await page.$$eval(".credit-block", (blocks) =>
+    blocks
+      .find((block) => block.textContent.includes("INSPIRATIONS"))
+      .scrollIntoView({ block: "center" }),
+  );
+  await shot("inspirations-phone");
   await page.click("#credits-skip");
   await page.click("#credits-continue");
   await page.emulateMediaFeatures([
@@ -141,8 +223,14 @@ try {
   await page.click("#credits-continue");
   await page.click("#open-credits");
   await page.keyboard.press("Escape");
-  assert.equal(await page.$eval("#credits-screen", (el) => el.hidden), true);
-  assert.equal(await page.$eval("#settings-screen", (el) => el.hidden), false);
+  assert.equal(
+    await page.$eval("#credits-screen", (el) => el.hidden),
+    true,
+  );
+  assert.equal(
+    await page.$eval("#settings-screen", (el) => el.hidden),
+    false,
+  );
   report.checks.push(
     "Reduced motion uses a manually scrollable list; skip, keyboard return and landscape controls remain usable",
   );
@@ -154,7 +242,10 @@ try {
   process.exitCode = 1;
   await shot("failure").catch(() => {});
 } finally {
-  await writeFile(new URL("report.json", out), JSON.stringify(report, null, 2));
+  await writeFile(
+    new URL("report.json", out),
+    JSON.stringify(report, null, 2),
+  );
   console.log(JSON.stringify(report, null, 2));
   await browser.close();
 }

@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "input": "Real Settings clicks, read-only layout measurements.",
+  "bounds": {
+    "top": 75.75949096679688,
+    "bottom": 180.13449096679688,
+    "viewportTop": 46,
+    "viewportBottom": 240
+  },
+  "errors": []
+}

@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "The braking gag holds for its caption, pause freezes every effect, and the peeking vacuum turns back; tool attribution remains accurate",
+    "The reverse gag and phone controls work; the 60-second ending shows Made by Rapido without spoiling the basement",
+    "Reduced motion uses a manually scrollable list; skip, keyboard return and landscape controls remain usable"
+  ],
+  "errors": [],
+  "input": "Real settings clicks, scroll and keyboard; read-only presentation snapshots. No save fixtures or submitted scores.",
+  "duration": 60.01430000000148,
+  "result": "PASS"
+}

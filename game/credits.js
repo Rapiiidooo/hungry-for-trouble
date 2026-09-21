@@ -56,14 +56,46 @@ const ROLES = [
     "And every brave player who asked: is that supposed to happen?",
   ],
   [
+    "INSPIRATIONS",
+    "The arcade classics",
+    "Maze chases, frantic firefights, survival arenas and glorious power-ups.",
+  ],
+  [
     "SPECIAL THANKS",
     "You",
     "Please leave the store exactly as you didn't find it.",
   ],
 ];
 
+const ROLL_SECONDS = 60;
+const GAGS = [
+  ["brake", "#c94732", "BRAKES. MOSTLY OPTIONAL."],
+  ["peek", "#6c8fb8", "NOPE. WRONG CREDITS."],
+  ["reverse", "#b98442", "I MEANT TO DO THAT."],
+];
+
 function vacuum(color) {
-  return `<svg viewBox="0 0 150 90" aria-hidden="true"><ellipse cx="72" cy="80" rx="65" ry="6" fill="#000" opacity=".25"/><path d="M32 56h65v17H32z" fill="#152132"/><circle cx="44" cy="70" r="13" fill="#172231" stroke="#738ca7" stroke-width="4"/><circle cx="86" cy="70" r="13" fill="#172231" stroke="#738ca7" stroke-width="4"/><ellipse cx="61" cy="45" rx="39" ry="25" fill="${color}"/><path d="M22 43q38 25 78 0v12q-38 27-78 0z" fill="#f0f2f3"/><ellipse cx="61" cy="34" rx="36" ry="20" fill="#f0f2f3"/><path d="M43 13h31v9H43z" fill="${color}"/><path d="m45 31 38-3v13H45z" fill="#263650"/><path d="M50 33h7v6h-7zm22-2h7v6h-7z" fill="#a4d9ed"/><path d="M93 47q33 0 28 24" fill="none" stroke="#344158" stroke-width="13"/><path d="M93 47q33 0 28 24" fill="none" stroke="#8297ad" stroke-width="3" stroke-dasharray="3 5"/><path d="M109 69h32v9h-32z" fill="${color}"/></svg>`;
+  const wheels = [44, 86]
+    .map(
+      (x) =>
+        `<circle cx="${x}" cy="70" r="13" fill="#172231" stroke="#738ca7" stroke-width="4"/><g class="credit-spokes" data-x="${x}" stroke="#c3cedc" stroke-width="2"><path d="M${x - 8} 70h16M${x} 62v16"/></g>`,
+    )
+    .join("");
+  return `<svg viewBox="0 0 150 90" aria-hidden="true"><ellipse cx="72" cy="80" rx="65" ry="6" fill="#000" opacity=".25"/><path d="M32 56h65v17H32z" fill="#152132"/>${wheels}<ellipse cx="61" cy="45" rx="39" ry="25" fill="${color}"/><path d="M22 43q38 25 78 0v12q-38 27-78 0z" fill="#f0f2f3"/><ellipse cx="61" cy="34" rx="36" ry="20" fill="#f0f2f3"/><path d="M43 13h31v9H43z" fill="${color}"/><path d="m45 31 38-3v13H45z" fill="#263650"/><path class="credit-eyes" d="M50 33h7v6h-7zm22-2h7v6h-7z" fill="#a4d9ed"/><path d="M93 47q33 0 28 24" fill="none" stroke="#344158" stroke-width="13"/><path d="M93 47q33 0 28 24" fill="none" stroke="#8297ad" stroke-width="3" stroke-dasharray="3 5"/><path d="M109 69h32v9h-32z" fill="${color}"/></svg>`;
+}
+
+function poseAt(time, frames) {
+  const index = frames.findIndex((frame) => frame[0] >= time);
+  const end = frames[Math.max(1, index)],
+    start = frames[Math.max(0, index - 1)];
+  const part = Math.max(
+    0,
+    Math.min(1, (time - start[0]) / (end[0] - start[0])),
+  );
+  const eased = part * part * (3 - 2 * part);
+  return start
+    .slice(1)
+    .map((value, i) => value + (end[i + 1] - value) * eased);
 }
 
 export function createCredits(root, { reducedMotion, onExit }) {
@@ -76,16 +108,10 @@ export function createCredits(root, { reducedMotion, onExit }) {
         <p class="credits-disclaimer">No vacuums were harmed.<br>Several warranties were invalidated.</p>
       </div>
     </div>
-    <div class="credits-traffic" aria-hidden="true">${[
-      ["#c94732", "I'M STILL ON THE CLOCK."],
-      ["#6c8fb8", "WHO DROPPED THESE CREDITS?"],
-      ["#b98442", "404: LUNCH BREAK NOT FOUND."],
-    ]
-      .map(
-        ([color, line]) =>
-          `<div class="credit-vacuum"><span>${line}</span>${vacuum(color)}</div>`,
-      )
-      .join("")}</div>
+    <div class="credits-traffic" aria-hidden="true">${GAGS.map(
+      ([gag, color, line]) =>
+        `<div class="credit-vacuum" data-gag="${gag}"><span class="credit-caption">${line}</span><div class="credit-machine"><div class="credit-dust"><i></i><i></i><i></i></div>${vacuum(color)}</div></div>`,
+    ).join("")}</div>
     <div id="credits-finale" class="credits-finale" hidden>
       <span>MADE BY</span><h2>Rapido.</h2><p>Chief orchestrator. Professional bad influence.</p>
       <div id="credits-twist" hidden><small>YOU MISSED A SPOT.</small><h3>The adventure<br><em>continues.</em></h3><p>A service lift. Ten hidden aisles. You're not clocking out yet.</p></div>
@@ -95,7 +121,16 @@ export function createCredits(root, { reducedMotion, onExit }) {
   const find = (id) => root.querySelector(`#${id}`);
   const roll = find("credits-roll"),
     viewport = find("credits-window");
-  const runners = [...root.querySelectorAll(".credit-vacuum")];
+  const runners = [...root.querySelectorAll(".credit-vacuum")].map(
+    (el) => ({
+      el,
+      machine: el.querySelector(".credit-machine"),
+      caption: el.querySelector(".credit-caption"),
+      dust: el.querySelector(".credit-dust"),
+      eyes: el.querySelector(".credit-eyes"),
+      wheels: [...el.querySelectorAll(".credit-spokes")],
+    }),
+  );
   let state = null;
   function finish() {
     if (!state || state.finished) return;
@@ -126,7 +161,10 @@ export function createCredits(root, { reducedMotion, onExit }) {
     find("credits-pause").textContent = state.paused
       ? "RESUME SCROLL"
       : "PAUSE SCROLL";
-    find("credits-pause").setAttribute("aria-pressed", String(state.paused));
+    find("credits-pause").setAttribute(
+      "aria-pressed",
+      String(state.paused),
+    );
   };
   return {
     get active() {
@@ -158,20 +196,69 @@ export function createCredits(root, { reducedMotion, onExit }) {
       const reduced = reducedMotion.matches;
       root.classList.toggle("credits-reduced", reduced);
       find("credits-pause").hidden = reduced;
-      if (!state.paused && !reduced) state.elapsed += dt;
-      const portion = Math.min(1, state.elapsed / 48);
-      const start = viewport.clientHeight * 0.45;
+      if (!state.paused && !reduced && !state.finished) state.elapsed += dt;
+      const portion = Math.min(1, state.elapsed / ROLL_SECONDS);
+      const start = root.clientHeight < 560 ? 0 : viewport.clientHeight * 0.45;
       roll.style.transform = reduced
         ? "none"
         : `translateY(${start - portion * (start + roll.scrollHeight + 20)}px)`;
       for (const [i, runner] of runners.entries()) {
-        const phase = ((state.elapsed - i * 6) % 19) / 5.5;
-        runner.hidden = reduced || phase < 0 || phase > 1;
-        const left = i % 2 ? 1 - phase : phase;
-        runner.style.transform = `translate(${left * (root.clientWidth + 240) - 180}px, ${Math.sin(state.elapsed * 17) * 2}px)`;
-        runner.style.bottom = `${12 + i * 24}%`;
-        runner.querySelector("svg").style.transform =
-          i % 2 ? "scaleX(-1)" : "none";
+        const phase = ((state.elapsed - 2 - i * 15) % 45) / 11;
+        runner.el.hidden =
+          reduced || state.finished || phase < 0 || phase > 1;
+        if (runner.el.hidden) continue;
+        const width = runner.el.offsetWidth,
+          edge = root.clientWidth;
+        const left = Math.max(16, (edge - 590) / 2 - width - 24);
+        const right = edge - left - width,
+          offLeft = -width - 40,
+          offRight = edge + 40;
+        // A single clock freezes the roll, wheels, captions and dust together.
+        const frames =
+          i === 0
+            ? [
+                [0, offLeft, 0, 1],
+                [0.3, left, -9, 1],
+                [0.39, left, 4, 1],
+                [0.46, left, 0, 1],
+                [0.64, left, 0, 1],
+                [1, offRight, -3, 1],
+              ]
+            : i === 1
+              ? [
+                  [0, offRight, 0, -1],
+                  [0.3, right, 0, -1],
+                  [0.49, right, 0, -1],
+                  [0.61, right, 0, 1],
+                  [1, offRight, -3, 1],
+                ]
+              : [
+                  [0, offRight, 0, 1],
+                  [0.34, right, 0, 1],
+                  [0.41, right + 18, -6, 1],
+                  [0.48, right, 4, 1],
+                  [0.57, right, 0, 1],
+                  [1, offLeft, 2, 1],
+                ];
+        const [x, tilt, facing] = poseAt(phase, frames);
+        runner.el.style.transform = `translateX(${x}px)`;
+        runner.machine.style.transform = `rotate(${tilt}deg) scaleX(${facing})`;
+        runner.eyes.style.transform = `scaleY(${(state.elapsed + i) % 5.8 < 0.16 ? 0.12 : 1})`;
+        for (const wheel of runner.wheels)
+          wheel.setAttribute(
+            "transform",
+            `rotate(${(x / width) * 650} ${wheel.dataset.x} 70)`,
+          );
+        const caption = Math.max(
+          0,
+          Math.min(1, (phase - 0.24) * 12, (0.76 - phase) * 12),
+        );
+        runner.caption.style.opacity = String(caption);
+        runner.caption.style.transform = `translateY(${(1 - caption) * 8}px) rotate(-4deg)`;
+        const puff = (phase - (i === 0 ? 0.3 : 0.53)) / 0.15;
+        runner.dust.style.opacity =
+          puff > 0 && puff < 1 ? String((1 - puff) * 0.65) : "0";
+        runner.dust.style.transform = `translate(${-puff * 22}px, ${-puff * 8}px) scale(${1 + Math.max(0, puff)})`;
       }
       if (portion >= 1) finish();
     },

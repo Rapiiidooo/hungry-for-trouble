@@ -51,7 +51,7 @@
 }
 .credits-window {
   position: absolute;
-  inset: 72px 0 90px;
+  inset: 72px 0 210px;
   overflow: hidden;
   mask-image: linear-gradient(transparent, #000 7%, #000 92%, transparent);
 }
@@ -104,7 +104,8 @@
 }
 .credits-traffic {
   position: absolute;
-  inset: 90px 0;
+  inset: auto 0 90px;
+  height: 140px;
   pointer-events: none;
   overflow: hidden;
   z-index: 2;
@@ -112,14 +113,19 @@
 .credit-vacuum {
   position: absolute;
   left: 0;
+  bottom: 8px;
   width: 150px;
+}
+.credit-machine {
+  position: relative;
+  transform-origin: 50% 80%;
 }
 .credit-vacuum svg {
   display: block;
   width: 150px;
   filter: drop-shadow(0 6px 3px #0005);
 }
-.credit-vacuum span {
+.credit-caption {
   display: block;
   padding: 8px 10px;
   background: #f0f2f3;
@@ -128,6 +134,35 @@
   font: 800 9px/1.5 var(--sans);
   text-align: center;
   transform: rotate(-4deg);
+}
+.credit-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.credit-dust {
+  position: absolute;
+  left: 12%;
+  bottom: 9%;
+  opacity: 0;
+}
+.credit-dust i {
+  position: absolute;
+  width: 14px;
+  height: 10px;
+  border-radius: 50%;
+  background: #9fb4cf;
+}
+.credit-dust i:nth-child(2) {
+  width: 10px;
+  height: 8px;
+  left: -12px;
+  top: -8px;
+}
+.credit-dust i:nth-child(3) {
+  width: 6px;
+  height: 5px;
+  left: -22px;
+  top: -2px;
 }
 .credits-finale {
   position: absolute;
@@ -173,10 +208,12 @@
   margin-top: 30px;
 }
 .credits-finished .credits-window,
+.credits-finished .credits-traffic,
 .credits-finished .credits-controls {
   display: none;
 }
 .credits-reduced .credits-window {
+  bottom: 90px;
   overflow-y: auto;
   mask-image: none;
   padding-top: 24px;
@@ -212,7 +249,11 @@
     padding: 10px;
   }
   .credits-window {
-    inset: 60px 0 78px;
+    inset: 60px 0 185px;
+  }
+  .credits-traffic {
+    bottom: 78px;
+    height: 126px;
   }
   .credits-roll {
     padding: 0 24px;
@@ -246,7 +287,23 @@
     padding: 8px 24px;
   }
   .credits-window {
-    inset: 46px 0 62px;
+    inset: 46px 0 150px;
+  }
+  .credits-intro h2 {
+    font-size: 58px;
+    margin: 12px 0;
+  }
+  .credits-traffic {
+    bottom: 62px;
+    height: 108px;
+  }
+  .credit-vacuum,
+  .credit-vacuum svg {
+    width: 100px;
+  }
+  .credit-caption {
+    font-size: 8px;
+    padding: 4px 6px;
   }
   .credits-finale {
     inset: 46px 0 0;
