@@ -44,4 +44,6 @@ That fixture caught a landscape clipping bug: the discovery panel's vertical mar
 
 ## Delivery
 
-The official local phone/4G gate will be recorded against the implementation commit. No deployment, push or contest submission is part of this task. A live-URL gate is still required for entry.
+The official local phone/4G gate is **PASS** against implementation commit `2445aeb86b29f60998c52b69deacf7b63685d443`. Its [unedited printed verdict](jam/verdict.txt) records 5.7-second readiness, 2.7 MB, a real start tap and 8.7 metres of finger movement, 262 peak draws, 568,176 peak triangles, no errors and no missing files. It uses a 390×844 viewport at 3×, 4 Mbps down, 1 Mbps up, 60 ms latency and 2× CPU slowdown on the local Apple M5 Max. This covers the opening aisle; later floors have the separate checks above. It is not a physical-phone benchmark or live-URL submission gate.
+
+No deployment, push or contest submission was performed. A live-URL gate is still required for entry.
