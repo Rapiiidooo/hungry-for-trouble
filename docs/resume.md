@@ -2,7 +2,7 @@
 
 ## Current state
 
-The mission, discovery and finale pass is implemented. Final verification and the exact-commit local gate are being archived in `receipts/verification-reveal/`; check `tasks/reveal-and-finale.md` until this checkpoint is finalized. Atlas catalogue publication remains authorized **only after actual contest submission**. Keep the generated Atlas project private; its deferred integration is tracked in `tasks/atlas-assets.md`. No deployment, push or contest entry is authorized in this pass.
+The mission, discovery and finale pass is complete and locally verified at gameplay commit `8fda68d020d4a1e95e5134a7a9e2418b5ff5b34d`. The 38 Node checks, 37-module ship check and exact-commit local phone gate pass. Evidence is archived in `receipts/verification-reveal/`. Atlas catalogue publication remains authorized **only after actual contest submission**. Keep the generated Atlas project private; its deferred integration is tracked in `tasks/atlas-assets.md`. No deployment, push or contest entry is authorized in this pass.
 
 Local preview: `http://localhost:3001`. Current server tool session: `1848`, command `npm run dev` / `node scripts/serve.mjs`. Identify the exact PID before restarting only this server. The abandoned coffin game and its port 3000 process remain separate. Game and repository text are English; conversation is French.
 
@@ -39,7 +39,7 @@ Evidence is in `receipts/verification-reveal/README.md`. The first real-input ca
 
 Focused browser checks cover the pre-play mission in desktop/portrait/landscape, ten initially visible nodes, real shield absorption, transport camera interpolation and boss health in both views. Touch, FPS reversal/reduced motion, simultaneous FPS touch, a server-accepted daily run read by another browser, and a full co-op match with rematch/reconnect/4G/outage pass. Smoke stabilizes at 210 geometries after 215 on the initial run. Browser fixtures preload practice unlocks only; combat uses real inputs and read-only telemetry. The local tests do not certify a physical phone or public deployment.
 
-The official local gate must be archived against the final gameplay SHA before closing this task. Preserve its printed verdict unchanged. The earlier `verification-act-two/jam/` gate certifies its historical commit only, not this new build.
+The official local gate passes against gameplay SHA `8fda68d020d4a1e95e5134a7a9e2418b5ff5b34d`: ready in 5.5 seconds, 2.6 MB, 8.7 metres of real-touch movement, 296 peak draw calls, 574,668 peak triangles and no errors or 404s. Its printed verdict is unchanged in `receipts/verification-reveal/jam/verdict.txt`. This is a 390×844 Chrome phone viewport under the harness's 4G profile, rendered on the local Apple M5 Max, not a physical-phone benchmark or a live-URL submission gate.
 
 Browser bindings were unavailable after the Browser skill's documented discovery. Checks use the adjacent recipe's Puppeteer and local Google Chrome. Keep `isMobile` unchanged across a running scene; changing it reloads the page. Tests close only their own browsers.
 

@@ -38,4 +38,6 @@ Visual inspection corrected a landscape menu that clipped its secondary buttons,
 
 ## Official gate
 
-The exact-commit local phone/4G gate is the last archival step. Its eventual original verdict belongs in `jam/verdict.txt`, with JSON and screenshots. The prior act-two verdict certifies its historical SHA only. The final live-URL gate and physical-device playtest remain delivery work after hosting is authorized.
+The unmodified recipe harness passes against gameplay commit `8fda68d020d4a1e95e5134a7a9e2418b5ff5b34d` at `http://localhost:3001/`. The [original verdict](jam/verdict.txt) is copied byte for byte from `jam-console.txt`; `jam/` also contains its JSON and loaded, started and moving screenshots.
+
+The 390×844 phone viewport at 3× uses the harness's 4G profile and real touch: ready in **5.5 seconds**, **2.6 MB**, **8.7 metres** moved, **296** peak draw calls and **574,668** peak triangles. There are no console errors or 404s. The median 60 FPS was measured on local Chrome with the Apple M5 Max renderer; it is not a physical-phone benchmark. The final live-URL gate and physical-device playtest remain delivery work after hosting is authorized.
