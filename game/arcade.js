@@ -159,12 +159,12 @@ export function drawRoute(container, progress, current, select) {
     container.append(node);
   });
 }
-export async function api(url, body) {
+export async function api(url, body, timeout = 12000) {
   const response = await fetch(url, {
     method: body === undefined ? "GET" : "POST",
     headers: body === undefined ? {} : { "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
-    signal: AbortSignal.timeout(12000),
+    signal: AbortSignal.timeout(timeout),
   });
   const data = await response
     .json()
@@ -185,7 +185,16 @@ export function drawBoard(container, entries) {
     for (const [tag, value] of [
       ["span", String(entry.rank).padStart(2, "0")],
       ["b", entry.name],
-      ["small", entry.survived ? "SURVIVED" : `${entry.seconds}s`],
+      [
+        "small",
+        entry.floor
+          ? entry.survived
+            ? "ESCAPED"
+            : `AISLE ${entry.floor}`
+          : entry.survived
+            ? "SURVIVED"
+            : `${entry.seconds}s`,
+      ],
       ["strong", entry.score.toLocaleString("en-US")],
     ]) {
       const el = document.createElement(tag);

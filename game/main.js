@@ -16,6 +16,7 @@ import { RADIO, SPEAKERS, MISSION, portrait, storyCard } from "./story.js";
 import { campaignEffects } from "./campaign-fx.js";
 import { presentationEffects } from "./presentation-fx.js";
 import { escapeScene, ESCAPE_SECONDS, ESCAPE_LINES } from "./escape-scene.js";
+import { createCredits } from "./credits.js";
 import { ventPhase } from "./machines.js";
 import { RoomClient } from "./room-client.js";
 import { newMatch } from "./multiplayer-sim.js";
@@ -105,6 +106,18 @@ let floorEffects,
   crew = [];
 let dashTaught = false;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+const credits = createCredits(ui["credits-screen"], {
+  reducedMotion,
+  onExit: (reveal) => {
+    if (reveal) {
+      ui["discovery-screen"].hidden = false;
+      ui["discovery-continue"].focus({ preventScroll: true });
+    } else {
+      ui["settings-screen"].hidden = false;
+      ui["open-credits"].focus();
+    }
+  },
+});
 let fpsCamera,
   weapon,
   ceiling,
@@ -119,6 +132,9 @@ let accumulator = 0,
   practiceLevel = 0,
   dailyAttempt = null,
   dailyLog = [];
+let campaignRun = null,
+  boardScope = "daily",
+  boardRequest = 0;
 let selectedStage = 0,
   dailyConfig = null,
   submitting = false,
@@ -418,34 +434,70 @@ function openRoute() {
   chooseStage(mode === "playing" ? game.levelIndex : progress.unlocked);
 }
 
-function openDaily(board = false) {
+function openDaily(board = false, scope = "daily") {
+  boardScope = scope;
+  const general = scope === "general";
   ui["daily-screen"].classList.toggle("board-view", board);
+  ui["board-tabs"].hidden = !board;
+  ui["board-eyebrow"].textContent = board
+    ? "EMPLOYEE RECORDS"
+    : "ONE DAY. SAME MESS. EVERYBODY.";
   ui["daily-title"].innerHTML = board
-    ? "Daily <em>leaderboard.</em>"
+    ? "High <em>scores.</em>"
     : "Daily <em>rush.</em>";
   ui["daily-intro"].textContent = board
-    ? "Today's best runs. Same challenge for everyone."
+    ? general
+      ? "Your best campaign run, starting from aisle one."
+      : "Today's best runs. Same challenge for everyone."
     : "Survive 90 seconds. Chain takedowns. Climb the shared board.";
+  ui["daily-start"].hidden = general;
+  ui["board-campaign-start"].hidden = !general;
+  ui["board-heading-title"].textContent = general
+    ? "CAMPAIGN TOP 30"
+    : "TODAY'S TOP 30";
+  ui["board-note"].textContent = general
+    ? "Your best campaign score. No daily reset. Level Select runs do not count."
+    : "Your best daily score. Resets at 00:00 UTC.";
+  ui["board-results"].setAttribute("aria-labelledby", `board-${scope}`);
+  for (const kind of ["daily", "general"]) {
+    ui[`board-${kind}`].setAttribute("aria-selected", String(kind === scope));
+    ui[`board-${kind}`].tabIndex = kind === scope ? 0 : -1;
+  }
   ui["daily-screen"].hidden = false;
   refreshBoard();
 }
 
 async function refreshBoard() {
+  const request = ++boardRequest,
+    scope = boardScope;
   ui["daily-start"].disabled = true;
-  ui["daily-status"].textContent = "Connecting to today's board…";
+  ui["daily-status"].textContent = "Loading scores…";
+  ui.leaderboard.replaceChildren();
+  ui["board-results"].setAttribute("aria-busy", "true");
   try {
-    dailyConfig = await api("/api/daily");
-    const board = await api(`/api/leaderboard?day=${dailyConfig.day}`);
-    ui["daily-date"].textContent = dailyConfig.day;
-    ui["daily-status"].textContent =
-      `${LEVELS[dailyConfig.levelIndex].name} · Faster waves every 18 seconds · ${board.players} player${board.players === 1 ? "" : "s"}`;
+    const config = scope === "daily" ? await api("/api/daily") : null;
+    const board = await api(
+      config
+        ? `/api/leaderboard?day=${config.day}`
+        : "/api/leaderboard?scope=general",
+    );
+    if (request !== boardRequest) return;
+    const count = `${board.players} player${board.players === 1 ? "" : "s"}`;
+    if (config) {
+      dailyConfig = config;
+      ui["daily-date"].textContent = config.day;
+      ui["daily-status"].textContent = `${config.day} UTC · ${count}`;
+      ui["daily-start"].disabled = false;
+    } else ui["daily-status"].textContent = `ALL TIME · ${count}`;
     drawBoard(ui.leaderboard, board.entries);
-    ui["daily-start"].disabled = false;
   } catch (error) {
-    dailyConfig = null;
+    if (request !== boardRequest) return;
+    if (scope === "daily") dailyConfig = null;
     ui["daily-status"].textContent =
       `${error.message} Campaign and practice are still available.`;
-    ui.leaderboard.replaceChildren();
+  } finally {
+    if (request === boardRequest)
+      ui["board-results"].setAttribute("aria-busy", "false");
   }
 }
 
@@ -467,30 +519,41 @@ async function startDaily() {
 
 async function submitScore(event) {
   event.preventDefault();
-  if (!dailyAttempt || submitting || game.state === "playing") return;
-  const attempt = dailyAttempt,
-    inputs = dailyLog;
+  const campaign = runKind === "campaign",
+    context = campaign ? campaignRun : dailyAttempt;
+  if (!context || submitting || !["lost", "won"].includes(game.state)) return;
+  const payload = campaign ? { stages: context.stages } : { inputs: dailyLog };
+  const current = () => (campaign ? campaignRun : dailyAttempt) === context;
   submitting = true;
   ui["submit-score"].disabled = true;
   ui["score-status"].hidden = false;
   ui["score-status"].textContent = "Verifying your run…";
   try {
     const name = ui["score-name"].value.trim();
-    const result = await api(`/api/runs/${attempt.id}/score`, { name, inputs });
-    if (dailyAttempt?.id !== attempt.id) return;
+    const attempt = campaign ? await context.ready : context;
+    if (!attempt)
+      throw new Error(
+        context.error || "This run could not connect to the leaderboard.",
+      );
+    if (!current()) return;
+    const result = await api(
+      `/api/${campaign ? "campaign/" : ""}runs/${attempt.id}/score`,
+      { name, ...payload },
+      campaign ? 120000 : 12000,
+    );
+    if (!current()) return;
     ui["score-status"].textContent =
-      `VERIFIED · Your best rank: #${result.rank} · ${result.score.toLocaleString("en-US")} points`;
+      `VERIFIED · ${campaign ? "General" : "Daily"} rank: #${result.rank} · ${result.score.toLocaleString("en-US")} points`;
     ui["score-form"].hidden = true;
-    drawBoard(ui.leaderboard, result.entries);
     try {
       localStorage.setItem("hft-alias", name);
     } catch {
       /* Optional local alias. */
     }
-    dailyAttempt = null;
+    if (campaign) campaignRun = null;
+    else dailyAttempt = null;
   } catch (error) {
-    if (dailyAttempt?.id === attempt.id)
-      ui["score-status"].textContent = error.message;
+    if (current()) ui["score-status"].textContent = error.message;
   } finally {
     submitting = false;
     ui["submit-score"].disabled = false;
@@ -1208,6 +1271,7 @@ function clearInput() {
 async function start(fresh = true, upgrade, options = {}) {
   if (building) return;
   building = true;
+  credits.hide();
   clearInput();
   releaseLook();
   accumulator = 0;
@@ -1229,6 +1293,7 @@ async function start(fresh = true, upgrade, options = {}) {
     practiceLevel = options.level || 0;
     dailyAttempt = options.attempt || null;
     dailyLog = [];
+    campaignRun = null;
     game = options.room
       ? Object.assign(
           newMatch(options.room.kind, options.room.seed, options.room.players),
@@ -1241,6 +1306,17 @@ async function start(fresh = true, upgrade, options = {}) {
             seed: crypto.getRandomValues(new Uint32Array(1))[0],
             ...(runKind === "practice" ? { baseHp: 3, ammo: 10 } : {}),
           });
+    if (runKind === "campaign") {
+      const run = { stages: [{ inputs: [] }], error: null };
+      campaignRun = run;
+      // Register without delaying Play; record from the very first simulation tick.
+      run.ready = api("/api/campaign/runs", { seed: game.seed }).catch(
+        (error) => {
+          run.error = error.message;
+          return null;
+        },
+      );
+    }
     runKills = 0;
     runCrumbs = 0;
     runShots = 0;
@@ -1255,6 +1331,7 @@ async function start(fresh = true, upgrade, options = {}) {
     runCrumbs += game.collected;
     runShots += game.shots;
     runTime += game.elapsed;
+    if (campaignRun) campaignRun.stages.push({ upgrade, inputs: [] });
     game = next;
   }
   for (const id of [
@@ -1266,6 +1343,7 @@ async function start(fresh = true, upgrade, options = {}) {
     "result",
     "route-screen",
     "daily-screen",
+    "settings-screen",
     "room-screen",
     "discovery-screen",
     "cinema",
@@ -1347,10 +1425,14 @@ function pause(value = !paused) {
 }
 
 function menu() {
+  credits.hide();
   rooms.leave();
   roomViewKey = "";
   clearInput();
   mode = "menu";
+  campaignRun = null;
+  dailyAttempt = null;
+  dailyLog = [];
   briefingRemaining = 0;
   ui.game.classList.remove("briefing");
   viewRig.reset();
@@ -1376,6 +1458,7 @@ function menu() {
     "upgrade-screen",
     "route-screen",
     "daily-screen",
+    "settings-screen",
     "room-screen",
     "discovery-screen",
     "cinema",
@@ -1564,6 +1647,8 @@ function handleEvents(events) {
     finishRoom();
     return;
   }
+  const firstDirectorRescue =
+    !game.daily && game.levelIndex === 9 && !progress.cleared.includes(9);
   if (!game.daily && ["cleared", "won"].includes(game.state))
     unlock(progress, game.levelIndex);
   refreshProgressUI();
@@ -1583,7 +1668,11 @@ function handleEvents(events) {
     if ([9, 14].includes(game.levelIndex)) {
       rescueUntil = clock + 2.6;
       pendingOverlay =
-        game.levelIndex === 9 ? "discovery-screen" : "upgrade-screen";
+        game.levelIndex === 9
+          ? firstDirectorRescue
+            ? "credits-screen"
+            : "discovery-screen"
+          : "upgrade-screen";
       ui["upgrade-screen"].hidden = true;
       showMessage(
         "COLLEAGUE RESCUED!",
@@ -1648,9 +1737,14 @@ function handleEvents(events) {
   ui["final-score"].textContent = game.score.toLocaleString("en-US");
   ui["result-stats"].textContent =
     `${runKind === "campaign" && game.score > previousBest ? "NEW PERSONAL BEST · " : ""}${game.daily ? `${game.elapsed.toFixed(1)}s` : `AISLE ${game.levelIndex + 1}/${visibleFloorCount(progress)}`} · ${runKills + game.kills} TAKEDOWNS · ${runCrumbs + game.collected} CRUMBS`;
-  ui["score-form"].hidden = !game.daily;
+  ui["score-form"].hidden = !(dailyAttempt || campaignRun);
   ui["share-score"].hidden = !game.daily;
-  ui["score-status"].hidden = true;
+  ui["score-status"].hidden = !campaignRun?.error;
+  if (campaignRun?.error) {
+    ui["score-form"].hidden = true;
+    ui["score-status"].textContent =
+      "Your personal best is saved here. This run could not connect to the shared board.";
+  }
   ui["share-output"].hidden = true;
   ui.retry.innerHTML = game.daily
     ? "RETRY TODAY'S RUSH <span>▶</span>"
@@ -2305,6 +2399,7 @@ function telemetry() {
     mode,
     paused,
     briefing: briefingRemaining > 0,
+    credits: credits.snapshot,
     state: game.state,
     floor: game.levelIndex + 1,
     theme: game.map.level.theme,
@@ -2433,6 +2528,7 @@ function frame(now) {
     mode === "playing" &&
     !paused &&
     !building &&
+    !credits.active &&
     briefingRemaining === 0 &&
     game.state === "playing";
   ui.game.classList.toggle("dodging", active && game.player.dash > 0);
@@ -2444,6 +2540,8 @@ function frame(now) {
     while (accumulator >= TICK && game.state === "playing" && !building) {
       const packed = packInput(readInput());
       if (game.daily) recordInput(dailyLog, packed);
+      else if (campaignRun)
+        recordInput(campaignRun.stages.at(-1).inputs, packed);
       handleEvents(stepGame(game, unpackInput(packed), TICK));
       accumulator -= TICK;
     }
@@ -2452,7 +2550,12 @@ function frame(now) {
   wasFPS = isFPS();
   ui.game.classList.toggle("first-person", isFPS());
   ui.game.classList.toggle("visor-active", game.fpsTime > 0);
-  sound.update(active, game.overtime, game.map.level.theme);
+  credits.update(dt);
+  sound.update(
+    credits.active || active,
+    credits.active ? 0 : game.overtime,
+    credits.active ? "food" : game.map.level.theme,
+  );
   ui["transit-effect"].style.opacity = String(
     mode === "playing" && !ending
       ? Math.sin(viewRig.transitProgress * Math.PI) * 0.8
@@ -2526,7 +2629,8 @@ function frame(now) {
   fx.geometry.setDrawRange(0, particles.length);
   if (clock > messageUntil) ui.message.classList.remove("show");
   if (pendingOverlay && clock >= rescueUntil) {
-    ui[pendingOverlay].hidden = false;
+    if (pendingOverlay === "credits-screen") credits.open(true);
+    else ui[pendingOverlay].hidden = false;
     if (pendingOverlay === "discovery-screen")
       ui["discovery-continue"].focus({ preventScroll: true });
     pendingOverlay = "";
@@ -2610,6 +2714,54 @@ function bindStick(id, target, aiming) {
 
 function bindInput() {
   ui.start.onclick = () => start(true, null, { briefing: true });
+  ui["open-settings"].onclick = () => {
+    ui["settings-screen"].hidden = false;
+    ui["reset-confirmation"].hidden = true;
+    ui["reset-save"].hidden = false;
+    ui["settings-status"].textContent = "";
+    ui["reset-save"].focus();
+  };
+  ui["settings-close"].onclick = () => {
+    ui["settings-screen"].hidden = true;
+    ui["open-settings"].focus();
+  };
+  ui["open-credits"].onclick = async () => {
+    await sound.start();
+    ui["settings-screen"].hidden = true;
+    credits.open();
+  };
+  ui["reset-save"].onclick = () => {
+    ui["reset-save"].hidden = true;
+    ui["reset-confirmation"].hidden = false;
+    ui["cancel-reset"].focus();
+  };
+  ui["cancel-reset"].onclick = () => {
+    ui["reset-confirmation"].hidden = true;
+    ui["reset-save"].hidden = false;
+    ui["reset-save"].focus();
+  };
+  ui["confirm-reset"].onclick = () => {
+    try {
+      for (const key of ["hft-route-v1", "hft-record-v1", "hft-gold-v1"])
+        localStorage.removeItem(key);
+    } catch {
+      ui["settings-status"].textContent =
+        "This browser could not reset its saved data.";
+      return;
+    }
+    progress.unlocked = 0;
+    progress.cleared = [];
+    best = 0;
+    bestFloor = 1;
+    goldEnabled = false;
+    refreshProgressUI();
+    applyLivery(menuHero);
+    ui["reset-confirmation"].hidden = true;
+    ui["reset-save"].hidden = false;
+    ui["settings-status"].textContent =
+      "Local save reset. A fresh shift is ready.";
+    ui["settings-close"].focus();
+  };
   ui["briefing-continue"].onclick = finishBriefing;
   ui["discovery-continue"].onclick = () => {
     ui["discovery-screen"].hidden = true;
@@ -2692,8 +2844,31 @@ function bindInput() {
     start(true, null, { kind: "practice", level: selectedStage });
   ui["open-daily"].onclick = () => openDaily();
   ui["open-leaderboard"].onclick = () => openDaily(true);
+  for (const kind of ["daily", "general"]) {
+    ui[`board-${kind}`].onclick = () => openDaily(true, kind);
+    ui[`board-${kind}`].onkeydown = (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key))
+        return;
+      event.preventDefault();
+      event.stopPropagation();
+      const next =
+        event.key === "Home"
+          ? "daily"
+          : event.key === "End"
+            ? "general"
+            : kind === "daily"
+              ? "general"
+              : "daily";
+      openDaily(true, next);
+      ui[`board-${next}`].focus();
+    };
+  }
+  ui["board-campaign-start"].onclick = () =>
+    start(true, null, { briefing: true });
   ui["daily-close"].onclick = () => {
+    boardRequest++;
     ui["daily-screen"].hidden = true;
+    ui["open-leaderboard"].focus();
   };
   ui["refresh-board"].onclick = refreshBoard;
   ui["daily-start"].onclick = startDaily;
@@ -2719,6 +2894,10 @@ function bindInput() {
   for (const button of document.querySelectorAll("[data-upgrade]"))
     button.onclick = () => start(false, button.dataset.upgrade);
   addEventListener("keydown", (event) => {
+    if (credits.active) {
+      if (event.code === "Escape" && !event.repeat) credits.skip();
+      return;
+    }
     if (["INPUT", "TEXTAREA"].includes(event.target.tagName)) return;
     if (
       ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(
@@ -2727,7 +2906,8 @@ function bindInput() {
     )
       event.preventDefault();
     if (event.code === "Escape" && !event.repeat) {
-      if (!ui["route-screen"].hidden) ui["route-screen"].hidden = true;
+      if (!ui["settings-screen"].hidden) ui["settings-close"].click();
+      else if (!ui["route-screen"].hidden) ui["route-screen"].hidden = true;
       else if (!ui["daily-screen"].hidden) ui["daily-screen"].hidden = true;
       else if (!ui["room-screen"].hidden) ui["room-close"].click();
       else pause();
@@ -2918,6 +3098,7 @@ async function init() {
   ui["open-route"].disabled =
     ui["open-daily"].disabled =
     ui["open-leaderboard"].disabled =
+    ui["open-settings"].disabled =
     ui["open-rooms"].disabled =
       false;
   ui.start.innerHTML = "PLAY <span>▶</span>";

@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "Credits roll, passing vacuum gags and pause/resume work; tool credits distinguish Atlas studies from runtime media",
+    "The natural ending shows Made by Rapido; manual credits do not spoil the basement and return to Settings",
+    "Reduced motion uses a manually scrollable list; skip, keyboard return and landscape controls remain usable"
+  ],
+  "errors": [],
+  "input": "Real settings clicks, scroll and keyboard; read-only presentation snapshots. No save fixtures or submitted scores.",
+  "result": "PASS"
+}

@@ -5,12 +5,78 @@
   margin: 0 0 20px;
   color: #526073;
 }
-#open-leaderboard {
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
+#game:not(.playing) header button {
+  background: var(--cream);
+  min-height: 44px;
+}
+#game:not(.playing) header button:hover,
+#game:not(.playing) header button:focus-visible {
+  background: #fff;
+  border-color: var(--ink);
+}
+#open-leaderboard,
+#open-settings {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
   color: var(--ink);
-  padding: 10px 0 0;
+  padding: 7px;
+}
+#open-leaderboard svg,
+#open-settings svg {
+  width: 28px;
+  height: 28px;
+}
+.playing #open-leaderboard,
+.playing #open-settings {
+  display: none;
+}
+.menu-save {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+}
+#menu .menu-save #best,
+#menu .menu-save #gold-toggle {
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+.settings-panel {
+  width: 490px;
+}
+.save-settings {
+  padding: 20px 0;
+  border-top: 1px solid #26365033;
+  border-bottom: 1px solid #26365033;
+  text-align: left;
+}
+.save-settings > b {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.save-settings small {
+  display: block;
+  color: #526073;
+  font-size: 10px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.save-settings button {
+  min-height: 44px;
+}
+.reset-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+#confirm-reset {
+  background: var(--red);
+  color: white;
 }
 #menu .lead {
   font-size: 18px;
@@ -127,9 +193,33 @@
 .board-view .daily-ticket {
   display: none;
 }
-.board-view #daily-start {
+.board-view #daily-start,
+.board-view #board-campaign-start {
   order: 1;
   margin: 18px auto 0;
+}
+#board-tabs {
+  display: flex;
+  gap: 6px;
+  border-bottom: 2px solid var(--ink);
+  margin: 2px 0 12px;
+}
+#board-tabs button {
+  flex: 1;
+  min-height: 44px;
+  padding: 12px;
+  border: 0;
+  background: #dbe1e7;
+  color: var(--ink);
+  font: 800 15px var(--display);
+  letter-spacing: 1px;
+}
+#board-tabs button[aria-selected="true"] {
+  background: var(--ink);
+  color: #fff;
+}
+#board-results {
+  min-height: 120px;
 }
 .board-view #daily-close {
   order: 2;

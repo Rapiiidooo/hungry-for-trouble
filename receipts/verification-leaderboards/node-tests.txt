@@ -1,0 +1,53 @@
+
+> hungry-for-trouble@0.2.0 test
+> node --test tests/*.test.mjs
+
+✔ twenty floors introduce new rules and preserve the act-one clear (17.69075ms)
+✔ transport pads never force a player into a corridor loop, including the reported final-floor seed (2532.747125ms)
+✔ room players can dash from stationary aim and the burst keeps its direction (1.96625ms)
+✔ transport is paired, safe on arrival and requires leaving the destination (3.360167ms)
+✔ vents warn before damage, while dash blocks the hit and cannot cross shelves (1.75525ms)
+✔ mine warning permits escape, shooting defuses it and Overtime blocks the blast (0.955708ms)
+✔ snipers lock aim during their warning and mine layers leave timed hazards (3.7495ms)
+✔ shield carts block their front but take flank damage (1.736083ms)
+✔ ricochet reflects a real wall collision and frost interrupts enemy attacks (1.786666ms)
+✔ stock carts hit enemies once per push and flour interrupts nearby shooters (2.334916ms)
+✔ new bosses mark hazards, builds cap correctly and old clears unlock act two (4.519667ms)
+✔ the route conceals the basement until rescue, preserving prior unlocks (0.041125ms)
+✔ lobbed parcels lock their targets and allow escape before a single impact (5.351666ms)
+✔ the core alternates artillery and waves, with a usable gap and dash protection (9.54475ms)
+✔ campaign replay follows real checkouts and offered upgrades, rejecting skipped or unfinished stages (35.03075ms)
+✔ general records verify inputs, stay separate from daily scores and survive resets, pruning and restart (101.749917ms)
+✔ drones telegraph locked aim, launch receipts and cannot shoot through shelves (6.583417ms)
+✔ late stages change movement and durability, visor lasts 18 seconds (13.049667ms)
+✔ defensive upgrades carry and block damage without hiding the health loss (1.771ms)
+✔ every seeded daily layout keeps reflected actors and pickups on walkable cells (315.651333ms)
+✔ daily seeds, quantized replays, end conditions and score verification agree (110.051958ms)
+✔ 200 run seeds preserve connected supplies, safe spawns and varied footprints (4566.85825ms)
+✔ repair kits heal exactly one heart, remain when full, and checkout heals on departure (11.218959ms)
+✔ receipt impacts respect walls and incoming damage carries a world direction (0.268ms)
+✔ shared board verifies two identities, rejects tampering/reuse and survives restart (130.522458ms)
+✔ co-op shares supplies, prevents friendly fire, revives and requires both players at checkout (7.642333ms)
+✔ versus authoritative hits cause KOs, crumb drops, protected respawns and a seven-KO finish (11.888959ms)
+✔ room API isolates sessions, validates controls, limits membership and handles departure (41.024291ms)
+✔ the rendered shockwave gap matches the safe sector for every attack direction (7.645042ms)
+✔ every floor has a connected maze, reachable pickups and enough crumbs (25.542875ms)
+✔ left and right are screen-relative and dashes cannot tunnel through walls (4.622458ms)
+✔ shots hit enemies in open corridors and walls absorb shots (2.885583ms)
+✔ overtime reverses contact damage, makes firing free and expires (5.720917ms)
+✔ damage has a grace period, death stops play and restart clears state (4.718458ms)
+✔ exit requires the quota and final boss, upgrades transfer between floors (4.563958ms)
+✔ a selected aisle starts with basic gear and preserves its three-heart baseline (4.693292ms)
+✔ shutters alternate and wait for occupied cells; enemies can route around shelves (0.981084ms)
+✔ ice preserves momentum and repeated spread upgrades add real pellets (1.579167ms)
+✔ an ambusher still pursues a predicted target outside the store (0.26625ms)
+✔ polishers announce a charge, and an overtime pickup cancels it (1.106875ms)
+✔ the Manager shield blocks overtime, opens, and enrages below half health (3.8215ms)
+ℹ tests 41
+ℹ suites 0
+ℹ pass 41
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4650.317417

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="./multiplayer.css" />
     <link rel="stylesheet" href="./campaign.css" />
     <link rel="stylesheet" href="./presentation.css" />
+    <link rel="stylesheet" href="./credits.css" />
     <script type="importmap">
       {
         "imports": {
@@ -37,6 +38,57 @@
         <a class="brand" href="./">HFT<span>✳</span></a
         ><span class="stamp">NIGHT SHIFT. DAYLIGHT ROBBERY.</span>
         <div>
+          <button
+            id="open-leaderboard"
+            aria-label="Leaderboards"
+            title="Daily and general leaderboards"
+            disabled
+          >
+            <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+              <path
+                d="M9 5H4v5c0 4 3 6 7 6m12-11h5v5c0 4-3 6-7 6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M9 4h14v8c0 5-3 8-7 8s-7-3-7-8z"
+                fill="#efb546"
+                stroke="currentColor"
+                stroke-width="2.5"
+              />
+              <path
+                d="M16 20v6m-6 2h12"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <button
+            id="open-settings"
+            aria-label="Settings"
+            title="Settings"
+            disabled
+          >
+            <svg
+              viewBox="0 0 32 32"
+              aria-hidden="true"
+              focusable="false"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.3"
+              stroke-linejoin="round"
+            >
+              <path
+                d="m13 4 6 0 1 4 3 2 4-1 3 5-3 3v3l1 3-5 3-3-2h-3l-3 2-5-3 1-4-2-3-4-1v-6l4-1 2-3z"
+                transform="translate(1 1) scale(.9)"
+              />
+              <circle cx="16" cy="16" r="4.5" />
+            </svg>
+          </button>
           <button id="pause" hidden aria-label="Pause">Ⅱ</button
           ><button id="sound" aria-label="Toggle sound" aria-pressed="true">
             SOUND ON
@@ -44,7 +96,6 @@
         </div>
       </header>
       <section id="menu">
-        <div class="eyebrow"><i></i> CLEANUP ON AISLE EVERYWHERE.</div>
         <h1>Hungry<br />for <em>trouble.</em></h1>
         <p class="lead">Minimum wage. <br /><b>Maximum firepower.</b></p>
         <p id="mission-goal">Eat crumbs. Fight security. Rescue your friend.</p>
@@ -63,24 +114,23 @@
             <span>2P · MULTIPLAYER</span><small>CO-OP & VERSUS</small>
           </button>
         </div>
-        <button id="open-leaderboard" class="text-button" disabled>
-          VIEW LEADERBOARD
-        </button>
         <div class="controls">
           <span><kbd>WASD</kbd> move</span
           ><span><kbd>MOUSE</kbd> aim & fire</span
           ><span><kbd>SPACE</kbd> dash to dodge hits</span>
         </div>
         <p class="touch-hint">Left thumb moves. Right thumb aims and fires.</p>
-        <small id="best">TEN AISLES. ONE FRIEND TO RESCUE.</small>
-        <button
-          id="gold-toggle"
-          class="text-button"
-          aria-pressed="false"
-          hidden
-        >
-          GOLD VACUUM: OFF
-        </button>
+        <div class="menu-save">
+          <small id="best">TEN AISLES. ONE FRIEND TO RESCUE.</small>
+          <button
+            id="gold-toggle"
+            class="text-button"
+            aria-pressed="false"
+            hidden
+          >
+            GOLD VACUUM: OFF
+          </button>
+        </div>
       </section>
       <aside id="hero-label">
         <span>EMPLOYEE OF THE MONTH*</span
@@ -404,10 +454,71 @@
           <button id="route-close" class="text-button">MAIN MENU</button>
         </div>
       </section>
+      <section
+        id="settings-screen"
+        class="overlay"
+        aria-labelledby="settings-title"
+        hidden
+      >
+        <div class="panel settings-panel">
+          <div class="eyebrow">MAKE YOURSELF AT HOME</div>
+          <h2 id="settings-title">Settings.</h2>
+          <div class="save-settings">
+            <b>LOCAL SAVE</b>
+            <p>
+              Reset unlocked aisles, your personal best and the gold vacuum on
+              this device.
+            </p>
+            <small
+              >Shared leaderboard scores and your callsign stay saved.</small
+            >
+            <button id="reset-save" class="secondary">RESET LOCAL SAVE</button>
+            <div id="reset-confirmation" hidden>
+              <p>Start again from aisle one?</p>
+              <div class="reset-actions">
+                <button id="confirm-reset" class="secondary">
+                  YES, RESET SAVE
+                </button>
+                <button id="cancel-reset" class="secondary">
+                  KEEP MY SAVE
+                </button>
+              </div>
+            </div>
+          </div>
+          <p id="settings-status" role="status"></p>
+          <button id="open-credits" class="text-button credits-link">
+            CREDITS
+          </button>
+          <button id="settings-close" class="text-button">MAIN MENU</button>
+        </div>
+      </section>
       <section id="daily-screen" class="overlay" hidden>
         <div class="panel daily-panel">
-          <div class="eyebrow">ONE DAY. SAME MESS. EVERYBODY.</div>
+          <div id="board-eyebrow" class="eyebrow">
+            ONE DAY. SAME MESS. EVERYBODY.
+          </div>
           <h2 id="daily-title">Daily <em>rush.</em></h2>
+          <div id="board-tabs" role="tablist" aria-label="Leaderboard" hidden>
+            <button
+              id="board-daily"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="board-results"
+            >
+              DAILY
+            </button>
+            <button
+              id="board-general"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="board-results"
+              tabindex="-1"
+            >
+              GENERAL
+            </button>
+          </div>
           <p id="daily-intro">
             Survive 90 seconds. Chain takedowns. Climb the shared board.
           </p>
@@ -419,17 +530,23 @@
           <button id="daily-start" class="primary" disabled>
             PLAY DAILY RUSH <span>▶</span>
           </button>
-          <div class="board-heading">
-            <b>TODAY'S TOP 30</b><button id="refresh-board">REFRESH</button>
+          <button id="board-campaign-start" class="primary" hidden>
+            PLAY CAMPAIGN <span>▶</span>
+          </button>
+          <div id="board-results" role="tabpanel" aria-labelledby="board-daily">
+            <div class="board-heading">
+              <b id="board-heading-title">TODAY'S TOP 30</b
+              ><button id="refresh-board">REFRESH</button>
+            </div>
+            <ol id="leaderboard"></ol>
+            <p id="board-note" class="board-note">
+              Your best daily score. Resets at 00:00 UTC.
+            </p>
           </div>
-          <ol id="leaderboard"></ol>
-          <p class="board-note">
-            Best score per browser identity. Names are aliases. Resets at 00:00
-            UTC.
-          </p>
           <button id="daily-close" class="text-button">MAIN MENU</button>
         </div>
       </section>
+      <section id="credits-screen" aria-label="Game credits" hidden></section>
       <div id="error" role="alert" hidden></div>
       <footer id="footer">
         <span>ALL ORIGINAL. DEEPLY UNPROFESSIONAL.</span

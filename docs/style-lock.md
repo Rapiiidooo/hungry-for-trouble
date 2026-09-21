@@ -77,6 +77,10 @@ Multiplayer reuses the verified vacuum, with blue host trim and red guest trim, 
 
 Keep the title screen light: one short objective and clear play, level, daily, multiplayer and leaderboard access. MOP-3's dialogue belongs after Play, never as a permanent title-screen card. The six-second briefing freezes gameplay and can be skipped. Pause buttons use literal action labels with a short explanation; mission and controls sit in a disclosure below them. Only ten floors and two bosses appear until the Director rescue opens the service lift. Keep future floors out of initial counters, route nodes and radio hints. Preserve an existing basement unlock.
 
+The header uses compact trophy and Settings icons with the exact same opaque enamel background as Sound. Align the personal record and golden-livery toggle on one left edge in every layout. Keep the removed cleanup slogan off the title. Reset local save belongs in Settings, behind an explicit confirmation; it preserves shared scores.
+
+Credits are a playful dark-blue film roll with warm gold accents, passing native SVG vacuums and short production jokes. Honour pause, skip and reduced motion. End with Made by Rapido. The first Director checkout adds The adventure continues before the basement discovery; manual playback from Settings must not spoil it. Attribute tools truthfully, including Atlas studies that are not yet runtime assets.
+
 The warranty is a translucent pale-blue hemisphere with an orbiting arc and a single impact flare, tied to actual charges. Boss health follows its world position in overhead and first person. Orange landing rings fill before lobbed impacts. A shockwave's visible opening must match its safe sector. Camera transit uses a short lift and easing, with no roll and a reduced-motion alternative.
 
 The final checkout stages a crew escape, character banter and a sunrise, then rewards the golden vacuum livery. The livery changes appearance only and retains the red trim. The favicon is an original compact vacuum silhouette. The employee badge keeps its bottom rule.

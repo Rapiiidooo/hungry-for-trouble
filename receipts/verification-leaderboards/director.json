@@ -1,0 +1,207 @@
+{
+  "input": "Practice route unlocks are preloaded for a floor 10 continuation; real keyboard and pointer events, read-only combat telemetry.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "First Director checkout opens skippable credits, then Made by Rapido and the act-two invitation",
+    "Director rescue reveals the basement while gameplay waits for the reader",
+    "Discovery preserves the earned upgrade and continues into aisle 11 with the twenty-floor route unlocked"
+  ],
+  "floors": [
+    {
+      "floor": 10,
+      "seconds": 57.816666666664666,
+      "kills": 9,
+      "crumbs": 69,
+      "score": 5962,
+      "hp": 3,
+      "upgrades": {
+        "rapid": 0,
+        "spread": 0,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 0
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 10,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        32
+      ],
+      "waypoint": [
+        6,
+        32
+      ],
+      "crumbs": 0,
+      "hp": 3,
+      "kills": 0,
+      "overtime": 0,
+      "boss": 300,
+      "fps": 54,
+      "draws": 323
+    },
+    {
+      "floor": 10,
+      "elapsed": 7.2,
+      "pos": [
+        6,
+        28.8
+      ],
+      "waypoint": [
+        6,
+        28
+      ],
+      "crumbs": 18,
+      "hp": 3,
+      "kills": 1,
+      "overtime": 3,
+      "boss": 300,
+      "fps": 60,
+      "draws": 302
+    },
+    {
+      "floor": 10,
+      "elapsed": 14.3,
+      "pos": [
+        21.9,
+        27.9
+      ],
+      "waypoint": [
+        22,
+        26
+      ],
+      "crumbs": 29,
+      "hp": 3,
+      "kills": 2,
+      "overtime": 0,
+      "boss": 300,
+      "fps": 60,
+      "draws": 324
+    },
+    {
+      "floor": 10,
+      "elapsed": 21.3,
+      "pos": [
+        29.6,
+        12.1
+      ],
+      "waypoint": [
+        30,
+        12
+      ],
+      "crumbs": 44,
+      "hp": 3,
+      "kills": 3,
+      "overtime": 3.4,
+      "boss": 222,
+      "fps": 60,
+      "draws": 376
+    },
+    {
+      "floor": 10,
+      "elapsed": 28.4,
+      "pos": [
+        31.3,
+        12.1
+      ],
+      "waypoint": [
+        30,
+        12
+      ],
+      "crumbs": 47,
+      "hp": 3,
+      "kills": 5,
+      "overtime": 5.9,
+      "boss": 192,
+      "fps": 60,
+      "draws": 299
+    },
+    {
+      "floor": 10,
+      "elapsed": 35.4,
+      "pos": [
+        29.9,
+        19.3
+      ],
+      "waypoint": [
+        30,
+        20
+      ],
+      "crumbs": 52,
+      "hp": 3,
+      "kills": 5,
+      "overtime": 0,
+      "boss": 124,
+      "fps": 60,
+      "draws": 323
+    },
+    {
+      "floor": 10,
+      "elapsed": 42.5,
+      "pos": [
+        14,
+        31.6
+      ],
+      "waypoint": [
+        14,
+        30
+      ],
+      "crumbs": 60,
+      "hp": 3,
+      "kills": 7,
+      "overtime": 7.8,
+      "boss": 124,
+      "fps": 60,
+      "draws": 266
+    },
+    {
+      "floor": 10,
+      "elapsed": 49.5,
+      "pos": [
+        26.1,
+        16.7
+      ],
+      "waypoint": [
+        26,
+        16
+      ],
+      "crumbs": 65,
+      "hp": 3,
+      "kills": 7,
+      "overtime": 0.8,
+      "boss": 61,
+      "fps": 60,
+      "draws": 319
+    },
+    {
+      "floor": 10,
+      "elapsed": 56.6,
+      "pos": [
+        26,
+        12.4
+      ],
+      "waypoint": [
+        26,
+        12
+      ],
+      "crumbs": 66,
+      "hp": 3,
+      "kills": 8,
+      "overtime": 2.4,
+      "boss": 0,
+      "fps": 60,
+      "draws": 305
+    }
+  ],
+  "result": "PASS"
+}

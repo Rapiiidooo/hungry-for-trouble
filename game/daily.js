@@ -101,8 +101,8 @@ export function recordInput(log, row) {
   if (last && last.slice(1).every((v, i) => v === row[i + 1])) last[0]++;
   else log.push([...row]);
 }
-export function verifyReplay(config, log) {
-  if (!Array.isArray(log) || !log.length || log.length > DAILY_TICKS)
+export function validateInputs(log, maxTicks = DAILY_TICKS) {
+  if (!Array.isArray(log) || !log.length || log.length > maxTicks)
     throw new Error("Invalid replay");
   let ticks = 0;
   for (const r of log) {
@@ -122,8 +122,12 @@ export function verifyReplay(config, log) {
     )
       throw new Error("Invalid replay input");
     ticks += r[0];
-    if (ticks > DAILY_TICKS) throw new Error("Replay too long");
+    if (ticks > maxTicks) throw new Error("Replay too long");
   }
+  return ticks;
+}
+export function verifyReplay(config, log) {
+  validateInputs(log);
   const game = newDaily(config);
   let played = 0;
   for (const r of log)

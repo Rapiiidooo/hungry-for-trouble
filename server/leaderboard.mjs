@@ -1,7 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile, rename } from "node:fs/promises";
 import path from "node:path";
+import { setImmediate } from "node:timers/promises";
 import { challengeFor, verifyReplay, RULESET } from "../game/daily.js";
+import { verifyCampaign, CAMPAIGN_RULESET } from "../game/campaign.js";
 
 export async function createLeaderboard({ file, now = Date.now } = {}) {
   let boards = {};
@@ -14,23 +16,32 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
     limits = new Map();
   let writes = Promise.resolve();
   const today = () => new Date(now()).toISOString().slice(0, 10);
-  const rows = (day) =>
-    (boards[`${RULESET}:${day}`] || []).sort(
+  const dailyKey = (day) => `${RULESET}:${day}`;
+  const generalKey = `${CAMPAIGN_RULESET}:all`;
+  const rows = (key) =>
+    (boards[key] || []).sort(
       (a, b) => b.score - a.score || a.ticks - b.ticks || a.created - b.created,
     );
-  const publicRows = (day) =>
-    rows(day)
+  const publicRows = (key) =>
+    rows(key)
       .slice(0, 30)
-      .map(({ name, score, kills, survived, ticks }, i) => ({
+      .map(({ name, score, kills, survived, ticks, floor }, i) => ({
         rank: i + 1,
         name,
         score,
         kills,
         survived,
+        ...(floor ? { floor } : {}),
         seconds: +(ticks / 60).toFixed(1),
       }));
   function save() {
-    const keys = Object.keys(boards).sort().slice(-90);
+    const keys = [
+      ...Object.keys(boards).filter((key) => !key.startsWith("daily-rush-")),
+      ...Object.keys(boards)
+        .filter((key) => key.startsWith("daily-rush-"))
+        .sort()
+        .slice(-90),
+    ];
     boards = Object.fromEntries(keys.map((key) => [key, boards[key]]));
     const body = JSON.stringify(boards);
     writes = writes
@@ -70,13 +81,25 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         return true;
       }
       if (req.method === "GET" && url.pathname === "/api/leaderboard") {
+        const scope = url.searchParams.get("scope") || "daily";
+        if (!["daily", "general"].includes(scope))
+          throw new Error("Invalid leaderboard");
+        if (scope === "general") {
+          send(res, 200, {
+            scope,
+            ruleset: CAMPAIGN_RULESET,
+            entries: publicRows(generalKey),
+            players: rows(generalKey).length,
+          });
+          return true;
+        }
         const selected = url.searchParams.get("day") || day;
         challengeFor(selected);
         send(res, 200, {
           day: selected,
           ruleset: RULESET,
-          entries: publicRows(selected),
-          players: rows(selected).length,
+          entries: publicRows(dailyKey(selected)),
+          players: rows(dailyKey(selected)).length,
         });
         return true;
       }
@@ -101,27 +124,23 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
           `hft_player=${player}; HttpOnly; SameSite=Strict; Path=/; Max-Age=31536000`,
         );
       }
-      if (url.pathname === "/api/runs") {
-        const id = randomUUID(),
-          config = challengeFor(day);
-        attempts.set(id, {
-          player,
-          config,
-          created: now(),
-          expires: now() + 15 * 60000,
-        });
-        send(res, 201, { id, config });
-        return true;
-      }
-      const match = /^\/api\/runs\/([a-f0-9-]{36})\/score$/.exec(url.pathname);
-      if (!match) {
+      const campaign = url.pathname.startsWith("/api/campaign/");
+      const create =
+        url.pathname === (campaign ? "/api/campaign/runs" : "/api/runs");
+      const match = /^\/api\/(?:campaign\/)?runs\/([a-f0-9-]{36})\/score$/.exec(
+        url.pathname,
+      );
+      if (!create && !match) {
         send(res, 404, { error: "Unknown endpoint" });
         return true;
       }
-      const run = attempts.get(match[1]);
-      if (!run || run.player !== player) {
+      const run = match && attempts.get(match[1]);
+      if (
+        !create &&
+        (!run || run.player !== player || run.campaign !== campaign)
+      ) {
         send(res, 409, {
-          error: "Attempt expired or already submitted. Start a new daily run.",
+          error: "Attempt expired or already submitted. Start a new run.",
         });
         return true;
       }
@@ -133,14 +152,36 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         bytes = 0;
       for await (const chunk of req) {
         bytes += chunk.length;
-        if (bytes > 512000) {
+        if (bytes > (campaign && !create ? 12 * 1024 * 1024 : 512000)) {
           send(res, 413, { error: "Replay too large" });
           return true;
         }
         body += chunk;
       }
       const submitted = JSON.parse(body);
-      if (attempts.get(match[1]) !== run) {
+      if (create) {
+        if (
+          campaign &&
+          (!Number.isInteger(submitted?.seed) ||
+            submitted.seed < 0 ||
+            submitted.seed > 0xffffffff)
+        )
+          throw new Error("Invalid campaign seed");
+        const id = randomUUID();
+        const config = campaign
+          ? { seed: submitted.seed, ruleset: CAMPAIGN_RULESET }
+          : challengeFor(day);
+        attempts.set(id, {
+          player,
+          config,
+          campaign,
+          created: now(),
+          expires: now() + (campaign ? 180 : 15) * 60000,
+        });
+        send(res, 201, { id, config });
+        return true;
+      }
+      if (attempts.get(match[1]) !== run || run.verifying) {
         send(res, 409, { error: "Attempt already submitted." });
         return true;
       }
@@ -154,14 +195,22 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
         });
         return true;
       }
-      const result = verifyReplay(run.config, submitted.inputs);
+      let result;
+      run.verifying = true;
+      try {
+        result = campaign
+          ? await verifyCampaign(run.config, submitted.stages, setImmediate)
+          : verifyReplay(run.config, submitted.inputs);
+      } finally {
+        run.verifying = false;
+      }
       if (result.ticks / 60 > (now() - run.created) / 1000 + 2) {
         send(res, 400, {
           error: "Replay ran faster than the challenge clock.",
         });
         return true;
       }
-      const key = `${RULESET}:${run.config.day}`;
+      const key = campaign ? generalKey : dailyKey(run.config.day);
       const board = (boards[key] ||= []);
       const previous = board.find((row) => row.player === player);
       const entry = {
@@ -183,9 +232,8 @@ export async function createLeaderboard({ file, now = Date.now } = {}) {
       send(res, 200, {
         accepted: true,
         ...result,
-        rank:
-          rows(run.config.day).findIndex((row) => row.player === player) + 1,
-        entries: publicRows(run.config.day),
+        rank: rows(key).findIndex((row) => row.player === player) + 1,
+        entries: publicRows(key),
       });
     } catch (error) {
       const userError = /Invalid|Replay|Input|Finish|Unexpected|JSON/.test(

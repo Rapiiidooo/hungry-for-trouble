@@ -7,6 +7,7 @@ const require = createRequire(
 const puppeteer = require("puppeteer");
 const fpsOnly = process.argv.includes("--fps");
 const dailyOnly = process.argv.includes("--daily");
+const creditsOnly = process.argv.includes("--credits");
 const fromFloor = Math.max(
   1,
   Math.min(
@@ -450,6 +451,26 @@ try {
         break;
       }
       if (g.floor === 10) {
+        await page.waitForSelector("#credits-screen", { visible: true });
+        assert.equal((await read()).credits.reveal, true);
+        const stopped = (await read()).elapsed;
+        await sleep(700);
+        assert.equal((await read()).elapsed, stopped);
+        await page.screenshot({
+          path: new URL("act-one-credits.png", output).pathname,
+        });
+        await page.click("#credits-skip");
+        assert.equal(
+          await page.$eval("#credits-twist", (el) => el.hidden),
+          false,
+        );
+        await page.screenshot({
+          path: new URL("adventure-continues.png", output).pathname,
+        });
+        await page.click("#credits-continue");
+        report.checks.push(
+          "First Director checkout opens skippable credits, then Made by Rapido and the act-two invitation",
+        );
         await page.waitForSelector("#discovery-screen", { visible: true });
         await page.screenshot({
           path: new URL("basement-discovered.png", output).pathname,
@@ -490,6 +511,7 @@ try {
       waypoint = null;
       previous = null;
       lastFloor = g.floor + 1;
+      if (creditsOnly && g.floor === 10) break;
       continue;
     }
     if (g.overtime > 0) sawOvertime = true;
@@ -526,9 +548,14 @@ try {
     await setKeys(next);
     if (
       g.dashCooldown === 0 &&
-      (g.vents.some(
-        (v) => v.phaseState !== "safe" && distance(g.pos, [v.x, v.z]) < 1.8,
-      ) ||
+      ((g.overtime === 0 &&
+        g.enemies.some(
+          (enemy) =>
+            enemy.respawn <= 0 && distance(g.pos, [enemy.x, enemy.z]) < 1.4,
+        )) ||
+        g.vents.some(
+          (v) => v.phaseState !== "safe" && distance(g.pos, [v.x, v.z]) < 1.8,
+        ) ||
         g.mines.some((m) => m.blast > 0 && distance(g.pos, [m.x, m.z]) < 2.2) ||
         g.lobs.some(
           (m) =>
@@ -558,7 +585,11 @@ try {
           e.screen.y < 720,
       )
       .sort(
-        (a, b) => distance(g.pos, [a.x, a.z]) - distance(g.pos, [b.x, b.z]),
+        (a, b) =>
+          (g.boss?.hp < 40
+            ? Number(b === g.boss) - Number(a === g.boss)
+            : 0) ||
+          distance(g.pos, [a.x, a.z]) - distance(g.pos, [b.x, b.z]),
       )[0];
     if (target) await page.mouse.move(target.screen.x, target.screen.y);
     await shoot(Boolean(target));
@@ -584,7 +615,16 @@ try {
     await sleep(65);
   }
   const end = await read();
-  if (dailyOnly) {
+  if (creditsOnly) {
+    assert.equal(end.floor, 11);
+    assert.equal(end.state, "playing");
+    assert.equal(end.visibleFloors, 20);
+    assert.equal(report.floors.length, 1);
+    assert.ok(Object.values(end.upgrades).some((level) => level > 0));
+    report.checks.push(
+      "Discovery preserves the earned upgrade and continues into aisle 11 with the twenty-floor route unlocked",
+    );
+  } else if (dailyOnly) {
     assert.equal(end.state, "won");
     assert.equal(end.dailyTicks, 5400);
     await page.type("#score-name", "QA_SURVIVOR");

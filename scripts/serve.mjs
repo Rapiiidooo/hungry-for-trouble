@@ -45,7 +45,8 @@ const server = http.createServer(async (req, res) => {
     res.end("Not found");
   }
 });
-server.requestTimeout = 15000;
+// A full campaign's bounded replay can take a minute to upload on mobile data.
+server.requestTimeout = 120000;
 server.listen(port, process.env.HOST || "127.0.0.1", () =>
-  console.log(`Hungry for Trouble: http://localhost:${port}`),
+  console.log(`Hungry for Trouble: http://localhost:${server.address().port}`),
 );

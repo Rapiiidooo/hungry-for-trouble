@@ -1,0 +1,122 @@
+{
+  "checks": [
+    "Identical header backgrounds, aligned title contents, trophy access and both boards on desktop, phone and landscape",
+    "Cancel preserves the save; confirmed reset survives reload and clears only progress, personal best and livery"
+  ],
+  "errors": [],
+  "fixture": "Disposable server/store and browser profiles. Only local unlocks, livery and personal-best fixtures are preloaded for alignment/reset. Shared scores come from real input and server verification.",
+  "desktop": {
+    "backgrounds": [
+      "rgb(240, 242, 243)",
+      "rgb(240, 242, 243)",
+      "rgb(240, 242, 243)"
+    ],
+    "trophy": {
+      "x": 1221.046875,
+      "y": 27,
+      "width": 44,
+      "height": 44,
+      "top": 27,
+      "right": 1265.046875,
+      "bottom": 71,
+      "left": 1221.046875
+    },
+    "settings": {
+      "x": 1273.046875,
+      "y": 27,
+      "width": 44,
+      "height": 44,
+      "top": 27,
+      "right": 1317.046875,
+      "bottom": 71,
+      "left": 1273.046875
+    },
+    "text": "\n        Hungryfor trouble.\n        Minimum wage. Maximum firepower.\n        Eat crumbs. Fight security. Rescue your friend.\n        PLAY ▶\n        \n          \n            ▣ LEVEL SELECT\n            20 AISLES · 4 BOSSES\n          \n          \n            ◷ DAILY RUSH 90 SECONDS · WORLD SCORES\n          \n          \n            2P · MULTIPLAYERCO-OP & VERSUS\n          \n        \n        \n          WASD moveMOUSE aim & fireSPACE dash to dodge hits\n        \n        Left thumb moves. Right thumb aims and fires.\n        \n          PERSONAL BEST 85,764 · AISLE 20/20\n          GOLD VACUUM: OFF\n        \n      ",
+    "left": [
+      100.796875,
+      100.796875,
+      100.796875,
+      100.796875,
+      100.796875,
+      100.796875,
+      100.796875
+    ],
+    "overflow": false
+  },
+  "phone": {
+    "backgrounds": [
+      "rgb(240, 242, 243)",
+      "rgb(240, 242, 243)",
+      "rgb(240, 242, 243)"
+    ],
+    "trophy": {
+      "x": 192.15625,
+      "y": 19,
+      "width": 44,
+      "height": 44,
+      "top": 19,
+      "right": 236.15625,
+      "bottom": 63,
+      "left": 192.15625
+    },
+    "settings": {
+      "x": 244.15625,
+      "y": 19,
+      "width": 44,
+      "height": 44,
+      "top": 19,
+      "right": 288.15625,
+      "bottom": 63,
+      "left": 244.15625
+    },
+    "text": "\n        Hungryfor trouble.\n        Minimum wage. Maximum firepower.\n        Eat crumbs. Fight security. Rescue your friend.\n        PLAY ▶\n        \n          \n            ▣ LEVEL SELECT\n            20 AISLES · 4 BOSSES\n          \n          \n            ◷ DAILY RUSH 90 SECONDS · WORLD SCORES\n          \n          \n            2P · MULTIPLAYERCO-OP & VERSUS\n          \n        \n        \n          WASD moveMOUSE aim & fireSPACE dash to dodge hits\n        \n        Left thumb moves. Right thumb aims and fires.\n        \n          PERSONAL BEST 85,764 · AISLE 20/20\n          GOLD VACUUM: OFF\n        \n      ",
+    "left": [
+      27.296875,
+      27.296875,
+      27.296875,
+      27.296875,
+      27.296875,
+      27.296875,
+      27.296875
+    ],
+    "overflow": false
+  },
+  "landscape": {
+    "backgrounds": [
+      "rgb(240, 242, 243)",
+      "rgb(240, 242, 243)",
+      "rgb(240, 242, 243)"
+    ],
+    "trophy": {
+      "x": 639.046875,
+      "y": 14,
+      "width": 44,
+      "height": 44,
+      "top": 14,
+      "right": 683.046875,
+      "bottom": 58,
+      "left": 639.046875
+    },
+    "settings": {
+      "x": 691.046875,
+      "y": 14,
+      "width": 44,
+      "height": 44,
+      "top": 14,
+      "right": 735.046875,
+      "bottom": 58,
+      "left": 691.046875
+    },
+    "text": "\n        Hungryfor trouble.\n        Minimum wage. Maximum firepower.\n        Eat crumbs. Fight security. Rescue your friend.\n        PLAY ▶\n        \n          \n            ▣ LEVEL SELECT\n            20 AISLES · 4 BOSSES\n          \n          \n            ◷ DAILY RUSH 90 SECONDS · WORLD SCORES\n          \n          \n            2P · MULTIPLAYERCO-OP & VERSUS\n          \n        \n        \n          WASD moveMOUSE aim & fireSPACE dash to dodge hits\n        \n        Left thumb moves. Right thumb aims and fires.\n        \n          PERSONAL BEST 85,764 · AISLE 20/20\n          GOLD VACUUM: OFF\n        \n      ",
+    "left": [
+      42.1875,
+      42.1875,
+      42.1875,
+      42.1875,
+      42.1875
+    ],
+    "overflow": false
+  },
+  "result": "FAIL",
+  "failure": "TimeoutError: Waiting failed: 70000ms exceeded\n    at new WaitTask (file:///Users/rapido/perso/bittensor/404/404-game-recipe/node_modules/puppeteer-core/lib/puppeteer/common/WaitTask.js:46:34)\n    at IsolatedWorld.waitForFunction (file:///Users/rapido/perso/bittensor/404/404-game-recipe/node_modules/puppeteer-core/lib/puppeteer/api/Realm.js:49:26)\n    at CdpFrame.waitForFunction (file:///Users/rapido/perso/bittensor/404/404-game-recipe/node_modules/puppeteer-core/lib/puppeteer/api/Frame.js:585:43)\n    at CdpFrame.<anonymous> (file:///Users/rapido/perso/bittensor/404/404-game-recipe/node_modules/puppeteer-core/lib/puppeteer/util/decorators.js:101:27)\n    at CdpPage.waitForFunction (file:///Users/rapido/perso/bittensor/404/404-game-recipe/node_modules/puppeteer-core/lib/puppeteer/api/Page.js:1464:37)\n    at file:///Users/rapido/perso/bittensor/404/hungry-for-trouble/scripts/leaderboard-playtest.mjs:214:14"
+}
