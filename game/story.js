@@ -93,7 +93,7 @@ export const RADIO = [
   ],
 ].map(([speaker, text]) => ({ speaker, text }));
 export const MISSION =
-  "SHELF CONTROL marked the staff as rubbish. I'm locked behind the Director's checkout. Reach aisle 10 and get me out!";
+  "SHELF CONTROL locked me upstairs. Reach aisle 10 and break me out!";
 export function storyCard(speaker, text) {
   return `<div class="story-avatar">${portrait(speaker)}</div><div><b>${SPEAKERS[speaker].name}</b><p>${text}</p></div>`;
 }

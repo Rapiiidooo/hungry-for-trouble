@@ -1,0 +1,14 @@
+{
+  "fixture": "Only route unlocks are preloaded for late-floor selection. All actions use real clicks, keys and touch; combat snapshots are read only.",
+  "checks": [
+    "Light title screen and visible Play/Leaderboard controls on desktop and both phone orientations",
+    "Play shows a short mission dialogue; player, enemies and timer wait; Start now skips it",
+    "Ten initial rounds can be exhausted; collecting crumbs enables firing again",
+    "Pause actions name their destinations; the direct leaderboard displays the current server's entries",
+    "Reached aisles 6, 10 and 20 start and restart with three hearts, ten shots and no upgrades",
+    "The short briefing completes automatically, then a real held finger moves the robot; phone pause and scores remain readable"
+  ],
+  "errors": [],
+  "leaderboardEntries": 1,
+  "result": "PASS"
+}

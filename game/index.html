@@ -47,21 +47,13 @@
         <div class="eyebrow"><i></i> CLEANUP ON AISLE EVERYWHERE.</div>
         <h1>Hungry<br />for <em>trouble.</em></h1>
         <p class="lead">Minimum wage. <br /><b>Maximum firepower.</b></p>
-        <aside
-          id="mission-card"
-          class="story-card"
-          aria-label="Your mission"
-        ></aside>
-        <p id="mission-steps">
-          <b>EAT</b> crumbs for ammo. <b>FIGHT</b> through security.
-          <b>RESCUE</b> MOP-3.
-        </p>
+        <p id="mission-goal">Eat crumbs. Fight security. Rescue your friend.</p>
         <button id="start" class="primary" disabled>
           WARMING UP… <span>▶</span>
         </button>
         <div class="menu-secondary">
           <button id="open-route" disabled>
-            <span>▣</span> ESCAPE ROUTE
+            <span>▣</span> LEVEL SELECT
             <small id="route-count">10 AISLES · 2 BOSSES</small>
           </button>
           <button id="open-daily" disabled>
@@ -71,6 +63,9 @@
             <span>2P · MULTIPLAYER</span><small>CO-OP & VERSUS</small>
           </button>
         </div>
+        <button id="open-leaderboard" class="text-button" disabled>
+          VIEW LEADERBOARD
+        </button>
         <div class="controls">
           <span><kbd>WASD</kbd> move</span
           ><span><kbd>MOUSE</kbd> aim & fire</span
@@ -131,7 +126,7 @@
             <small id="heal-hint">♥ REPAIR KIT +1 · CHECKOUT +1</small>
             <div id="ammo-panel">
               <span class="ammo-icon" aria-hidden="true">▰<br />▰<br />▰</span
-              ><strong id="ammo">24</strong>
+              ><strong id="ammo">10</strong>
               <div>
                 <b>SHOTS</b><small id="ammo-hint">CRUMBS REFILL AMMO</small>
               </div>
@@ -190,6 +185,19 @@
       </section>
       <div id="message" role="status" aria-live="polite"></div>
       <div id="hit-flash"></div>
+      <section id="briefing" hidden aria-label="Mission briefing">
+        <div class="briefing-panel">
+          <div class="eyebrow">INCOMING CALL</div>
+          <aside id="briefing-mop" class="story-card"></aside>
+          <p class="briefing-reply">
+            <b>YOU</b> Fine. But I'm billing overtime.
+          </p>
+          <div class="briefing-actions">
+            <small id="briefing-countdown">Starting in 6…</small>
+            <button id="briefing-continue" class="secondary">START NOW</button>
+          </div>
+        </div>
+      </section>
       <div id="transit-effect" aria-hidden="true"></div>
       <div id="shield-visor" aria-hidden="true" hidden>
         <span>WARRANTY ACTIVE</span>
@@ -277,28 +285,40 @@
             </button>
           </div>
           <p id="room-status" role="status"></p>
-          <button id="room-close" class="text-button">Back</button>
+          <button id="room-close" class="text-button">MAIN MENU</button>
         </div>
       </section>
       <section id="pause-screen" class="overlay" hidden>
         <div class="panel">
-          <div class="eyebrow">UNPAID BREAK</div>
-          <h2>Dust can <em>wait.</em></h2>
-          <aside id="radio-log" class="story-card"></aside>
-          <p class="dash-help">
-            DASH is a short, protected burst in your movement direction.<br />Stand
-            still to dash where you aim. It cannot pass through shelves.
-          </p>
+          <div class="eyebrow">TAKE A BREATHER</div>
+          <h2>Game <em>paused.</em></h2>
           <p id="pause-room-note" hidden>
             The room keeps running while you take a break.
           </p>
           <button id="resume" class="primary">
-            BACK TO WORK <span>▶</span></button
-          ><button id="pause-retry" class="text-button">
-            Restart the shift
+            RESUME GAME <span>▶</span>
           </button>
-          <button id="pause-route" class="text-button">Escape route</button>
-          <button id="pause-menu" class="text-button">Clock out</button>
+          <div class="pause-actions">
+            <button id="pause-retry" class="pause-action">
+              <b id="restart-label">RESTART RUN</b>
+              <small id="restart-note">Start over from aisle 1.</small>
+            </button>
+            <button id="pause-route" class="pause-action">
+              <b>LEVEL SELECT</b><small>Choose an unlocked aisle.</small>
+            </button>
+          </div>
+          <button id="pause-menu" class="pause-action menu-action">
+            <b>MAIN MENU</b
+            ><small>Leave this run. Unlocked aisles stay saved.</small>
+          </button>
+          <details class="pause-help">
+            <summary>MISSION &amp; CONTROLS</summary>
+            <aside id="radio-log" class="story-card"></aside>
+            <p class="dash-help">
+              DASH is a short, protected burst in your movement direction.<br />Stand
+              still to dash where you aim. It cannot pass through shelves.
+            </p>
+          </details>
         </div>
       </section>
       <section id="upgrade-screen" class="overlay" hidden>
@@ -357,15 +377,14 @@
             hidden
             aria-label="Shareable result"
           />
-          <button id="retry" class="primary">
-            ONE MORE SHIFT <span>▶</span></button
-          ><button id="back-menu" class="text-button">Clock out</button>
+          <button id="retry" class="primary">PLAY AGAIN <span>▶</span></button
+          ><button id="back-menu" class="text-button">MAIN MENU</button>
         </div>
       </section>
       <section id="route-screen" class="overlay" hidden>
         <div class="panel route-panel">
           <div class="eyebrow">FROM MINIMUM WAGE TO MAXIMUM ESCAPE</div>
-          <h2>Your <em>way out.</em></h2>
+          <h2>Level <em>select.</em></h2>
           <p id="route-mission">
             Reach the Director's checkout and rescue MOP-3.
           </p>
@@ -377,25 +396,28 @@
           <div id="stage-preview">
             <strong id="stage-title">Aisle 01 · Cereal Situation</strong>
             <p id="stage-description">Start a shift to unlock the route.</p>
+            <p id="stage-kit">3 HEARTS · 10 SHOTS · NO UPGRADES</p>
             <button id="practice-start" class="secondary">
-              PRACTICE THIS AISLE
+              START FROM AISLE 01
             </button>
           </div>
-          <button id="route-close" class="text-button">Back</button>
+          <button id="route-close" class="text-button">MAIN MENU</button>
         </div>
       </section>
       <section id="daily-screen" class="overlay" hidden>
         <div class="panel daily-panel">
           <div class="eyebrow">ONE DAY. SAME MESS. EVERYBODY.</div>
-          <h2>Daily <em>rush.</em></h2>
-          <p>Survive 90 seconds. Chain takedowns. Climb the shared board.</p>
+          <h2 id="daily-title">Daily <em>rush.</em></h2>
+          <p id="daily-intro">
+            Survive 90 seconds. Chain takedowns. Climb the shared board.
+          </p>
           <div class="daily-ticket">
             <span id="daily-date">CONNECTING</span><b>90s</b
             ><span>5 WAVES<br />ONE SHOT AT A TIME</span>
           </div>
           <p id="daily-status" role="status">Loading today's challenge…</p>
           <button id="daily-start" class="primary" disabled>
-            ENTER TODAY'S RUSH <span>▶</span>
+            PLAY DAILY RUSH <span>▶</span>
           </button>
           <div class="board-heading">
             <b>TODAY'S TOP 30</b><button id="refresh-board">REFRESH</button>
@@ -405,7 +427,7 @@
             Best score per browser identity. Names are aliases. Resets at 00:00
             UTC.
           </p>
-          <button id="daily-close" class="text-button">Back</button>
+          <button id="daily-close" class="text-button">MAIN MENU</button>
         </div>
       </section>
       <div id="error" role="alert" hidden></div>

@@ -1,32 +1,16 @@
-#mission-card {
-  max-width: 425px;
-  padding: 12px 0;
-  background: transparent;
-  border: 0;
-  border-top: 1px solid #52607344;
-  border-bottom: 1px solid #52607344;
-  gap: 13px;
-}
-#mission-card b {
-  font-size: 17px;
-}
-#mission-card p {
-  font-size: 11px;
-  line-height: 1.6;
-}
-#mission-card .story-avatar {
-  flex-basis: 66px;
-  height: 66px;
-}
-#mission-steps {
-  font-size: 9px;
+#mission-goal {
+  font-size: 12px;
   line-height: 1.6;
   max-width: 420px;
-  margin: 10px 0 19px;
+  margin: 0 0 20px;
   color: #526073;
 }
-#mission-steps b {
-  color: #a93627;
+#open-leaderboard {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink);
+  padding: 10px 0 0;
 }
 #menu .lead {
   font-size: 18px;
@@ -37,6 +21,121 @@
 }
 #menu h1 {
   margin-bottom: 18px;
+}
+#briefing {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.briefing-panel {
+  width: min(490px, calc(100% - 32px));
+  padding: 26px;
+  color: var(--ink);
+  background: var(--cream);
+  border-bottom: 5px solid var(--red);
+  box-shadow: 0 12px 45px #101b2b66;
+  pointer-events: auto;
+}
+.briefing-panel .story-card {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 18px 0;
+}
+.briefing-panel .story-card p {
+  font-size: 15px;
+}
+.briefing-reply {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.briefing-reply b {
+  display: block;
+  font-size: 10px;
+  color: var(--red);
+}
+.briefing-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 20px;
+}
+.briefing-actions small {
+  font-size: 10px;
+  color: #526073;
+}
+.briefing #hud > :not(#touch-controls) {
+  visibility: hidden;
+}
+.pause-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 20px;
+}
+.pause-action {
+  padding: 15px 12px;
+  border: 1px solid #26365055;
+  background: #ffffff77;
+  color: var(--ink);
+  text-align: left;
+}
+.pause-action:hover {
+  background: #ffffff;
+  border-color: var(--ink);
+}
+.pause-action b,
+.pause-action small {
+  display: block;
+}
+.pause-action b {
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+.pause-action small {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #526073;
+}
+.menu-action {
+  width: 100%;
+  margin-top: 12px;
+}
+.pause-help {
+  margin-top: 22px;
+  text-align: left;
+  font-size: 10px;
+  color: #526073;
+}
+.pause-help summary {
+  cursor: pointer;
+}
+#stage-kit {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--red);
+}
+.board-view .daily-panel {
+  display: flex;
+  flex-direction: column;
+}
+.board-view .daily-ticket {
+  display: none;
+}
+.board-view #daily-start {
+  order: 1;
+  margin: 18px auto 0;
+}
+.board-view #daily-close {
+  order: 2;
+}
+.board-view h2 {
+  font-size: clamp(38px, 7vw, 62px);
 }
 .route-strip {
   grid-template-columns: repeat(var(--route-count, 10), 1fr);
@@ -295,24 +394,15 @@
     font-size: 15px;
     margin-bottom: 10px;
   }
-  #mission-card {
-    padding: 9px 0;
-    gap: 9px;
-  }
-  #mission-card .story-avatar {
-    flex-basis: 48px;
-    height: 48px;
-  }
-  #mission-card p {
+  #mission-goal {
     font-size: 10px;
-    line-height: 1.5;
+    margin-bottom: 16px;
   }
-  #mission-card b {
-    font-size: 15px;
+  .briefing-panel {
+    padding: 20px;
   }
-  #mission-steps {
-    font-size: 8px;
-    margin: 8px 0 13px;
+  .briefing-panel .story-card p {
+    font-size: 13px;
   }
   #best {
     margin-top: 10px;
@@ -416,19 +506,21 @@
   #menu .touch-hint {
     display: none;
   }
-  #mission-card {
-    padding: 6px 0;
+  #mission-goal {
+    margin: 8px 0 12px;
+    font-size: 10px;
   }
-  #mission-card p {
-    font-size: 9px;
+  .briefing-panel {
+    padding: 16px 22px;
   }
-  #mission-card .story-avatar {
-    flex-basis: 39px;
-    height: 39px;
+  .briefing-panel .story-card {
+    margin: 12px 0;
   }
-  #mission-steps {
-    margin: 6px 0;
-    font-size: 8px;
+  .briefing-panel .story-card p {
+    font-size: 12px;
+  }
+  .briefing-actions {
+    margin-top: 12px;
   }
   .discovery-panel {
     margin: auto;

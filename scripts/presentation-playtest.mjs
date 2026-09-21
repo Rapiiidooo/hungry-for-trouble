@@ -134,11 +134,11 @@ try {
     assert.equal((await read()).visibleFloors, 10);
     const initial = await page.evaluate(() => ({
       text: document.body.innerText,
-      mission: document.getElementById("mission-card").innerText,
+      mission: document.getElementById("mission-goal").innerText,
       start: document.getElementById("start").getBoundingClientRect().toJSON(),
       overflow: document.documentElement.scrollWidth > innerWidth,
     }));
-    assert.match(initial.mission, /Reach aisle 10/);
+    assert.match(initial.mission, /Rescue your friend/);
     assert.doesNotMatch(initial.text, /basement|20 AISLES|TWENTY|4 BOSSES/i);
     assert.ok(
       initial.start.y > 0 && initial.start.bottom < height,
@@ -176,24 +176,25 @@ try {
   await page.setViewport({ width: 1280, height: 800, deviceScaleFactor: 1 });
   await floor(10);
   let g = await read();
-  assert.equal(g.shield, 1);
-  assert.equal(g.shieldVisible, true);
-  await screenshot("shield-active");
+  assert.equal(g.hp, 3);
+  assert.equal(g.shield, 0);
+  assert.equal(g.shieldVisible, false);
+  await screenshot("base-kit");
   await page.waitForFunction(
     () => window.__GAME__.lobs.some((s) => s.age > 0.5 && !s.hit),
     { timeout: 10000 },
   );
   await screenshot("lob-warning");
   const hp = (await read()).hp;
-  await page.waitForFunction(() => window.__GAME__.shield === 0, {
-    timeout: 10000,
-  });
-  assert.equal((await read()).hp, hp);
-  await sleep(600);
-  assert.equal((await read()).shieldVisible, false);
-  await screenshot("shield-absorbed-hit");
+  await page.waitForFunction(
+    (health) => window.__GAME__.hp < health,
+    { timeout: 10000 },
+    hp,
+  );
+  assert.equal((await read()).hp, hp - 1);
+  await screenshot("lob-impact");
   report.checks.push(
-    "Visible shield absorbs a warned lob, preserves health, then breaks and disappears",
+    "Selected aisles start without a free shield; a warned lob removes one heart",
   );
   await floor(12);
   g = await read();

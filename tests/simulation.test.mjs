@@ -148,6 +148,24 @@ test("exit requires the quota and final boss, upgrades transfer between floors",
   assert.equal(last.state, "won");
 });
 
+test("a selected aisle starts with basic gear and preserves its three-heart baseline", () => {
+  const game = newGame(9, { baseHp: 3, ammo: 10 });
+  assert.equal(game.player.hp, 3);
+  assert.equal(game.player.maxHp, 3);
+  assert.equal(game.ammo, 10);
+  assert.ok(Object.values(game.upgrades).every((value) => value === 0));
+  game.player.hp = 2;
+  game.state = "cleared";
+  const next = nextLevel(game, "spread");
+  assert.equal(next.player.hp, 3);
+  assert.equal(next.player.maxHp, 3);
+  assert.equal(next.upgrades.spread, 1);
+  next.state = "cleared";
+  const upgraded = nextLevel(next, "heart");
+  assert.equal(upgraded.player.hp, 4);
+  assert.equal(upgraded.player.maxHp, 4);
+});
+
 test("shutters alternate and wait for occupied cells; enemies can route around shelves", () => {
   const game = newGame(2);
   const gate = game.map.gates[0];
@@ -180,7 +198,7 @@ test("ice preserves momentum and repeated spread upgrades add real pellets", () 
   upgraded.upgrades.spread = 2;
   stepGame(upgraded, { fire: true, aim: Math.PI / 2 }, 1 / 120);
   assert.equal(upgraded.bullets.length, 5);
-  assert.equal(upgraded.ammo, 23);
+  assert.equal(upgraded.ammo, 9);
 });
 
 test("an ambusher still pursues a predicted target outside the store", () => {

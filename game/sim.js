@@ -28,9 +28,11 @@ export const UPGRADE_LIMITS = {
 export function newGame(levelIndex = 0, carry = {}) {
   const seed = carry.seed ?? DEFAULT_SEED;
   const map = layoutFor(levelIndex, seed);
+  const baseHp = carry.baseHp ?? 4;
   return {
     levelIndex,
     seed,
+    baseHp,
     map,
     state: "playing",
     elapsed: 0,
@@ -41,11 +43,11 @@ export function newGame(levelIndex = 0, carry = {}) {
       vz: 0,
       angle: 0,
       hp: Math.min(
-        4 + (carry.upgrades?.heart || 0),
-        (carry.hp ?? 4 + (carry.upgrades?.heart || 0)) +
+        baseHp + (carry.upgrades?.heart || 0),
+        (carry.hp ?? baseHp + (carry.upgrades?.heart || 0)) +
           (carry.hp !== undefined && levelIndex ? 1 : 0),
       ),
-      maxHp: 4 + (carry.upgrades?.heart || 0),
+      maxHp: baseHp + (carry.upgrades?.heart || 0),
       shield: carry.upgrades?.shield || 0,
       invincible: 1.5,
       dash: 0,
@@ -111,7 +113,7 @@ export function newGame(levelIndex = 0, carry = {}) {
     stock: map.stock,
     collected: 0,
     score: carry.score || 0,
-    ammo: 24,
+    ammo: carry.ammo ?? (levelIndex === 0 ? 10 : 24),
     overtime: 0,
     combo: 0,
     comboTimer: 0,
@@ -746,6 +748,7 @@ export function nextLevel(game, upgrade) {
     return null;
   const upgrades = { ...game.upgrades, [upgrade]: game.upgrades[upgrade] + 1 };
   return newGame(game.levelIndex + 1, {
+    baseHp: game.baseHp,
     hp: game.player.hp + (upgrade === "heart" ? 1 : 0),
     score: game.score,
     seed: game.seed,

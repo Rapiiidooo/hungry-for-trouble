@@ -75,7 +75,7 @@ Multiplayer reuses the verified vacuum, with blue host trim and red guest trim, 
 
 ## Mission and payoff
 
-The title screen pairs MOP-3's portrait with a readable rescue request. Only ten floors and two bosses appear until the Director rescue opens the service lift. Keep future floors out of initial counters, route nodes and radio hints. Preserve an existing basement unlock.
+Keep the title screen light: one short objective and clear play, level, daily, multiplayer and leaderboard access. MOP-3's dialogue belongs after Play, never as a permanent title-screen card. The six-second briefing freezes gameplay and can be skipped. Pause buttons use literal action labels with a short explanation; mission and controls sit in a disclosure below them. Only ten floors and two bosses appear until the Director rescue opens the service lift. Keep future floors out of initial counters, route nodes and radio hints. Preserve an existing basement unlock.
 
 The warranty is a translucent pale-blue hemisphere with an orbiting arc and a single impact flare, tied to actual charges. Boss health follows its world position in overhead and first person. Orange landing rings fill before lobbed impacts. A shockwave's visible opening must match its safe sector. Camera transit uses a short lift and easing, with no roll and a reduced-motion alternative.
 

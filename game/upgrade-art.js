@@ -4,7 +4,7 @@ const robot = (x, y, shield = false) =>
   `<g transform="translate(${x} ${y})">${shield ? '<path d="M-19-18Q0-30 19-18V5Q12 23 0 28Q-12 23-19 5Z" fill="#6c8fb833" stroke="#a4c0e0" stroke-width="3"/>' : ""}<rect x="-12" y="-11" width="24" height="24" rx="8" fill="#f0f2f3"/><circle cx="-5" cy="-2" r="2" fill="#263650"/><circle cx="5" cy="-2" r="2" fill="#263650"/><path d="M-8 15h16" stroke="#697587" stroke-width="5"/></g>`;
 const heart = (x, y, full = true) =>
   `<path transform="translate(${x} ${y}) scale(.6)" d="M0 8C-12-8-25 5-17 15L0 32 17 15C25 5 12-8 0 8Z" fill="${full ? "#ed604e" : "#3c485c"}" stroke="${full ? "#ff978a" : "#798499"}" stroke-width="2"/>`;
-function diagram(key, after, n) {
+function diagram(key, after, n, baseHp) {
   if (key === "ricochet")
     return (
       robot(20, 88) +
@@ -76,7 +76,7 @@ function diagram(key, after, n) {
         : "")
     );
   return (
-    Array.from({ length: Math.min(6, 4 + n) }, (_, i) =>
+    Array.from({ length: Math.min(6, baseHp + n) }, (_, i) =>
       heart(13 + i * 21, 50),
     ).join("") +
     (after
@@ -84,14 +84,14 @@ function diagram(key, after, n) {
       : '<text x="65" y="105" text-anchor="middle" fill="#8e9ab0" font-size="11">CURRENT HEALTH</text>')
   );
 }
-export function upgradeStats(key, n) {
+export function upgradeStats(key, n, baseHp = 4) {
   const values = {
     rapid: [(1 + n * 0.25) / 0.22, (1 + (n + 1) * 0.25) / 0.22, "shots/sec"],
     spread: [1 + n * 2, 3 + n * 2, "pellets/shot"],
     pierce: [1 + n, 2 + n, "targets/shot"],
     shield: [n, n + 1, "blocks/aisle"],
     magnet: [0.85 + n * 0.32, 0.85 + (n + 1) * 0.32, "metre range"],
-    heart: [4 + n, 5 + n, "max hearts"],
+    heart: [baseHp + n, baseHp + n + 1, "max hearts"],
     ricochet: [n, n + 1, "wall bounces"],
     frost: [n ? 0.45 + n * 0.35 : 0, 0.8 + n * 0.35, "seconds frozen"],
   };
@@ -100,6 +100,6 @@ export function upgradeStats(key, n) {
     Number.isInteger(v) ? v : v.toFixed(key === "frost" ? 2 : 1);
   return `<span>${fmt(a)}</span><i>→</i><strong>${fmt(b)}</strong><small>${unit}</small>`;
 }
-export function upgradeArt(key, n) {
-  return `<svg viewBox="0 0 288 146" aria-hidden="true"><text x="66" y="17" text-anchor="middle" fill="#8e9ab0" font-size="10" font-weight="700">NOW</text><text x="219" y="17" text-anchor="middle" fill="#efb546" font-size="10" font-weight="700">AFTER UPGRADE</text><path d="M143 30v93" stroke="#475369" stroke-dasharray="3 5"/><g transform="translate(1 13)">${diagram(key, false, n)}</g><g transform="translate(153 13)">${diagram(key, true, n + 1)}</g></svg>`;
+export function upgradeArt(key, n, baseHp = 4) {
+  return `<svg viewBox="0 0 288 146" aria-hidden="true"><text x="66" y="17" text-anchor="middle" fill="#8e9ab0" font-size="10" font-weight="700">NOW</text><text x="219" y="17" text-anchor="middle" fill="#efb546" font-size="10" font-weight="700">AFTER UPGRADE</text><path d="M143 30v93" stroke="#475369" stroke-dasharray="3 5"/><g transform="translate(1 13)">${diagram(key, false, n, baseHp)}</g><g transform="translate(153 13)">${diagram(key, true, n + 1, baseHp)}</g></svg>`;
 }

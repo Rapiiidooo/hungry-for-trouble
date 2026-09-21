@@ -98,6 +98,7 @@ let presentationFX,
   endingFinished = false,
   endingLine = -1;
 let goldEnabled = false;
+let briefingRemaining = 0;
 let floorEffects,
   rescueUntil = 0,
   pendingOverlay = "",
@@ -402,15 +403,31 @@ function chooseStage(index) {
   ui["stage-title"].textContent =
     `AISLE ${String(index + 1).padStart(2, "0")} · ${LEVELS[index].name}`;
   ui["stage-description"].textContent = LEVELS[index].tagline;
+  ui["practice-start"].textContent =
+    `START FROM AISLE ${String(index + 1).padStart(2, "0")}`;
   ui["practice-start"].disabled = index > progress.unlocked;
   drawRoute(ui["route-map"], progress, index, chooseStage);
 }
 
 function openRoute() {
   if (mode === "playing") pause(true);
+  ui["route-close"].textContent =
+    mode === "playing" ? "BACK TO PAUSE" : "MAIN MENU";
   refreshProgressUI();
   ui["route-screen"].hidden = false;
   chooseStage(mode === "playing" ? game.levelIndex : progress.unlocked);
+}
+
+function openDaily(board = false) {
+  ui["daily-screen"].classList.toggle("board-view", board);
+  ui["daily-title"].innerHTML = board
+    ? "Daily <em>leaderboard.</em>"
+    : "Daily <em>rush.</em>";
+  ui["daily-intro"].textContent = board
+    ? "Today's best runs. Same challenge for everyone."
+    : "Survive 90 seconds. Chain takedowns. Climb the shared board.";
+  ui["daily-screen"].hidden = false;
+  refreshBoard();
 }
 
 async function refreshBoard() {
@@ -1202,6 +1219,8 @@ async function start(fresh = true, upgrade, options = {}) {
   ending = null;
   endingFinished = false;
   endingLine = -1;
+  briefingRemaining = 0;
+  ui.game.classList.remove("briefing");
   wasFPS = false;
   fpsPitch = 0;
   await sound.start();
@@ -1220,18 +1239,7 @@ async function start(fresh = true, upgrade, options = {}) {
         ? newDaily(dailyAttempt.config)
         : newGame(practiceLevel, {
             seed: crypto.getRandomValues(new Uint32Array(1))[0],
-            ...(runKind === "practice" && practiceLevel >= 5
-              ? {
-                  upgrades: {
-                    rapid: Math.min(3, Math.floor(practiceLevel / 4)),
-                    spread: Math.min(2, Math.floor(practiceLevel / 5)),
-                    shield: 1,
-                    magnet: 1,
-                    frost: practiceLevel >= 10 ? 1 : 0,
-                    ricochet: practiceLevel >= 15 ? 1 : 0,
-                  },
-                }
-              : {}),
+            ...(runKind === "practice" ? { baseHp: 3, ammo: 10 } : {}),
           });
     runKills = 0;
     runCrumbs = 0;
@@ -1261,6 +1269,7 @@ async function start(fresh = true, upgrade, options = {}) {
     "room-screen",
     "discovery-screen",
     "cinema",
+    "briefing",
   ])
     ui[id].hidden = true;
   mode = "playing";
@@ -1278,6 +1287,12 @@ async function start(fresh = true, upgrade, options = {}) {
   ui["pause-room-note"].hidden = !game.multiplayer;
   ui["pause-retry"].hidden = !!game.multiplayer;
   ui["pause-route"].hidden = !!game.multiplayer;
+  ui["restart-label"].textContent = game.daily
+    ? "RETRY DAILY RUSH"
+    : "RESTART RUN";
+  ui["restart-note"].textContent = game.daily
+    ? "Retry today's challenge from zero."
+    : `Start over from aisle ${runKind === "practice" ? practiceLevel + 1 : 1}.`;
   try {
     await buildWorld();
     if (game.multiplayer) {
@@ -1288,17 +1303,36 @@ async function start(fresh = true, upgrade, options = {}) {
       ui["run-badge"].textContent =
         `${game.multiplayer.kind === "coop" ? "SHARED SHIFT" : "SNACKDOWN"} · ROOM ${options.room.code}`;
     }
-    showMessage(
-      game.daily ? "DAILY RUSH" : game.map.level.name,
-      game.daily
-        ? "90 seconds. Every crumb and takedown counts."
-        : game.map.level.tagline,
-      3,
-    );
+    if (options.briefing && !game.daily && !game.multiplayer) {
+      briefingRemaining = 6;
+      ui.briefing.hidden = false;
+      ui["briefing-countdown"].textContent = "Starting in 6…";
+      ui.game.classList.add("briefing");
+      ui.pause.hidden = true;
+      ui.message.classList.remove("show");
+      radioUntil = 0;
+      ui["radio-log"].innerHTML = storyCard("mop", MISSION);
+    } else
+      showMessage(
+        game.daily ? "DAILY RUSH" : game.map.level.name,
+        game.daily
+          ? "90 seconds. Every crumb and takedown counts."
+          : game.map.level.tagline,
+        3,
+      );
   } catch (error) {
     reportError(error);
   }
   building = false;
+}
+
+function finishBriefing() {
+  if (briefingRemaining <= 0) return;
+  briefingRemaining = 0;
+  ui.briefing.hidden = true;
+  ui.game.classList.remove("briefing");
+  ui.pause.hidden = false;
+  showMessage("AISLE 01", "Eat crumbs to reload. Reach the checkout.", 2.5);
 }
 
 function pause(value = !paused) {
@@ -1308,6 +1342,7 @@ function pause(value = !paused) {
   accumulator = 0;
   clearInput();
   ui["pause-screen"].hidden = !value;
+  ui.briefing.hidden = value || briefingRemaining <= 0;
   if (!value) sound.start();
 }
 
@@ -1316,6 +1351,8 @@ function menu() {
   roomViewKey = "";
   clearInput();
   mode = "menu";
+  briefingRemaining = 0;
+  ui.game.classList.remove("briefing");
   viewRig.reset();
   ending = null;
   pendingOverlay = "";
@@ -1343,6 +1380,7 @@ function menu() {
     "discovery-screen",
     "cinema",
     "shield-visor",
+    "briefing",
   ])
     ui[id].hidden = true;
   ui.game.classList.remove("playing", "overtime", "multiplayer");
@@ -1559,7 +1597,7 @@ function handleEvents(events) {
       const data = UPGRADES[key],
         button = document.createElement("button");
       button.dataset.upgrade = key;
-      button.innerHTML = `<div class="upgrade-art">${upgradeArt(key, game.upgrades[key])}</div><div class="upgrade-stats">${upgradeStats(key, game.upgrades[key])}</div><small>${data.tag} · LV ${game.upgrades[key] + 1}</small><h3>${data.name}</h3><p>${data.description(game.upgrades[key])}</p><b>EQUIP & CONTINUE <span>▶</span></b>`;
+      button.innerHTML = `<div class="upgrade-art">${upgradeArt(key, game.upgrades[key], game.baseHp)}</div><div class="upgrade-stats">${upgradeStats(key, game.upgrades[key], game.baseHp)}</div><small>${data.tag} · LV ${game.upgrades[key] + 1}</small><h3>${data.name}</h3><p>${data.description(game.upgrades[key])}</p><b>EQUIP & CONTINUE <span>▶</span></b>`;
       button.onclick = () => start(false, key);
       ui["upgrade-options"].append(button);
     }
@@ -2266,10 +2304,12 @@ function telemetry() {
     speed: Math.hypot(game.player.vx, game.player.vz),
     mode,
     paused,
+    briefing: briefingRemaining > 0,
     state: game.state,
     floor: game.levelIndex + 1,
     theme: game.map.level.theme,
     hp: game.player.hp,
+    maxHp: game.player.maxHp,
     ammo: game.ammo,
     score: game.score,
     collected: game.collected,
@@ -2381,8 +2421,20 @@ function frame(now) {
     tickCount = 0;
     frameTotal = 0;
   }
+  if (briefingRemaining > 0 && !paused && !building) {
+    if (briefingRemaining <= dt) finishBriefing();
+    else {
+      briefingRemaining -= dt;
+      ui["briefing-countdown"].textContent =
+        `Starting in ${Math.ceil(briefingRemaining)}…`;
+    }
+  }
   const active =
-    mode === "playing" && !paused && !building && game.state === "playing";
+    mode === "playing" &&
+    !paused &&
+    !building &&
+    briefingRemaining === 0 &&
+    game.state === "playing";
   ui.game.classList.toggle("dodging", active && game.player.dash > 0);
   if (game.multiplayer && mode === "playing") {
     rooms.controls(packInput(active ? readInput() : {}));
@@ -2557,7 +2609,8 @@ function bindStick(id, target, aiming) {
 }
 
 function bindInput() {
-  ui.start.onclick = () => start();
+  ui.start.onclick = () => start(true, null, { briefing: true });
+  ui["briefing-continue"].onclick = finishBriefing;
   ui["discovery-continue"].onclick = () => {
     ui["discovery-screen"].hidden = true;
     ui["upgrade-screen"].hidden = false;
@@ -2577,7 +2630,7 @@ function bindInput() {
     ui["room-screen"].hidden = false;
     ui["room-setup"].hidden = !!rooms.session;
     ui["room-lobby"].hidden = !rooms.session;
-    ui["room-close"].textContent = rooms.session ? "Leave room" : "Back";
+    ui["room-close"].textContent = rooms.session ? "LEAVE ROOM" : "MAIN MENU";
     ui["room-status"].textContent = "";
   };
   ui["room-reconnect"].onclick = async () => {
@@ -2637,10 +2690,8 @@ function bindInput() {
   };
   ui["practice-start"].onclick = () =>
     start(true, null, { kind: "practice", level: selectedStage });
-  ui["open-daily"].onclick = () => {
-    ui["daily-screen"].hidden = false;
-    refreshBoard();
-  };
+  ui["open-daily"].onclick = () => openDaily();
+  ui["open-leaderboard"].onclick = () => openDaily(true);
   ui["daily-close"].onclick = () => {
     ui["daily-screen"].hidden = true;
   };
@@ -2843,7 +2894,7 @@ async function init() {
   } catch {
     /* A disabled or damaged local score must not prevent play. */
   }
-  ui["mission-card"].innerHTML = storyCard("mop", MISSION);
+  ui["briefing-mop"].innerHTML = storyCard("mop", MISSION);
   ui["discovery-mop"].innerHTML = storyCard(
     "mop",
     "You did it! Wait… this checkout has a service lift. I thought we only had ten floors.",
@@ -2866,9 +2917,10 @@ async function init() {
   ui.start.disabled = false;
   ui["open-route"].disabled =
     ui["open-daily"].disabled =
+    ui["open-leaderboard"].disabled =
     ui["open-rooms"].disabled =
       false;
-  ui.start.innerHTML = "RESCUE MOP-3 <span>▶</span>";
+  ui.start.innerHTML = "PLAY <span>▶</span>";
   const savedRoom = rooms.saved();
   ui["room-reconnect"].hidden = !savedRoom;
   if (savedRoom)
