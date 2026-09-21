@@ -6,7 +6,7 @@ The user requested the next original maze-chase/shooter game after rejecting the
 
 ## Submitted release
 
-The game is live at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/) and submitted in [official PR #6](https://github.com/404-Repo/404-game-jam/pull/6). [Public release evidence](verification-release/README.md) records the final gate and live browser checks for gameplay commit `2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6`. [Atlas integration](verification-atlas/README.md) declares the three media files now used at runtime. Later sections retain their original historical scope, including earlier Atlas and hosting limitations that are now resolved.
+The game is live at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/) and submitted in [official PR #6](https://github.com/404-Repo/404-game-jam/pull/6). [Analytics release evidence](verification-analytics/README.md) records the latest gate for gameplay commit `be00e56e4e73ccbbd27891e6efa1fb93bad00614` and verified cookieless traffic measurement. [Initial public release evidence](verification-release/README.md) retains the gate and live browser checks for the preceding commit `2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6`; gameplay is unchanged. [Atlas integration](verification-atlas/README.md) declares the three media files now used at runtime. Later sections retain their original historical scope, including earlier Atlas and hosting limitations that are now resolved.
 
 ## Visual references
 

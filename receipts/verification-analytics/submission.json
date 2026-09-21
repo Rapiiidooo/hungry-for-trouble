@@ -1,0 +1,12 @@
+{
+  "updatedAtDate": "2026-09-21",
+  "entryPullRequest": "https://github.com/404-Repo/404-game-jam/pull/6",
+  "playUrl": "https://trouble.rapidoai.dev/",
+  "sourceUrl": "https://github.com/Rapiiidooo/hungry-for-trouble",
+  "gameplayCommit": "be00e56e4e73ccbbd27891e6efa1fb93bad00614",
+  "previousGameplayCommit": "2284bd48dc7d669662c9ad3f5a28ecdbe1c498e6",
+  "reason": "Owner-requested traffic analytics; gameplay, scoring and saves unchanged",
+  "status": "Existing entry updated; organizer review and gate rerun pending",
+  "verdict": "PASS",
+  "verdictFile": "jam/verdict.txt"
+}

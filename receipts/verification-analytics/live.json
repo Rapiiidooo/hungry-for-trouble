@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "scope": "Real public HTTPS visit in a disposable Chrome profile with a standard Chrome UA; the real Umami collector accepted it. Actual Play and keyboard input follow. This is one identified verification visit, not organic traffic.",
+  "collectionStatus": 200,
+  "payloadFields": [
+    "website",
+    "hostname",
+    "url",
+    "title",
+    "referrer",
+    "screen",
+    "language"
+  ],
+  "queryHashRemoved": true,
+  "referrerOriginOnly": true,
+  "cookiesOmitted": true,
+  "errors": [],
+  "databaseEventVerified": true,
+  "testEventRemoved": true,
+  "deviceDetected": "laptop",
+  "browserDetected": "chrome",
+  "countryDetected": true,
+  "dashboardLoginRequired": true,
+  "dashboardUnauthenticatedApiStatus": 401,
+  "dashboardAccess": "Private management network; existing owner login"
+}
