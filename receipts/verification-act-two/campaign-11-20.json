@@ -1,0 +1,1485 @@
+{
+  "input": "Practice route unlocks are preloaded for a floor 11 continuation; real keyboard and pointer events, read-only combat telemetry.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Overhead-to-FPS camera interpolates continuously and settles",
+    "Visor pickup enters first person; real mouse look and firing work",
+    "Floors 11 to 20 cleared through actual movement and firing",
+    "Overtime collected through movement",
+    "Shots defeat pursuing enemies",
+    "Repeated upgrades change the arsenal",
+    "Final boss defeated before checkout"
+  ],
+  "floors": [
+    {
+      "floor": 11,
+      "seconds": 30.833333333332863,
+      "kills": 8,
+      "crumbs": 64,
+      "score": 3332,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 2,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 1,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 12,
+      "seconds": 38.48333333333243,
+      "kills": 10,
+      "crumbs": 83,
+      "score": 7277,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 1,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 13,
+      "seconds": 36.39999999999922,
+      "kills": 9,
+      "crumbs": 70,
+      "score": 11013,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 1,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 14,
+      "seconds": 42.99999999999884,
+      "kills": 8,
+      "crumbs": 85,
+      "score": 14533,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 1,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 15,
+      "seconds": 49.0499999999985,
+      "kills": 6,
+      "crumbs": 80,
+      "score": 20842,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 2,
+        "magnet": 1,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 16,
+      "seconds": 43.766666666665465,
+      "kills": 6,
+      "crumbs": 72,
+      "score": 23974,
+      "hp": 6,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 2,
+        "magnet": 1,
+        "heart": 2,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 17,
+      "seconds": 52.19999999999832,
+      "kills": 13,
+      "crumbs": 96,
+      "score": 28812,
+      "hp": 6,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 1,
+        "heart": 2,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 18,
+      "seconds": 33.69999999999937,
+      "kills": 6,
+      "crumbs": 76,
+      "score": 32185,
+      "hp": 6,
+      "upgrades": {
+        "rapid": 5,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 1,
+        "heart": 2,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 19,
+      "seconds": 45.26666666666538,
+      "kills": 9,
+      "crumbs": 100,
+      "score": 37232,
+      "hp": 7,
+      "upgrades": {
+        "rapid": 5,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 1,
+        "heart": 3,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 20,
+      "seconds": 112.58333333332823,
+      "kills": 17,
+      "crumbs": 98,
+      "score": 44586,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 5,
+        "spread": 3,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 1,
+        "heart": 3,
+        "ricochet": 0,
+        "frost": 1
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 11,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        28
+      ],
+      "waypoint": [
+        4,
+        26
+      ],
+      "crumbs": 0,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 56,
+      "draws": 365
+    },
+    {
+      "floor": 11,
+      "elapsed": 7.2,
+      "pos": [
+        2.1,
+        27.7
+      ],
+      "waypoint": [
+        2,
+        30
+      ],
+      "crumbs": 9,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 5.7,
+      "fps": 60,
+      "draws": 331
+    },
+    {
+      "floor": 11,
+      "elapsed": 14.3,
+      "pos": [
+        4.1,
+        3.3
+      ],
+      "waypoint": [
+        4,
+        2
+      ],
+      "crumbs": 28,
+      "hp": 4,
+      "kills": 3,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 316
+    },
+    {
+      "floor": 11,
+      "elapsed": 21.3,
+      "pos": [
+        13.2,
+        8.1
+      ],
+      "waypoint": [
+        14,
+        8
+      ],
+      "crumbs": 45,
+      "hp": 4,
+      "kills": 6,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 393
+    },
+    {
+      "floor": 11,
+      "elapsed": 28.3,
+      "pos": [
+        32.4,
+        1.9
+      ],
+      "waypoint": [
+        34,
+        2
+      ],
+      "crumbs": 59,
+      "hp": 4,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 374
+    },
+    {
+      "floor": 12,
+      "elapsed": 4.4,
+      "pos": [
+        4,
+        23.9
+      ],
+      "waypoint": [
+        2,
+        24
+      ],
+      "crumbs": 6,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 6.8,
+      "fps": 60,
+      "draws": 333
+    },
+    {
+      "floor": 12,
+      "elapsed": 11.4,
+      "pos": [
+        10.1,
+        14.5
+      ],
+      "waypoint": [
+        10,
+        14
+      ],
+      "crumbs": 26,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 341
+    },
+    {
+      "floor": 12,
+      "elapsed": 18.4,
+      "pos": [
+        5.9,
+        10.1
+      ],
+      "waypoint": [
+        4,
+        10
+      ],
+      "crumbs": 42,
+      "hp": 4,
+      "kills": 3,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 346
+    },
+    {
+      "floor": 12,
+      "elapsed": 25.4,
+      "pos": [
+        12,
+        4.1
+      ],
+      "waypoint": [
+        14,
+        4
+      ],
+      "crumbs": 56,
+      "hp": 4,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 300
+    },
+    {
+      "floor": 12,
+      "elapsed": 32.5,
+      "pos": [
+        31.7,
+        6
+      ],
+      "waypoint": [
+        32,
+        8
+      ],
+      "crumbs": 69,
+      "hp": 4,
+      "kills": 9,
+      "overtime": 6.3,
+      "fps": 60,
+      "draws": 327
+    },
+    {
+      "floor": 13,
+      "elapsed": 0.9,
+      "pos": [
+        4,
+        27.1
+      ],
+      "waypoint": [
+        4,
+        26
+      ],
+      "crumbs": 2,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 381
+    },
+    {
+      "floor": 13,
+      "elapsed": 7.9,
+      "pos": [
+        3.3,
+        4.1
+      ],
+      "waypoint": [
+        4,
+        4
+      ],
+      "crumbs": 19,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 2.4,
+      "fps": 60,
+      "draws": 336
+    },
+    {
+      "floor": 13,
+      "elapsed": 14.9,
+      "pos": [
+        11.9,
+        2.2
+      ],
+      "waypoint": [
+        10,
+        2
+      ],
+      "crumbs": 34,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 371
+    },
+    {
+      "floor": 13,
+      "elapsed": 22,
+      "pos": [
+        18,
+        8.1
+      ],
+      "waypoint": [
+        20,
+        8
+      ],
+      "crumbs": 43,
+      "hp": 4,
+      "kills": 6,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 332
+    },
+    {
+      "floor": 13,
+      "elapsed": 29,
+      "pos": [
+        40,
+        7.1
+      ],
+      "waypoint": [
+        40,
+        6
+      ],
+      "crumbs": 57,
+      "hp": 4,
+      "kills": 7,
+      "overtime": 6.8,
+      "fps": 60,
+      "draws": 367
+    },
+    {
+      "floor": 13,
+      "elapsed": 36.1,
+      "pos": [
+        40,
+        4.6
+      ],
+      "waypoint": [
+        40,
+        4
+      ],
+      "crumbs": 70,
+      "hp": 4,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 377
+    },
+    {
+      "floor": 14,
+      "elapsed": 6.6,
+      "pos": [
+        10,
+        32
+      ],
+      "waypoint": [
+        10,
+        30
+      ],
+      "crumbs": 15,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 3.2,
+      "fps": 60,
+      "draws": 378
+    },
+    {
+      "floor": 14,
+      "elapsed": 13.7,
+      "pos": [
+        21.9,
+        28.5
+      ],
+      "waypoint": [
+        22,
+        28
+      ],
+      "crumbs": 32,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 429
+    },
+    {
+      "floor": 14,
+      "elapsed": 20.7,
+      "pos": [
+        18.9,
+        8
+      ],
+      "waypoint": [
+        18,
+        8
+      ],
+      "crumbs": 48,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 4.1,
+      "fps": 60,
+      "draws": 304
+    },
+    {
+      "floor": 14,
+      "elapsed": 27.7,
+      "pos": [
+        4,
+        8.2
+      ],
+      "waypoint": [
+        4,
+        6
+      ],
+      "crumbs": 64,
+      "hp": 4,
+      "kills": 6,
+      "overtime": 7.2,
+      "fps": 60,
+      "draws": 306
+    },
+    {
+      "floor": 14,
+      "elapsed": 34.7,
+      "pos": [
+        21.9,
+        13
+      ],
+      "waypoint": [
+        22,
+        14
+      ],
+      "crumbs": 74,
+      "hp": 5,
+      "kills": 7,
+      "overtime": 0.2,
+      "fps": 60,
+      "draws": 330
+    },
+    {
+      "floor": 14,
+      "elapsed": 41.8,
+      "pos": [
+        33.9,
+        6.6
+      ],
+      "waypoint": [
+        34,
+        6
+      ],
+      "crumbs": 83,
+      "hp": 4,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 304
+    },
+    {
+      "floor": 15,
+      "elapsed": 5.6,
+      "pos": [
+        10.1,
+        14.7
+      ],
+      "waypoint": [
+        10,
+        14
+      ],
+      "crumbs": 10,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 5.6,
+      "boss": 320,
+      "fps": 60,
+      "draws": 376
+    },
+    {
+      "floor": 15,
+      "elapsed": 12.7,
+      "pos": [
+        32.3,
+        2
+      ],
+      "waypoint": [
+        34,
+        2
+      ],
+      "crumbs": 28,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 7.8,
+      "boss": 292,
+      "fps": 60,
+      "draws": 335
+    },
+    {
+      "floor": 15,
+      "elapsed": 19.7,
+      "pos": [
+        29.4,
+        12.1
+      ],
+      "waypoint": [
+        28,
+        12
+      ],
+      "crumbs": 41,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 0.7,
+      "boss": 211,
+      "fps": 60,
+      "draws": 358
+    },
+    {
+      "floor": 15,
+      "elapsed": 26.8,
+      "pos": [
+        18.5,
+        11.9
+      ],
+      "waypoint": [
+        20,
+        12
+      ],
+      "crumbs": 51,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 4.4,
+      "boss": 88,
+      "fps": 60,
+      "draws": 340
+    },
+    {
+      "floor": 15,
+      "elapsed": 33.8,
+      "pos": [
+        20,
+        22.7
+      ],
+      "waypoint": [
+        20,
+        24
+      ],
+      "crumbs": 56,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 0,
+      "boss": 5,
+      "fps": 60,
+      "draws": 389
+    },
+    {
+      "floor": 15,
+      "elapsed": 40.8,
+      "pos": [
+        14.5,
+        11.9
+      ],
+      "waypoint": [
+        16,
+        12
+      ],
+      "crumbs": 64,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 4.1,
+      "boss": 5,
+      "fps": 60,
+      "draws": 286
+    },
+    {
+      "floor": 15,
+      "elapsed": 47.9,
+      "pos": [
+        35.8,
+        27.9
+      ],
+      "waypoint": [
+        38,
+        28
+      ],
+      "crumbs": 78,
+      "hp": 4,
+      "kills": 6,
+      "overtime": 0,
+      "boss": 0,
+      "fps": 60,
+      "draws": 320
+    },
+    {
+      "floor": 16,
+      "elapsed": 3.2,
+      "pos": [
+        13.9,
+        32.2
+      ],
+      "waypoint": [
+        14,
+        30
+      ],
+      "crumbs": 5,
+      "hp": 6,
+      "kills": 0,
+      "overtime": 7.3,
+      "fps": 60,
+      "draws": 384
+    },
+    {
+      "floor": 16,
+      "elapsed": 10.3,
+      "pos": [
+        7,
+        10
+      ],
+      "waypoint": [
+        6,
+        10
+      ],
+      "crumbs": 20,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 0.3,
+      "fps": 60,
+      "draws": 324
+    },
+    {
+      "floor": 16,
+      "elapsed": 17.3,
+      "pos": [
+        13.5,
+        7.9
+      ],
+      "waypoint": [
+        14,
+        8
+      ],
+      "crumbs": 33,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 2.1,
+      "fps": 60,
+      "draws": 353
+    },
+    {
+      "floor": 16,
+      "elapsed": 24.3,
+      "pos": [
+        4,
+        12.5
+      ],
+      "waypoint": [
+        4,
+        14
+      ],
+      "crumbs": 43,
+      "hp": 6,
+      "kills": 3,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 348
+    },
+    {
+      "floor": 16,
+      "elapsed": 31.3,
+      "pos": [
+        20,
+        19.9
+      ],
+      "waypoint": [
+        20,
+        18
+      ],
+      "crumbs": 50,
+      "hp": 6,
+      "kills": 5,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 446
+    },
+    {
+      "floor": 16,
+      "elapsed": 38.3,
+      "pos": [
+        33,
+        4
+      ],
+      "waypoint": [
+        34,
+        4
+      ],
+      "crumbs": 63,
+      "hp": 6,
+      "kills": 6,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 390
+    },
+    {
+      "floor": 17,
+      "elapsed": 1.5,
+      "pos": [
+        3.9,
+        24.7
+      ],
+      "waypoint": [
+        4,
+        24
+      ],
+      "crumbs": 3,
+      "hp": 6,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 425
+    },
+    {
+      "floor": 17,
+      "elapsed": 8.5,
+      "pos": [
+        6.1,
+        27.1
+      ],
+      "waypoint": [
+        6,
+        26
+      ],
+      "crumbs": 22,
+      "hp": 6,
+      "kills": 0,
+      "overtime": 1.8,
+      "fps": 60,
+      "draws": 381
+    },
+    {
+      "floor": 17,
+      "elapsed": 15.6,
+      "pos": [
+        19.3,
+        28.1
+      ],
+      "waypoint": [
+        18,
+        28
+      ],
+      "crumbs": 36,
+      "hp": 6,
+      "kills": 1,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 383
+    },
+    {
+      "floor": 17,
+      "elapsed": 22.6,
+      "pos": [
+        17,
+        30
+      ],
+      "waypoint": [
+        18,
+        30
+      ],
+      "crumbs": 48,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 403
+    },
+    {
+      "floor": 17,
+      "elapsed": 29.6,
+      "pos": [
+        37.6,
+        28.1
+      ],
+      "waypoint": [
+        36,
+        28
+      ],
+      "crumbs": 63,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 386
+    },
+    {
+      "floor": 17,
+      "elapsed": 36.6,
+      "pos": [
+        19.3,
+        26
+      ],
+      "waypoint": [
+        18,
+        26
+      ],
+      "crumbs": 74,
+      "hp": 6,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 326
+    },
+    {
+      "floor": 17,
+      "elapsed": 43.6,
+      "pos": [
+        9.2,
+        14
+      ],
+      "waypoint": [
+        10,
+        14
+      ],
+      "crumbs": 77,
+      "hp": 6,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 419
+    },
+    {
+      "floor": 17,
+      "elapsed": 50.7,
+      "pos": [
+        40.1,
+        11.8
+      ],
+      "waypoint": [
+        40,
+        10
+      ],
+      "crumbs": 92,
+      "hp": 6,
+      "kills": 12,
+      "overtime": 7.8,
+      "fps": 60,
+      "draws": 372
+    },
+    {
+      "floor": 18,
+      "elapsed": 5.3,
+      "pos": [
+        6,
+        34.3
+      ],
+      "waypoint": [
+        6,
+        32
+      ],
+      "crumbs": 12,
+      "hp": 6,
+      "kills": 1,
+      "overtime": 4.9,
+      "fps": 60,
+      "draws": 365
+    },
+    {
+      "floor": 18,
+      "elapsed": 12.4,
+      "pos": [
+        7.8,
+        2.1
+      ],
+      "waypoint": [
+        6,
+        2
+      ],
+      "crumbs": 30,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 378
+    },
+    {
+      "floor": 18,
+      "elapsed": 19.4,
+      "pos": [
+        14.8,
+        8
+      ],
+      "waypoint": [
+        16,
+        8
+      ],
+      "crumbs": 45,
+      "hp": 6,
+      "kills": 5,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 373
+    },
+    {
+      "floor": 18,
+      "elapsed": 26.4,
+      "pos": [
+        39.2,
+        2.1
+      ],
+      "waypoint": [
+        38,
+        2
+      ],
+      "crumbs": 63,
+      "hp": 6,
+      "kills": 6,
+      "overtime": 6.3,
+      "fps": 60,
+      "draws": 367
+    },
+    {
+      "floor": 18,
+      "elapsed": 33.4,
+      "pos": [
+        42.1,
+        6.3
+      ],
+      "waypoint": [
+        42,
+        6
+      ],
+      "crumbs": 76,
+      "hp": 6,
+      "kills": 6,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 374
+    },
+    {
+      "floor": 19,
+      "elapsed": 6.6,
+      "pos": [
+        10,
+        12
+      ],
+      "waypoint": [
+        10,
+        14
+      ],
+      "crumbs": 14,
+      "hp": 7,
+      "kills": 1,
+      "overtime": 3.7,
+      "fps": 60,
+      "draws": 402
+    },
+    {
+      "floor": 19,
+      "elapsed": 13.6,
+      "pos": [
+        6.3,
+        7.9
+      ],
+      "waypoint": [
+        8,
+        8
+      ],
+      "crumbs": 30,
+      "hp": 7,
+      "kills": 1,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 392
+    },
+    {
+      "floor": 19,
+      "elapsed": 20.6,
+      "pos": [
+        10.2,
+        1.9
+      ],
+      "waypoint": [
+        8,
+        2
+      ],
+      "crumbs": 46,
+      "hp": 7,
+      "kills": 4,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 388
+    },
+    {
+      "floor": 19,
+      "elapsed": 27.6,
+      "pos": [
+        28.1,
+        12.5
+      ],
+      "waypoint": [
+        28,
+        14
+      ],
+      "crumbs": 60,
+      "hp": 7,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 443
+    },
+    {
+      "floor": 19,
+      "elapsed": 34.6,
+      "pos": [
+        23.9,
+        17.6
+      ],
+      "waypoint": [
+        24,
+        18
+      ],
+      "crumbs": 78,
+      "hp": 7,
+      "kills": 8,
+      "overtime": 2,
+      "fps": 60,
+      "draws": 403
+    },
+    {
+      "floor": 19,
+      "elapsed": 41.7,
+      "pos": [
+        29.7,
+        31.9
+      ],
+      "waypoint": [
+        30,
+        32
+      ],
+      "crumbs": 93,
+      "hp": 7,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 481
+    },
+    {
+      "floor": 20,
+      "elapsed": 3.3,
+      "pos": [
+        7,
+        37.9
+      ],
+      "waypoint": [
+        6,
+        38
+      ],
+      "crumbs": 7,
+      "hp": 7,
+      "kills": 1,
+      "overtime": 7,
+      "boss": 420,
+      "fps": 60,
+      "draws": 383
+    },
+    {
+      "floor": 20,
+      "elapsed": 10.3,
+      "pos": [
+        10,
+        15.2
+      ],
+      "waypoint": [
+        10,
+        14
+      ],
+      "crumbs": 25,
+      "hp": 7,
+      "kills": 1,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 381
+    },
+    {
+      "floor": 20,
+      "elapsed": 17.4,
+      "pos": [
+        29.9,
+        2
+      ],
+      "waypoint": [
+        32,
+        2
+      ],
+      "crumbs": 42,
+      "hp": 7,
+      "kills": 3,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 450
+    },
+    {
+      "floor": 20,
+      "elapsed": 24.4,
+      "pos": [
+        31.2,
+        14
+      ],
+      "waypoint": [
+        30,
+        14
+      ],
+      "crumbs": 53,
+      "hp": 7,
+      "kills": 3,
+      "overtime": 2.1,
+      "boss": 420,
+      "fps": 60,
+      "draws": 471
+    },
+    {
+      "floor": 20,
+      "elapsed": 31.4,
+      "pos": [
+        25.9,
+        33.8
+      ],
+      "waypoint": [
+        28,
+        34
+      ],
+      "crumbs": 64,
+      "hp": 7,
+      "kills": 4,
+      "overtime": 0,
+      "boss": 305,
+      "fps": 60,
+      "draws": 460
+    },
+    {
+      "floor": 20,
+      "elapsed": 38.5,
+      "pos": [
+        26,
+        28.6
+      ],
+      "waypoint": [
+        26,
+        28
+      ],
+      "crumbs": 75,
+      "hp": 7,
+      "kills": 6,
+      "overtime": 4.3,
+      "boss": 305,
+      "fps": 60,
+      "draws": 430
+    },
+    {
+      "floor": 20,
+      "elapsed": 45.5,
+      "pos": [
+        26,
+        33.4
+      ],
+      "waypoint": [
+        26,
+        34
+      ],
+      "crumbs": 79,
+      "hp": 7,
+      "kills": 7,
+      "overtime": 0,
+      "boss": 232,
+      "fps": 60,
+      "draws": 412
+    },
+    {
+      "floor": 20,
+      "elapsed": 52.6,
+      "pos": [
+        26,
+        33.7
+      ],
+      "waypoint": [
+        26,
+        32
+      ],
+      "crumbs": 88,
+      "hp": 7,
+      "kills": 9,
+      "overtime": 4.7,
+      "boss": 232,
+      "fps": 60,
+      "draws": 442
+    },
+    {
+      "floor": 20,
+      "elapsed": 59.6,
+      "pos": [
+        25.9,
+        6.5
+      ],
+      "waypoint": [
+        26,
+        6
+      ],
+      "crumbs": 93,
+      "hp": 7,
+      "kills": 9,
+      "overtime": 0,
+      "boss": 186,
+      "fps": 60,
+      "draws": 435
+    },
+    {
+      "floor": 20,
+      "elapsed": 66.6,
+      "pos": [
+        31.5,
+        13.9
+      ],
+      "waypoint": [
+        30,
+        14
+      ],
+      "crumbs": 93,
+      "hp": 7,
+      "kills": 11,
+      "overtime": 4,
+      "boss": 186,
+      "fps": 60,
+      "draws": 435
+    },
+    {
+      "floor": 20,
+      "elapsed": 73.7,
+      "pos": [
+        26.1,
+        26.3
+      ],
+      "waypoint": [
+        26,
+        28
+      ],
+      "crumbs": 93,
+      "hp": 6,
+      "kills": 12,
+      "overtime": 0,
+      "boss": 75,
+      "fps": 60,
+      "draws": 393
+    },
+    {
+      "floor": 20,
+      "elapsed": 80.7,
+      "pos": [
+        32,
+        34
+      ],
+      "waypoint": [
+        30,
+        34
+      ],
+      "crumbs": 93,
+      "hp": 6,
+      "kills": 13,
+      "overtime": 5.8,
+      "boss": 75,
+      "fps": 60,
+      "draws": 405
+    },
+    {
+      "floor": 20,
+      "elapsed": 87.8,
+      "pos": [
+        26.1,
+        28
+      ],
+      "waypoint": [
+        26,
+        30
+      ],
+      "crumbs": 93,
+      "hp": 6,
+      "kills": 14,
+      "overtime": 0,
+      "boss": 75,
+      "fps": 60,
+      "draws": 403
+    },
+    {
+      "floor": 20,
+      "elapsed": 94.8,
+      "pos": [
+        17.8,
+        33.8
+      ],
+      "waypoint": [
+        20,
+        34
+      ],
+      "crumbs": 93,
+      "hp": 5,
+      "kills": 15,
+      "overtime": 6,
+      "boss": 75,
+      "fps": 60,
+      "draws": 433
+    },
+    {
+      "floor": 20,
+      "elapsed": 101.8,
+      "pos": [
+        26,
+        12.9
+      ],
+      "waypoint": [
+        26,
+        12
+      ],
+      "crumbs": 93,
+      "hp": 4,
+      "kills": 15,
+      "overtime": 0,
+      "boss": 75,
+      "fps": 60,
+      "draws": 429
+    },
+    {
+      "floor": 20,
+      "elapsed": 108.8,
+      "pos": [
+        32.2,
+        12
+      ],
+      "waypoint": [
+        32,
+        14
+      ],
+      "crumbs": 93,
+      "hp": 4,
+      "kills": 17,
+      "overtime": 5.3,
+      "boss": 25,
+      "fps": 60,
+      "draws": 424
+    }
+  ],
+  "result": "PASS"
+}

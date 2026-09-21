@@ -1,5 +1,6 @@
 import { DEFAULT_SEED } from "./floorplans.js";
 import { CELL, LEVELS, layoutFor } from "./levels.js";
+import { updateMachines, hitStock, addMine } from "./machines.js";
 
 export const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 const length = (x, z) => Math.hypot(x, z);
@@ -10,6 +11,18 @@ const directions = [
   [0, 1],
   [0, -1],
 ];
+const healthFor = (kind) =>
+  ({ armoured: 9, shooter: 5, sniper: 6, layer: 7, shieldcart: 10 })[kind] || 3;
+export const UPGRADE_LIMITS = {
+  rapid: 5,
+  spread: 3,
+  pierce: 3,
+  shield: 3,
+  magnet: 3,
+  heart: 4,
+  ricochet: 3,
+  frost: 3,
+};
 
 export function newGame(levelIndex = 0, carry = {}) {
   const seed = carry.seed ?? DEFAULT_SEED;
@@ -36,14 +49,20 @@ export function newGame(levelIndex = 0, carry = {}) {
       invincible: 1.5,
       dash: 0,
       dashCooldown: 0,
+      dashX: 0,
+      dashZ: 1,
+      transportCooldown: 0,
+      transportLocked: false,
       fireCooldown: 0,
     },
     enemies: map.enemies.map((enemy, id) => ({
       ...enemy,
       id,
       origin: { x: enemy.x, z: enemy.z },
-      hp: enemy.kind === "armoured" ? 9 : enemy.kind === "shooter" ? 5 : 3,
-      maxHp: enemy.kind === "armoured" ? 9 : enemy.kind === "shooter" ? 5 : 3,
+      hp: healthFor(enemy.kind),
+      maxHp: healthFor(enemy.kind),
+      mineCooldown: 3 + id * 0.45,
+      frozen: 0,
       shotCooldown: 1.5 + id * 0.3,
       tell: 0,
       shotAngle: 0,
@@ -62,9 +81,16 @@ export function newGame(levelIndex = 0, carry = {}) {
     boss: map.boss
       ? {
           ...map.boss,
-          hp: levelIndex === 9 ? 360 : 180,
-          maxHp: levelIndex === 9 ? 360 : 180,
-          director: levelIndex === 9,
+          hp: { 9: 300, 14: 320, 19: 420 }[levelIndex] || 180,
+          maxHp: { 9: 300, 14: 320, 19: 420 }[levelIndex] || 180,
+          director: levelIndex >= 9,
+          kind:
+            map.level.bossKind || (levelIndex === 9 ? "director" : "manager"),
+          name:
+            { foreman: "THE FOREMAN", core: "SHELF CONTROL" }[
+              map.level.bossKind
+            ] || (levelIndex === 9 ? "THE DIRECTOR" : "THE MANAGER"),
+          special: 4,
           phase: 0,
           fire: 1.5,
           exposed: false,
@@ -78,6 +104,8 @@ export function newGame(levelIndex = 0, carry = {}) {
     fpsTime: 0,
     bullets: [],
     hazards: [],
+    mines: [],
+    stock: map.stock,
     collected: 0,
     score: carry.score || 0,
     ammo: 24,
@@ -94,6 +122,8 @@ export function newGame(levelIndex = 0, carry = {}) {
       shield: 0,
       magnet: 0,
       heart: 0,
+      ricochet: 0,
+      frost: 0,
       ...carry.upgrades,
     },
     events: [],
@@ -219,6 +249,8 @@ function killEnemy(game, enemy) {
     x: enemy.x,
     z: enemy.z,
     combo: game.combo,
+    enemyId: enemy.id,
+    kind: enemy.kind,
   });
 }
 
@@ -276,6 +308,8 @@ function fire(game, input) {
       life: 0.85,
       pierce: game.upgrades.pierce,
       damage: game.overtime > 0 ? 3 : 1,
+      bounces: game.upgrades.ricochet,
+      frost: game.upgrades.frost,
       hit: new Set(),
     });
   }
@@ -320,20 +354,29 @@ export function stepGame(game, input, dt) {
   }
   if (Number.isFinite(input.aim)) p.angle = input.aim;
   else if (size > 0.1) p.angle = Math.atan2(ix, iz);
-  if (input.dash && p.dashCooldown === 0 && size > 0.1) {
+  if (input.dash && p.dashCooldown === 0) {
     p.dash = 0.18;
     p.dashCooldown = 1.2;
+    const magnitude = Math.hypot(ix, iz);
+    p.dashX = magnitude > 0.1 ? ix / magnitude : Math.sin(p.angle);
+    p.dashZ = magnitude > 0.1 ? iz / magnitude : Math.cos(p.angle);
     game.events.push({ type: "dash", x: p.x, z: p.z });
   }
   const speed = p.dash > 0 ? 13 : game.overtime > 0 ? 5.9 : 4.7;
+  if (p.dash > 0) {
+    ix = p.dashX;
+    iz = p.dashZ;
+  }
   const grip = game.map.level.theme === "ice" && p.dash === 0 ? 5 : 24;
-  p.vx += (ix * speed - p.vx) * Math.min(1, dt * grip);
-  p.vz += (iz * speed - p.vz) * Math.min(1, dt * grip);
+  p.vx += (ix * speed - p.vx) * (p.dash > 0 ? 1 : Math.min(1, dt * grip));
+  p.vz += (iz * speed - p.vz) * (p.dash > 0 ? 1 : Math.min(1, dt * grip));
   move(game, p, p.vx * dt, p.vz * dt);
   const belt = game.map.belts.find(
     (b) => Math.abs(p.x - b.x) < 1 && Math.abs(p.z - b.z) < 0.85,
   );
   if (belt) move(game, p, belt.direction * 2.3 * dt, 0);
+  updateMachines(game, dt, { move, canStand, hurt, killEnemy });
+  if (game.state !== "playing") return game.events;
   fire(game, input);
 
   for (const crumb of game.crumbs)
@@ -398,6 +441,7 @@ export function stepGame(game, input, dt) {
   for (const enemy of game.enemies) {
     enemy.hit = Math.max(0, enemy.hit - dt);
     enemy.stun = Math.max(0, enemy.stun - dt);
+    enemy.frozen = Math.max(0, enemy.frozen - dt);
     enemy.chargeCooldown = Math.max(0, enemy.chargeCooldown - dt);
     if (enemy.respawn > 0) {
       enemy.respawn -= dt;
@@ -416,18 +460,36 @@ export function stepGame(game, input, dt) {
       }
       continue;
     }
-    if (enemy.kind === "shooter" && enemy.stun === 0 && game.overtime <= 0) {
+    if (enemy.kind === "layer" && enemy.stun === 0 && game.overtime <= 0) {
+      enemy.mineCooldown -= dt;
+      if (enemy.mineCooldown <= 0) {
+        addMine(game, enemy);
+        enemy.mineCooldown = 3.7;
+      }
+    }
+    if (
+      ["shooter", "sniper"].includes(enemy.kind) &&
+      enemy.stun === 0 &&
+      game.overtime <= 0
+    ) {
       const gap = distance(p, enemy);
       enemy.shotCooldown = Math.max(0, enemy.shotCooldown - dt);
       if (enemy.tell > 0) {
         enemy.tell = Math.max(0, enemy.tell - dt);
         if (enemy.tell === 0) {
           const offsets =
-            game.levelIndex >= 7 || (game.daily && game.wave > 2)
-              ? [-0.13, 0, 0.13]
-              : [0];
+            enemy.kind === "sniper"
+              ? [0]
+              : game.levelIndex >= 7 || (game.daily && game.wave > 2)
+                ? [-0.13, 0, 0.13]
+                : [0];
           for (const offset of offsets)
-            launchHazard(game, enemy, enemy.shotAngle + offset, 6.2);
+            launchHazard(
+              game,
+              enemy,
+              enemy.shotAngle + offset,
+              enemy.kind === "sniper" ? 11 : 6.2,
+            );
           enemy.shotCooldown = game.daily
             ? Math.max(0.9, 2.2 - game.wave * 0.2)
             : 2;
@@ -435,10 +497,10 @@ export function stepGame(game, input, dt) {
         }
       } else if (
         enemy.shotCooldown === 0 &&
-        gap < 14 &&
+        gap < (enemy.kind === "sniper" ? 20 : 14) &&
         lineOfSight(game, enemy, p)
       ) {
-        enemy.tell = 0.65;
+        enemy.tell = enemy.kind === "sniper" ? 1.05 : 0.65;
         enemy.shotAngle = Math.atan2(p.x - enemy.x, p.z - enemy.z);
         game.events.push({ type: "drone-warning", x: enemy.x, z: enemy.z });
       }
@@ -515,7 +577,11 @@ export function stepGame(game, input, dt) {
             d,
             game.map.level.speed *
               (game.overtime > 0 ? 0.8 : 1) *
-              (enemy.kind === "armoured" ? 0.78 : 1) *
+              (["armoured", "shieldcart"].includes(enemy.kind)
+                ? 0.78
+                : enemy.kind === "layer"
+                  ? 0.9
+                  : 1) *
               (game.daily ? 1 + (game.wave - 1) * 0.1 : 1) *
               dt,
           );
@@ -540,9 +606,39 @@ export function stepGame(game, input, dt) {
     bullet.life -= dt;
     const substeps = 3;
     for (let i = 0; i < substeps && bullet.life > 0; i++) {
+      const oldX = bullet.x,
+        oldZ = bullet.z;
       bullet.x += (bullet.vx * dt) / substeps;
       bullet.z += (bullet.vz * dt) / substeps;
       if (!canStand(game, bullet.x, bullet.z, 0.08)) {
+        if (bullet.bounces > 0) {
+          const blockedX = !canStand(game, bullet.x, oldZ, 0.08);
+          const blockedZ = !canStand(game, oldX, bullet.z, 0.08);
+          if (blockedX || !blockedZ) bullet.vx *= -1;
+          if (blockedZ || !blockedX) bullet.vz *= -1;
+          bullet.x = oldX;
+          bullet.z = oldZ;
+          bullet.bounces--;
+          game.events.push({ type: "ricochet", x: oldX, z: oldZ });
+          continue;
+        }
+        bullet.life = 0;
+        break;
+      }
+      const mine = game.mines.find(
+        (m) => m.life > 0 && distance(m, bullet) < 0.6,
+      );
+      if (mine) {
+        mine.life = 0;
+        bullet.life = 0;
+        game.events.push({ type: "mine-defused", x: mine.x, z: mine.z });
+        break;
+      }
+      const stock = game.stock.find(
+        (item) => !item.broken && distance(item, bullet) < 0.68,
+      );
+      if (stock) {
+        hitStock(game, stock, bullet.vx, bullet.vz, bullet.damage);
         bullet.life = 0;
         break;
       }
@@ -553,8 +649,21 @@ export function stepGame(game, input, dt) {
           distance(bullet, enemy) < 0.6
         ) {
           bullet.hit.add(enemy.id);
+          const incoming = Math.atan2(-bullet.vx, -bullet.vz) - enemy.angle;
+          if (
+            enemy.kind === "shieldcart" &&
+            Math.cos(incoming) > 0.35 &&
+            game.overtime <= 0 &&
+            enemy.frozen === 0
+          ) {
+            bullet.life = 0;
+            game.events.push({ type: "shield", x: enemy.x, z: enemy.z });
+            break;
+          }
           enemy.hp -= bullet.damage;
-          enemy.stun = 0.16;
+          enemy.stun = bullet.frost > 0 ? 0.45 + bullet.frost * 0.35 : 0.16;
+          enemy.frozen = bullet.frost > 0 ? enemy.stun : enemy.frozen;
+          if (bullet.frost > 0) enemy.tell = enemy.charge = enemy.windup = 0;
           enemy.hit = 0.12;
           game.hits++;
           game.events.push({ type: "hit", x: enemy.x, z: enemy.z });
@@ -563,6 +672,7 @@ export function stepGame(game, input, dt) {
           break;
         }
       if (
+        bullet.life > 0 &&
         game.boss &&
         game.boss.hp > 0 &&
         distance(bullet, game.boss) < 1.3 &&
@@ -591,8 +701,22 @@ export function stepGame(game, input, dt) {
     const boss = game.boss;
     boss.hit = Math.max(0, boss.hit - dt);
     boss.phase += dt;
+    boss.special -= dt;
     boss.fire -= dt;
     boss.exposed = boss.director ? boss.phase % 7 > 4 : boss.phase % 6 > 3.5;
+    if (["foreman", "core"].includes(boss.kind) && boss.special <= 0) {
+      addMine(game, p, boss.kind === "core" ? 1.1 : 1.5);
+      if (boss.kind === "core")
+        for (const [dx, dz] of [
+          [2, 0],
+          [-2, 0],
+          [0, 2],
+          [0, -2],
+        ])
+          if (canStand(game, p.x + dx, p.z + dz))
+            addMine(game, { x: p.x + dx, z: p.z + dz }, 1.5);
+      boss.special = boss.kind === "core" ? 4.5 : 5.5;
+    }
     if (boss.fire <= 0 && !boss.exposed) {
       const enraged = boss.hp < boss.maxHp / 2;
       boss.fire = enraged ? 0.7 : 0.95;
@@ -650,9 +774,8 @@ export function stepGame(game, input, dt) {
 export function nextLevel(game, upgrade) {
   if (
     game.state !== "cleared" ||
-    !["rapid", "spread", "pierce", "shield", "magnet", "heart"].includes(
-      upgrade,
-    )
+    !Object.hasOwn(UPGRADE_LIMITS, upgrade) ||
+    game.upgrades[upgrade] >= UPGRADE_LIMITS[upgrade]
   )
     return null;
   const upgrades = { ...game.upgrades, [upgrade]: game.upgrades[upgrade] + 1 };

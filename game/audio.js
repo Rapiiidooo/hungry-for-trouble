@@ -5,6 +5,7 @@ export class Sound {
     this.ctx = null;
     this.beat = 0;
     this.nextBeat = 0;
+    this.mode = "idle";
   }
 
   async start() {
@@ -90,6 +91,16 @@ export class Sound {
   }
 
   effect(type, count = 1) {
+    if (type === "transport") {
+      this.note(180, 0.3, 0.13, "sine", 1400);
+      this.note(1400, 0.3, 0.1, "triangle", 440, 0.15);
+    }
+    if (type === "ricochet") this.note(1300, 0.08, 0.06, "triangle", 700);
+    if (["mine-warning", "mine-trigger"].includes(type))
+      this.note(type === "mine-trigger" ? 880 : 440, 0.12, 0.09, "square", 600);
+    if (type === "mine-defused") this.note(660, 0.13, 0.12, "sine", 1100);
+    if (["flour-burst", "mine-burst", "stock-hit", "cart-push"].includes(type))
+      this.noise(0.16, 0.18, 500);
     if (type === "heal") {
       this.note(660, 0.18, 0.18, "sine", 880);
       this.note(990, 0.3, 0.16, "sine", 1320, 0.12);
@@ -147,9 +158,34 @@ export class Sound {
     const time = this.ctx.currentTime;
     if (!playing) {
       this.nextBeat = time;
+      this.mode = "idle";
       return;
     }
+    const mode = overtime > 0 ? "overtime" : "shift";
+    if (this.mode !== mode) {
+      this.mode = mode;
+      this.beat = 0;
+      this.nextBeat = time;
+    }
     if (time < this.nextBeat) return;
+    if (mode === "overtime") {
+      // An original major-key 158 BPM sprint, independent of the normal shift melody.
+      const step = this.beat++ % 32;
+      const tune = [
+        0, 7, 4, 9, 7, 12, 11, 7, 2, 9, 5, 12, 9, 14, 12, 7, 4, 11, 7, 14, 12,
+        16, 14, 11, 5, 12, 9, 16, 14, 17, 16, 12,
+      ];
+      this.nextBeat = time + 60 / 158 / 4;
+      this.note(261.63 * 2 ** (tune[step] / 12), 0.085, 0.12, "triangle");
+      if (step % 4 === 0) {
+        const bass = [0, 5, 7, 5][Math.floor(step / 8)];
+        this.note(130.81 * 2 ** (bass / 12), 0.15, 0.13, "square");
+        this.note(180, 0.12, 0.17, "sine", 45);
+      }
+      if (step % 4 === 2) this.noise(0.04, 0.075, 4200);
+      if (overtime < 2 && step % 4 === 0) this.note(1760, 0.055, 0.07);
+      return;
+    }
     const beat = this.beat++ % 16,
       fast = overtime > 0;
     this.nextBeat = time + (fast ? 0.105 : 0.14);

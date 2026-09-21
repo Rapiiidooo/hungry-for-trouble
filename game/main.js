@@ -12,7 +12,9 @@ import { Sound } from "./audio.js";
 import { LEVELS } from "./levels.js";
 import { ViewRig } from "./view-rig.js";
 import { receiptEffects } from "./combat-fx.js";
-import { RADIO } from "./story.js";
+import { RADIO, SPEAKERS, portrait, storyCard } from "./story.js";
+import { campaignEffects } from "./campaign-fx.js";
+import { ventPhase } from "./machines.js";
 import { RoomClient } from "./room-client.js";
 import { newMatch } from "./multiplayer-sim.js";
 import { upgradeArt, upgradeStats } from "./upgrade-art.js";
@@ -87,6 +89,11 @@ let viewRig,
   repairModels = [];
 let damageBearing = 0,
   radioUntil = 0;
+let floorEffects,
+  rescueUntil = 0,
+  pendingOverlay = "",
+  crew = [];
+let dashTaught = false;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 let fpsCamera,
   weapon,
@@ -492,7 +499,7 @@ function markEmissive(object, active = false) {
   });
 }
 
-function makeRing(radius, color) {
+function makeRing(radius, color, arc = Math.PI * 2) {
   // Ground rings and sprites are interface/effect geometry, not imported objects.
   const material = new THREE.MeshBasicMaterial({
     color,
@@ -502,7 +509,7 @@ function makeRing(radius, color) {
     side: THREE.DoubleSide,
   });
   const object = new THREE.Mesh(
-    new THREE.RingGeometry(radius, radius + 0.055, 40),
+    new THREE.RingGeometry(radius, radius + 0.055, 40, 1, 0, arc),
     material,
   );
   object.rotation.x = -Math.PI / 2;
@@ -632,6 +639,17 @@ function showMessage(title, subtitle = "", seconds = 2.3) {
   messageUntil = clock + seconds;
 }
 
+function speak(speaker, text, seconds = 9) {
+  const person = SPEAKERS[speaker];
+  ui["radio-portrait"].innerHTML = portrait(speaker);
+  ui["radio-speaker"].textContent = `${person.name} / ${person.role}`;
+  ui["radio-line"].textContent = text;
+  ui.radio.style.borderColor = person.color;
+  ui["radio-log"].innerHTML = storyCard(speaker, text);
+  radioUntil = clock + seconds;
+  ui.radio.hidden = false;
+}
+
 async function makeMenu() {
   menuWorld = new THREE.Group();
   scene.add(menuWorld);
@@ -704,10 +722,18 @@ async function buildWorld() {
   visorModels = [];
   repairModels = [];
   friend = null;
+  crew = [];
   peerModels = [];
   beltMeshes = [];
   floating.splice(0).forEach((f) => f.el.remove());
   const theme = game.map.level.theme;
+  const accent = {
+    boiler: 0xd98652,
+    transit: 0x87a9d5,
+    packing: 0xc6a052,
+    security: 0xa49cbd,
+    core: 0x7ea8c1,
+  }[theme];
   const tiles = [],
     scale = 2 / prototypes.floor.userData.nativeSize.x;
   for (let row = 0; row < game.map.height; row++)
@@ -724,6 +750,7 @@ async function buildWorld() {
     if (theme === "dock") return (p.col + p.row) % 2 ? 0x8491a4 : 0x6a7388;
     if (theme === "conveyor") return (p.col + p.row) % 2 ? 0xabb5bb : 0x738099;
     if (theme === "director") return (p.col + p.row) % 2 ? 0x75839a : 0xb2b7be;
+    if (accent) return (p.col + p.row) % 2 ? accent : 0x5d6b7b;
     return (p.col + p.row) % 2 ? 0x738092 : 0x98a3b0;
   });
   const chunks = new Map();
@@ -749,6 +776,19 @@ async function buildWorld() {
     if (border)
       object.rotation.y =
         wall.col === 0 || wall.col === game.map.width - 1 ? Math.PI / 2 : 0;
+    if (border) {
+      const faces = [
+        [0, 1, 0],
+        [1, 0, Math.PI / 2],
+        [0, -1, Math.PI],
+        [-1, 0, -Math.PI / 2],
+      ];
+      const front = faces.find(([dx, dz]) => {
+        const c = game.map.level.map[wall.row + dz]?.[wall.col + dx];
+        return c && !["#", " "].includes(c);
+      });
+      if (front) object.rotation.y = front[2];
+    }
     if (theme === "warehouse" && !border) object.scale.y = 1.5;
     chunks.get(key).add(object);
   }
@@ -773,6 +813,10 @@ async function buildWorld() {
     ring.position.set(item.x, 0.025, item.z);
     world.add(model, ring);
     batteries.push({ model, ring, i });
+    const sign = label("★ OVERTIME", "#ffe094", 2.1);
+    sign.position.set(item.x, 1.35, item.z);
+    world.add(sign);
+    batteries.at(-1).sign = sign;
   }
   for (const [i, item] of game.repairs.entries()) {
     const model = cloneAsset("battery"),
@@ -904,17 +948,33 @@ async function buildWorld() {
   for (const enemy of game.enemies) {
     const model = compactActor(
       await ASSET(
-        `assets/${enemy.kind === "shooter" ? "audit_drone" : enemy.kind === "ambusher" ? "polisher" : "security_trolley"}.js`,
+        `assets/${["shooter", "sniper"].includes(enemy.kind) ? "audit_drone" : ["ambusher", "layer"].includes(enemy.kind) ? "polisher" : "security_trolley"}.js`,
         { keepHierarchy: true },
       ),
     );
     markEmissive(model);
-    if (enemy.kind === "armoured") {
-      model.scale.setScalar(1.25);
+    if (["armoured", "shieldcart", "sniper", "layer"].includes(enemy.kind)) {
+      model.scale.setScalar(enemy.kind === "sniper" ? 1.1 : 1.25);
       model.traverse((n) => {
         if (n.isMesh && n.material.color.getHex() === palette.red)
-          n.material.color.setHex(palette.brass);
+          n.material.color.setHex(
+            { sniper: 0x5d88bd, layer: 0xa879ab, shieldcart: 0x738697 }[
+              enemy.kind
+            ] || palette.brass,
+          );
       });
+      if (enemy.kind !== "armoured") {
+        const tag = label(
+          { sniper: "SNIPER", layer: "MINE LAYER", shieldcart: "FRONT SHIELD" }[
+            enemy.kind
+          ],
+          "#f0f2f3",
+          2,
+        );
+        tag.position.y = 1.4;
+        tag.userData.enemyLabel = true;
+        model.add(tag);
+      }
     }
     world.add(model);
     enemies.push(model);
@@ -923,7 +983,7 @@ async function buildWorld() {
   exitModel.position.set(game.map.exit.x, 0, game.map.exit.z);
   exitModel.rotation.y = Math.PI;
   world.add(exitModel);
-  if (game.levelIndex === 9 && !game.daily) {
+  if ([9, 14, 19].includes(game.levelIndex) && !game.daily) {
     friend = compactActor(
       await ASSET("assets/polisher.js", { keepHierarchy: true }),
     );
@@ -931,9 +991,22 @@ async function buildWorld() {
     friend.scale.setScalar(0.65);
     markEmissive(friend, true);
     world.add(friend);
-    const name = label("MOP-3 · RESCUE", "#f0f2f3", 2.6);
+    const name = label(
+      game.levelIndex === 9 ? "MOP-3 · RESCUE" : "BASEMENT CREW",
+      "#f0f2f3",
+      2.6,
+    );
     name.position.set(game.map.exit.x, 1.65, game.map.exit.z);
     world.add(name);
+    crew.push(friend);
+    if (game.levelIndex === 19)
+      for (let i = 0; i < 2; i++) {
+        const robot = cloneAsset("vacuum");
+        robot.scale.setScalar(0.8);
+        robot.position.set(game.map.exit.x + 0.7 + i * 0.7, 0, game.map.exit.z);
+        world.add(robot);
+        crew.push(robot);
+      }
   }
   exitModel.visible = !game.daily && game.multiplayer?.kind !== "versus";
   const checkoutLabel = label("CHECKOUT", "#f0f2f3", 2.5);
@@ -961,30 +1034,58 @@ async function buildWorld() {
     bossModel.scale.setScalar(game.boss.director ? 1.35 : 2.9);
     bossModel.position.set(game.boss.x, 0, game.boss.z);
     markEmissive(bossModel);
+    const bossTint =
+      game.boss.kind === "foreman"
+        ? palette.brass
+        : game.boss.kind === "core"
+          ? palette.blue
+          : null;
+    if (bossTint)
+      bossModel.traverse((node) => {
+        if (node.isMesh && node.material.color.getHex() === palette.red)
+          node.material.color.setHex(bossTint);
+      });
     world.add(bossModel);
     const manager = label(
-      game.boss.director ? "THE DIRECTOR" : "THE MANAGER",
+      game.boss.name || (game.boss.director ? "THE DIRECTOR" : "THE MANAGER"),
       "#ff8065",
       3.5,
     );
     manager.position.set(game.boss.x, 3.7, game.boss.z);
     world.add(manager);
   }
-  shotPool = pool(game.multiplayer ? 0xffffff : palette.gold, 160);
+  shotPool = pool(
+    game.multiplayer ? 0xffffff : game.upgrades.frost ? 0xa4ddff : palette.gold,
+    160,
+  );
   receiptFX = receiptEffects(world, ownedGeometry);
   world.add(shotPool);
+  floorEffects = campaignEffects({
+    world,
+    game,
+    cloneAsset,
+    makeRing,
+    label,
+    markEmissive,
+  });
+  if (game.levelIndex >= 10) {
+    const sign = label(game.map.level.shape, "#e3eaf4", 5.5);
+    sign.position.set(game.map.start.x + 2, 2.3, game.map.start.z - 3);
+    world.add(sign);
+  }
   keyLight.color.setHex(
     theme === "ice" ? 0xd9e9ff : theme === "boss" ? 0xffd7d0 : 0xf2f6ff,
   );
   fillLight.color.setHex(theme === "ice" ? 0xadc7e7 : 0xc2cbdf);
   scene.background.setHex(theme === "ice" ? 0x344766 : palette.ink);
   follow.set(game.player.x, 0, game.player.z);
-  ui["radio-line"].textContent = game.daily
-    ? "Keep moving. Repairs restore one heart; batteries grant invincibility."
+  const radio = game.daily
+    ? {
+        speaker: "mop",
+        text: "Keep moving. Repairs restore one heart; batteries grant invincibility.",
+      }
     : RADIO[game.levelIndex];
-  ui["radio-speaker"].textContent = "MOP-3 / SERVICE RADIO";
-  radioUntil = clock + 10;
-  ui["radio"].hidden = false;
+  speak(radio.speaker, radio.text);
   lastState = "playing";
   lastOvertime = false;
   ui.department.textContent = game.daily
@@ -1000,9 +1101,8 @@ async function buildWorld() {
     : runKind === "practice"
       ? "PRACTICE · UNLOCKED AISLE"
       : `ESCAPE ROUTE · ${game.levelIndex + 1} / ${LEVELS.length}`;
-  ui["boss-name"].textContent = game.boss?.director
-    ? "THE DIRECTOR"
-    : "THE MANAGER";
+  ui["boss-name"].textContent = game.boss?.name || "THE MANAGER";
+  ui.game.classList.toggle("boss-encounter", !!game.boss);
   updateModels(0);
   resize();
 }
@@ -1026,6 +1126,8 @@ async function start(fresh = true, upgrade, options = {}) {
   viewOverhead = false;
   viewRig.reset();
   damageUntil = 0;
+  rescueUntil = 0;
+  pendingOverlay = "";
   wasFPS = false;
   fpsPitch = 0;
   await sound.start();
@@ -1044,6 +1146,18 @@ async function start(fresh = true, upgrade, options = {}) {
         ? newDaily(dailyAttempt.config)
         : newGame(practiceLevel, {
             seed: crypto.getRandomValues(new Uint32Array(1))[0],
+            ...(runKind === "practice" && practiceLevel >= 5
+              ? {
+                  upgrades: {
+                    rapid: Math.min(3, Math.floor(practiceLevel / 4)),
+                    spread: Math.min(2, Math.floor(practiceLevel / 5)),
+                    shield: 1,
+                    magnet: 1,
+                    frost: practiceLevel >= 10 ? 1 : 0,
+                    ricochet: practiceLevel >= 15 ? 1 : 0,
+                  },
+                }
+              : {}),
           });
     runKills = 0;
     runCrumbs = 0;
@@ -1190,6 +1304,33 @@ function handleEvents(events) {
       );
     }
     if (event.type === "shot") recoil = 1;
+    if (event.type === "transport") {
+      burst(event.x, event.z, palette.blue, 30, 3);
+      burst(event.toX, event.toZ, palette.blue, 30, 3);
+      floatText("SPECIAL DELIVERY!", event.toX, event.toZ, "shield-pop");
+      follow.set(event.toX, 0, event.toZ);
+    }
+    if (
+      [
+        "mine-burst",
+        "mine-defused",
+        "flour-burst",
+        "stock-hit",
+        "ricochet",
+      ].includes(event.type)
+    ) {
+      const flour = event.type === "flour-burst";
+      burst(
+        event.x,
+        event.z,
+        flour ? palette.cream : palette.gold,
+        flour ? 70 : 20,
+        flour ? 4 : 2,
+      );
+      if (flour) floatText("BLINDED!", event.x, event.z, "shield-pop");
+      if (event.type === "stock-hit")
+        floatText("EXPRESS DELIVERY!", event.x, event.z, "shield-pop");
+    }
     if (event.type === "hit") burst(event.x, event.z, palette.cream, 6, 2.5);
     if (event.type === "shield") burst(event.x, event.z, palette.blue, 3, 1.5);
     if (event.type === "charge-warning")
@@ -1198,17 +1339,28 @@ function handleEvents(events) {
     if (event.type === "enemy-down") {
       burst(event.x, event.z, palette.red, 32, 4);
       viewKick = 0.1;
-      showMessage(
+      const model =
+        enemies[game.enemies.findIndex((e) => e.id === event.enemyId)];
+      if (model) model.userData.fallAt = clock;
+      floatText(
         event.combo > 1
           ? `${event.combo}× HOSTILE TAKEOVER!`
-          : ["CLEANED OUT.", "ITEM REMOVED.", "RETURN TO SENDER."][
-              game.kills % 3
-            ],
-        `+${100 * Math.min(event.combo, 8)} · +7 shots`,
-        1.1,
+          : [
+              "MY WARRANTY!",
+              "I JUST GOT PROMOTED!",
+              "PLEASE KEEP THE RECEIPT.",
+            ][game.kills % 3],
+        event.x,
+        event.z,
+        "ko-pop",
       );
     }
-    if (event.type === "dash") burst(event.x, event.z, palette.blue, 15, 1.5);
+    if (event.type === "dash") {
+      dashTaught = true;
+      burst(event.x, event.z, palette.blue, 15, 1.5);
+      if (game.elapsed < 20)
+        floatText("DODGE · PROTECTED", event.x, event.z, "shield-pop");
+    }
     if (event.type === "damage") {
       damageUntil = clock + 0.85;
       damageBearing = Math.atan2(event.fromX - event.x, event.fromZ - event.z);
@@ -1233,8 +1385,8 @@ function handleEvents(events) {
       burst(event.x, event.z, palette.gold, 55, 5);
       viewKick = 0.12;
       showMessage(
-        "UNREASONABLE OVERTIME.",
-        "Unlimited firepower. Chase them down.",
+        "OVERTIME! YOU'RE INVINCIBLE.",
+        "Touch flashing enemies to scrap them. Unlimited ammo!",
         2.3,
       );
     }
@@ -1244,7 +1396,7 @@ function handleEvents(events) {
           ? "QUOTA DONE. ONE COMPLAINT LEFT."
           : "TIME TO CHECK OUT!",
         game.boss?.hp > 0
-          ? `Defeat the ${game.boss.director ? "Director" : "Manager"}, then reach the checkout.`
+          ? `Defeat ${game.boss.name || "the Manager"}, then reach the checkout.`
           : "Follow the gold marker to the checkout.",
         3,
       );
@@ -1253,9 +1405,13 @@ function handleEvents(events) {
       viewKick = 0.35;
       showMessage(
         "MANAGEMENT HAS LEFT THE BUILDING.",
-        game.boss.director
-          ? "SHELF CONTROL is offline. Pick up MOP-3 at the checkout!"
-          : "Access card acquired. MOP-3 is in the control wing.",
+        game.levelIndex === 19
+          ? "SHELF CONTROL is offline. Get the crew to the checkout!"
+          : game.levelIndex === 14
+            ? "The basement crew is free. Find the core!"
+            : game.boss.director
+              ? "MOP-3 is free. The basement radio is still calling!"
+              : "Access card acquired. MOP-3 is in the control wing.",
         3,
       );
     }
@@ -1272,6 +1428,27 @@ function handleEvents(events) {
     unlock(progress, game.levelIndex);
   if (game.state === "cleared") {
     ui["upgrade-screen"].hidden = false;
+    ui["chapter-story"].hidden = ![9, 14].includes(game.levelIndex);
+    if (game.levelIndex === 9)
+      ui["chapter-story"].innerHTML = storyCard(
+        "mop",
+        "I'm free! But BUFF-0 and the basement crew are still trapped. The Director was just middle management. We're going back in.",
+      );
+    if (game.levelIndex === 14)
+      ui["chapter-story"].innerHTML = storyCard(
+        "buff",
+        "You fired the Foreman! We'll get the crew ready. Five more floors to the core. Try not to become spare parts.",
+      );
+    if ([9, 14].includes(game.levelIndex)) {
+      rescueUntil = clock + 2.6;
+      pendingOverlay = "upgrade-screen";
+      ui["upgrade-screen"].hidden = true;
+      showMessage(
+        "COLLEAGUE RESCUED!",
+        "Nobody gets left on the night shift.",
+        2.6,
+      );
+    }
     drawRoute(ui["upgrade-route"], progress, game.levelIndex + 1);
     ui["upgrade-options"].replaceChildren();
     for (const key of upgradeChoices(game)) {
@@ -1322,7 +1499,7 @@ function handleEvents(events) {
   ui["result-comment"].textContent = game.daily
     ? "Same challenge. Unlimited retries. Only your best score counts."
     : won
-      ? "SHELF CONTROL unplugged. MOP-3 rescued. Two resignations, zero notice."
+      ? "SHELF CONTROL unplugged. Every colleague rescued. Four resignations, zero notice."
       : game.time <= 0
         ? "Store closed. Your overtime was not approved."
         : "Occupational hazard. No compensation.";
@@ -1337,6 +1514,20 @@ function handleEvents(events) {
     ? "RETRY TODAY'S RUSH <span>▶</span>"
     : "ONE MORE SHIFT <span>▶</span>";
   ui.result.hidden = false;
+  ui["ending-crew"].hidden = !won || !!game.daily;
+  if (won && !game.daily) {
+    ui["ending-crew"].innerHTML = ["mop", "buff", "mop"]
+      .map((id) => portrait(id))
+      .join("");
+    rescueUntil = clock + 3;
+    pendingOverlay = "result";
+    ui.result.hidden = true;
+    showMessage(
+      "EVERYBODY CLOCKS OUT.",
+      "The store is closed. The robots are free.",
+      3,
+    );
+  }
 }
 
 function renderActor(actor) {
@@ -1393,6 +1584,7 @@ function updateModels(dt) {
   halo.position.set(p.x, 0.025, p.z);
   halo.scale.setScalar(overtime ? 1.5 : p.dash > 0 ? 1.3 : 1);
   halo.material.color.setHex(overtime ? palette.gold : palette.cream);
+  if (p.dash > 0) halo.material.color.setHex(0x93d3ff);
   halo.material.opacity =
     p.invincible > 0 ? 0.35 + Math.sin(clock * 20) * 0.25 : 0.8;
   if (overtime !== lastOvertime) {
@@ -1400,12 +1592,20 @@ function updateModels(dt) {
     lastOvertime = overtime;
     ui.game.classList.toggle("overtime", overtime);
   }
+  if (overtime)
+    hero.traverse((node) => {
+      if (node.isMesh)
+        node.material.emissiveIntensity = reducedMotion.matches
+          ? 0.6
+          : 0.5 + (Math.sin(clock * 6) + 1) * 0.22;
+    });
   for (const [i, model] of enemies.entries()) {
     const enemy = game.enemies[i];
-    model.visible = enemy.respawn <= 0;
+    const fall = clock - (model.userData.fallAt ?? -10);
+    model.visible = enemy.respawn <= 0 || fall < 0.65;
     model.position.set(
       enemy.x,
-      (enemy.kind === "shooter" ? 0.25 : 0) +
+      (["shooter", "sniper"].includes(enemy.kind) ? 0.25 : 0) +
         Math.abs(Math.sin(clock * 12 + i)) * 0.045,
       enemy.z,
     );
@@ -1414,7 +1614,13 @@ function updateModels(dt) {
       enemy.angle,
       enemy.hit > 0 ? Math.sin(clock * 100) * 0.17 : 0,
     );
+    if (enemy.respawn > 0 && fall < 0.65 && !reducedMotion.matches) {
+      model.rotation.z = fall * 5;
+      model.rotation.y += fall * 8;
+      model.position.y += Math.sin((fall / 0.65) * Math.PI) * 1.1;
+    }
     model.traverse((node) => {
+      if (node.userData.enemyLabel) node.visible = !overtime;
       if (node.isMesh) {
         node.material.emissive.setHex(
           enemy.hit > 0
@@ -1422,8 +1628,10 @@ function updateModels(dt) {
             : enemy.windup > 0 || enemy.charge > 0 || enemy.tell > 0
               ? palette.red
               : overtime
-                ? palette.blue
-                : 0,
+                ? palette.gold
+                : enemy.frozen > 0
+                  ? 0xa4ddff
+                  : 0,
         );
         node.material.emissiveIntensity =
           enemy.hit > 0
@@ -1432,18 +1640,35 @@ function updateModels(dt) {
               ? 0.3 + Math.abs(Math.sin(clock * 24)) * 0.8
               : enemy.charge > 0
                 ? 0.5
-                : 0.18;
+                : overtime
+                  ? reducedMotion.matches
+                    ? 0.7
+                    : 0.5 + (Math.sin(clock * 6) + 1) * 0.4
+                  : enemy.frozen > 0
+                    ? 0.7
+                    : 0.18;
       }
       if (node.name === "wheel") node.rotation.x += dt * 12;
       if (node.name.startsWith("brush")) node.rotation.y += dt * 18;
     });
   }
-  for (const { model, ring, i } of batteries) {
+  for (const { model, ring, sign, i } of batteries) {
     const item = game.batteries[i];
     model.visible = ring.visible = !item.collected;
     model.position.y = 0.18 + Math.sin(clock * 3 + i) * 0.12;
     model.rotation.y = clock * 0.8;
     ring.scale.setScalar(1 + Math.sin(clock * 4) * 0.08);
+    sign.visible =
+      !item.collected && Math.hypot(item.x - p.x, item.z - p.z) < 9;
+    ring.material.opacity = reducedMotion.matches
+      ? 1
+      : 0.7 + Math.sin(clock * 6) * 0.25;
+    model.traverse((node) => {
+      if (node.isMesh)
+        node.material.emissiveIntensity = reducedMotion.matches
+          ? 0.6
+          : 0.55 + Math.sin(clock * 6) * 0.25;
+    });
   }
   for (const { model, ring, sign, i } of repairModels) {
     const item = game.repairs[i];
@@ -1452,6 +1677,24 @@ function updateModels(dt) {
     ring.material.opacity = game.player.hp < game.player.maxHp ? 0.8 : 0.3;
   }
   if (friend) friend.rotation.y = Math.sin(clock * 2) * 0.3;
+  if (rescueUntil > clock) {
+    for (const [i, robot] of crew.entries()) {
+      const phase = (3 - (rescueUntil - clock)) / 3;
+      robot.position.lerp(
+        vector.set(
+          p.x + (i - 1) * 0.8,
+          reducedMotion.matches ? 0 : Math.abs(Math.sin(phase * 14 + i)) * 0.3,
+          p.z - 0.9,
+        ),
+        Math.min(1, dt * 3),
+      );
+      robot.rotation.y = reducedMotion.matches
+        ? Math.PI
+        : phase * Math.PI * 4 + i;
+    }
+    if (!reducedMotion.matches && Math.random() < dt * 10)
+      burst(p.x, p.z, palette.gold, 12, 2.5);
+  }
   for (const peer of peerModels) {
     const data = renderActor(game.players.find((p) => p.id === peer.id));
     peer.model.position.lerp(
@@ -1558,6 +1801,7 @@ function updateModels(dt) {
     batch.instanceMatrix.needsUpdate = true;
     if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
   }
+  floorEffects?.update(game, clock, reducedMotion.matches);
 }
 
 function screenPosition(x, y, z) {
@@ -1643,6 +1887,10 @@ function drawMap() {
     }
   for (const g of game.map.gates)
     mark(g, gateClosed(game, g.col, g.row) ? "#ff8065" : "#a4c0e0", 5);
+  for (const p of game.map.portals)
+    mark(p, p.pair === 0 ? "#8bbff4" : "#d0a4e8", 6);
+  for (const v of game.map.vents)
+    mark(v, ventPhase(game, v) === "active" ? "#ff6046" : "#b98442", 3);
   if (!game.daily && game.multiplayer?.kind !== "versus")
     mark(
       game.map.exit,
@@ -1666,7 +1914,7 @@ function updateHud() {
     ? `WAVE ${game.wave} / 5 · KEEP MOVING`
     : game.collected >= game.map.level.quota
       ? game.boss?.hp > 0
-        ? `DEFEAT THE ${game.boss.director ? "DIRECTOR" : "MANAGER"}`
+        ? `DEFEAT ${game.boss.name || "THE MANAGER"}`
         : "REACH THE CHECKOUT"
       : "CRUMBS TO COLLECT";
   const time = Math.ceil(game.time);
@@ -1714,16 +1962,39 @@ function updateHud() {
     : document.pointerLockElement
       ? "Mouse aims · Click fires · V changes view"
       : "Click to lock aim · Drag to aim if unavailable";
-  ui["dash-status"].innerHTML =
-    game.player.dashCooldown > 0
-      ? "DASH RECHARGING"
-      : "DASH READY <kbd>SPACE</kbd>";
-  ui["dash-button"].style.opacity = game.player.dashCooldown > 0 ? 0.4 : 1;
+  const dash = game.player.dash > 0;
+  ui["dash-status"].innerHTML = dash
+    ? "DODGING · PROTECTED"
+    : game.player.dashCooldown > 0
+      ? `DODGE RECHARGES IN ${game.player.dashCooldown.toFixed(1)}s`
+      : "DASH TO DODGE HITS <kbd>SPACE</kbd>";
+  ui["dash-button"].style.setProperty(
+    "--recharge",
+    `${(1 - game.player.dashCooldown / 1.2) * 100}%`,
+  );
+  ui["dash-button"].textContent = dash
+    ? "SAFE!"
+    : game.player.dashCooldown > 0
+      ? game.player.dashCooldown.toFixed(1)
+      : "DODGE";
+  ui["dash-button"].classList.toggle("protecting", dash);
+  ui["dash-lesson"].hidden =
+    dashTaught || game.elapsed > 14 || paused || !!game.multiplayer;
   ui.score.textContent = String(game.score).padStart(6, "0");
   ui.combo.textContent =
     game.comboTimer > 0 ? `${game.combo}× TAKEDOWN COMBO` : "NIGHT SHIFT SCORE";
   ui.overtime.hidden = game.overtime <= 0;
   ui["overtime-time"].textContent = game.overtime.toFixed(1);
+  ui["overtime-fill"].style.width =
+    `${(game.overtime / (game.daily || game.multiplayer ? 5 : 8)) * 100}%`;
+  ui.overtime.classList.toggle(
+    "ending",
+    game.overtime > 0 && game.overtime < 2,
+  );
+  ui["overtime-action"].textContent =
+    game.overtime < 2
+      ? "ENDING SOON · MAKE SPACE!"
+      : "INVINCIBLE · TOUCH ENEMIES TO SCRAP THEM";
   ui["boss-bar"].hidden = !game.boss || game.boss.hp <= 0;
   if (game.boss) {
     ui["boss-fill"].style.width = `${(game.boss.hp / game.boss.maxHp) * 100}%`;
@@ -1734,7 +2005,25 @@ function updateHud() {
   ui["heal-hint"].textContent = game.daily
     ? "♥ REPAIR KIT +1 · RESPAWNS IN 30s"
     : "♥ REPAIR KIT +1 · CHECKOUT +1";
-  ui["radio"].hidden = clock > radioUntil || paused;
+  ui["radio"].hidden =
+    clock > radioUntil || paused || game.elapsed < 3 || game.overtime > 0;
+  const closeMine = game.mines.some(
+    (m) =>
+      m.blast > 0 && Math.hypot(m.x - game.player.x, m.z - game.player.z) < 2.4,
+  );
+  const closeSteam = game.map.vents.some(
+    (v) =>
+      ventPhase(game, v) !== "safe" &&
+      Math.hypot(v.x - game.player.x, v.z - game.player.z) < 1.8,
+  );
+  ui["hazard-cue"].hidden =
+    paused ||
+    game.state !== "playing" ||
+    game.overtime > 0 ||
+    (!closeMine && !closeSteam);
+  ui["hazard-cue"].textContent = closeMine
+    ? "MINE · DODGE OUT OF THE CIRCLE!"
+    : "STEAM · DASH CLEAR OF THE TILE!";
   ui["damage-direction"].hidden = clock >= damageUntil || viewRig.blend < 0.8;
   ui["damage-direction"].style.transform =
     `rotate(${fpsYaw - damageBearing}rad)`;
@@ -1858,7 +2147,11 @@ function telemetry() {
     boss: game.boss
       ? { ...game.boss, screen: screenPosition(game.boss.x, 0.4, game.boss.z) }
       : null,
-    audio: { enabled: sound.enabled, state: sound.ctx?.state || "idle" },
+    audio: {
+      enabled: sound.enabled,
+      state: sound.ctx?.state || "idle",
+      score: sound.mode,
+    },
     multiplayer: game.multiplayer
       ? {
           ...game.multiplayer,
@@ -1888,6 +2181,17 @@ function telemetry() {
     wave: game.wave,
     maxHp: game.player.maxHp,
     shield: game.player.shield,
+    portals: game.map.portals.map((p) => ({ ...p })),
+    transportCooldown: game.player.transportCooldown,
+    vents: game.map.vents.map((v) => ({
+      ...v,
+      phaseState: ventPhase(game, v),
+    })),
+    mines: game.mines.map((m) => ({ ...m })),
+    stock: game.stock.map((s) => ({
+      ...s,
+      screen: screenPosition(s.x, 0.4, s.z),
+    })),
     unlocked: progress.unlocked + 1,
   };
 }
@@ -1909,6 +2213,7 @@ function frame(now) {
   }
   const active =
     mode === "playing" && !paused && !building && game.state === "playing";
+  ui.game.classList.toggle("dodging", active && game.player.dash > 0);
   if (game.multiplayer && mode === "playing") {
     rooms.controls(packInput(active ? readInput() : {}));
     accumulator = 0;
@@ -1977,6 +2282,10 @@ function frame(now) {
   fx.geometry.attributes.color.needsUpdate = true;
   fx.geometry.setDrawRange(0, particles.length);
   if (clock > messageUntil) ui.message.classList.remove("show");
+  if (pendingOverlay && clock >= rescueUntil) {
+    ui[pendingOverlay].hidden = false;
+    pendingOverlay = "";
+  }
   ui["hit-flash"].classList.toggle("active", clock < damageUntil);
   for (let i = floating.length - 1; i >= 0; i--) {
     const f = floating[i],

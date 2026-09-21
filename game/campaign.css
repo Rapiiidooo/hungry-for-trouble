@@ -1,0 +1,482 @@
+/* Act map and combat feedback use the established enamel palette. */
+#health {
+  flex-wrap: wrap;
+}
+.heart {
+  flex-shrink: 0;
+}
+#boss-bar {
+  top: 225px;
+  right: 28px;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: 195px;
+}
+.playing.dodging .shade {
+  box-shadow:
+    inset 0 0 0 3px #93d3ff,
+    inset 0 0 35px #93d3ff44;
+}
+#hazard-cue {
+  position: absolute;
+  left: 50%;
+  top: 63%;
+  transform: translateX(-50%);
+  padding: 7px 12px;
+  background: #9f382c;
+  border: 2px solid #ffd0b7;
+  font: 800 15px var(--display);
+  color: #fff;
+  white-space: nowrap;
+}
+.radio-portrait {
+  background: none;
+  width: 66px;
+  height: 66px;
+  flex-basis: 66px;
+}
+.radio-portrait svg,
+.story-avatar svg {
+  width: 100%;
+  height: 100%;
+}
+#radio {
+  align-items: center;
+  width: min(410px, 38vw);
+  top: 135px;
+}
+#radio b {
+  letter-spacing: 0.04em;
+}
+.first-person #radio {
+  top: 140px;
+}
+.story-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  background: #dce3eb;
+  text-align: left;
+  border-left: 4px solid #6c8fb8;
+}
+.story-avatar {
+  flex: 0 0 64px;
+  height: 64px;
+}
+.story-card b {
+  font: 800 20px var(--display);
+  color: #263650;
+}
+.story-card p {
+  margin: 3px 0 0;
+  line-height: 1.5;
+}
+#ending-crew {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+#ending-crew svg {
+  width: 74px;
+  height: 74px;
+}
+.ko-pop {
+  color: #ffe094;
+  font-size: 17px;
+  background: #263650dc;
+  border: 1px solid #efb546;
+  padding: 5px 8px;
+}
+#dash-lesson {
+  position: absolute;
+  bottom: 133px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #263650ef;
+  border: 1px solid #93d3ff;
+  padding: 9px 14px;
+  text-align: center;
+  width: 320px;
+  max-width: 90vw;
+}
+#dash-lesson b {
+  display: block;
+  font: 800 18px var(--display);
+  color: #b4d9ff;
+}
+#dash-lesson span {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+}
+#dash-button {
+  background: linear-gradient(
+    to right,
+    #325e89 var(--recharge, 100%),
+    #263650 var(--recharge, 100%)
+  );
+  border: 2px solid #93d3ff;
+  color: #f0f2f3;
+  opacity: 1;
+}
+#dash-button.protecting {
+  color: #263650;
+  background: #b4d9ff;
+  box-shadow: 0 0 20px #93d3ff99;
+}
+#overtime {
+  border: 2px solid #ffedbe;
+  box-shadow:
+    0 4px 0 #986121,
+    0 0 30px #efb54655;
+  padding-bottom: 9px;
+}
+#overtime small {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+.overtime-track {
+  height: 5px;
+  margin-top: 7px;
+  background: #98612166;
+}
+#overtime-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #263650;
+}
+#overtime.ending {
+  background: #ffbd85;
+}
+.overtime .shade {
+  box-shadow:
+    inset 0 0 0 4px #efb546,
+    inset 0 0 60px #efb54644;
+}
+.route-panel {
+  padding: 24px;
+}
+.route-panel h2 {
+  font-size: 46px;
+  margin: 12px 0;
+}
+.route-panel > p {
+  margin: 8px 0 12px;
+}
+.route-map {
+  gap: 8px;
+  margin: 10px 0;
+}
+.route-map::before {
+  display: none;
+}
+.route-map .route-node:nth-child(n) {
+  grid-column: auto;
+  grid-row: auto;
+  padding: 8px 5px;
+  min-height: 92px;
+}
+.route-map .act-heading {
+  grid-column: 1 / -1;
+  text-align: left;
+  color: #526073;
+  padding: 6px 0 1px;
+  font: 800 16px var(--display);
+  letter-spacing: 0.07em;
+}
+.route-map .route-node svg {
+  display: block;
+  position: static;
+  width: 54px;
+  height: 31px;
+  margin: 0 auto 5px;
+  opacity: 1;
+}
+.route-map .route-node b {
+  font-size: 17px;
+  line-height: 1;
+  min-height: 17px;
+}
+.route-map .route-node small {
+  font-size: 6px;
+  letter-spacing: 0;
+  margin-top: 5px;
+}
+.route-map .node-number {
+  font-size: 15px;
+  left: 6px;
+  top: 6px;
+}
+.route-map .route-node[data-floor="20"] {
+  background: #263650;
+  color: #f0f2f3;
+  border-color: #efb546;
+}
+.route-map .route-node[data-floor="20"] small,
+.route-map .route-node[data-floor="20"] .node-number {
+  color: #ffe094;
+}
+.route-strip {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 4px;
+  margin-top: 12px;
+}
+#stage-preview {
+  margin-top: 12px;
+}
+.upgrade-panel {
+  padding: 25px;
+}
+.upgrade-panel h2 {
+  margin: 12px 0;
+}
+#chapter-story {
+  margin-top: 12px;
+}
+@media (max-width: 700px) {
+  #radio,
+  .first-person #radio {
+    top: 148px;
+    left: 12px;
+    width: 248px;
+    padding: 5px;
+    gap: 5px;
+  }
+  .radio-portrait {
+    width: 42px;
+    height: 48px;
+    flex-basis: 42px;
+  }
+  #radio p {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  #radio b {
+    font-size: 7px;
+  }
+  #minimap {
+    top: 152px;
+    right: 12px;
+    width: 72px;
+    height: 55px;
+  }
+  #overtime {
+    top: 150px;
+    left: 12px;
+    padding: 6px 9px;
+    max-width: calc(100vw - 103px);
+  }
+  #overtime b {
+    font-size: 22px;
+  }
+  #overtime small {
+    font-size: 6px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  #boss-bar {
+    top: 144px;
+    padding: 5px 8px;
+    font-size: 10px;
+    line-height: 1.1;
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 165px;
+  }
+  #boss-bar > span {
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+  #boss-state {
+    font-size: 6px;
+    margin-top: 2px;
+  }
+  #boss-bar > div {
+    height: 4px;
+    margin-top: 2px;
+  }
+  #dash-lesson {
+    bottom: 284px;
+    padding: 6px 9px;
+    width: 280px;
+  }
+  #dash-lesson b {
+    font-size: 14px;
+  }
+  #dash-lesson span {
+    font-size: 8px;
+  }
+  .score-block {
+    opacity: 0.8;
+  }
+  .score-block small {
+    display: none;
+  }
+  .hud-bottom {
+    bottom: 147px;
+  }
+  #run-badge {
+    font-size: 6px;
+  }
+  .route-panel {
+    padding: 18px 12px;
+  }
+  .route-panel h2 {
+    font-size: 32px;
+    margin: 8px 0;
+  }
+  .route-zones {
+    font-size: 6px;
+    padding-bottom: 7px;
+  }
+  .route-map {
+    gap: 5px;
+  }
+  .route-map .route-node:nth-child(n) {
+    min-height: 89px;
+    padding: 5px 2px;
+  }
+  .route-map .route-node svg {
+    width: 37px;
+    height: 33px;
+    margin-top: 7px;
+  }
+  .route-map .route-node b {
+    font-size: 12px;
+    line-height: 1;
+    min-height: 24px;
+  }
+  .route-map .route-node small {
+    font-size: 5px;
+    margin-top: 3px;
+  }
+  .route-map .node-number {
+    font-size: 11px;
+    left: 3px;
+    top: 3px;
+  }
+  .route-map .act-heading {
+    font-size: 13px;
+    padding-top: 4px;
+  }
+  .route-strip {
+    grid-template-columns: repeat(10, 1fr);
+  }
+  .route-strip .route-node {
+    padding: 3px;
+  }
+  #chapter-story {
+    padding: 8px;
+    gap: 8px;
+  }
+  .story-avatar {
+    flex-basis: 46px;
+    height: 46px;
+  }
+  .story-card p {
+    font-size: 10px;
+  }
+  .story-card b {
+    font-size: 17px;
+  }
+  #stage-preview p {
+    font-size: 10px;
+    margin: 5px 0;
+  }
+  #stage-title {
+    font-size: 15px;
+  }
+  #practice-start {
+    padding: 10px;
+  }
+  .multiplayer #boss-bar {
+    top: 144px;
+  }
+  .boss-encounter #radio,
+  .boss-encounter.first-person #radio,
+  .boss-encounter #overtime,
+  .boss-encounter #minimap {
+    top: 194px;
+  }
+  .multiplayer.boss-encounter #peer-status {
+    top: 194px;
+  }
+  .multiplayer.boss-encounter #radio {
+    top: 238px;
+  }
+  .multiplayer #radio {
+    top: 195px;
+  }
+}
+@media (max-height: 560px) and (orientation: landscape) {
+  #radio,
+  .first-person #radio {
+    top: 85px;
+    width: 270px;
+  }
+  #radio p {
+    font-size: 9px;
+  }
+  .radio-portrait {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+  #dash-lesson {
+    bottom: 112px;
+    padding: 5px;
+  }
+  #dash-lesson b {
+    font-size: 13px;
+  }
+  #boss-bar {
+    top: 84px;
+    bottom: auto;
+    width: 185px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  #boss-bar > span {
+    font-size: 12px;
+  }
+  .first-person #radio {
+    display: flex;
+  }
+  #overtime {
+    top: 85px;
+    padding: 5px 9px;
+  }
+  .hud-bottom {
+    bottom: 24px;
+  }
+  .route-panel .eyebrow,
+  .route-zones {
+    display: none;
+  }
+  .route-panel {
+    margin: 0 auto;
+  }
+  .route-panel h2 {
+    font-size: 30px;
+  }
+  .route-map .route-node:nth-child(n) {
+    min-height: 91px;
+  }
+  .route-map .route-node svg {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .overtime .shade {
+    box-shadow: inset 0 0 0 4px #efb546;
+  }
+}

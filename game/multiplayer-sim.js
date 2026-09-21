@@ -149,7 +149,12 @@ function takedown(g, e, p) {
   p.score += 100;
   g.score += 100;
   g.sharedAmmo = Math.min(150, g.sharedAmmo + 7);
-  emit(g, "enemy-down", e, { playerId: p.id, combo: 1 });
+  emit(g, "enemy-down", e, {
+    playerId: p.id,
+    combo: 1,
+    enemyId: e.id,
+    kind: e.kind,
+  });
 }
 function launch(g, e, angle, speed = 6) {
   g.hazards.push({
@@ -219,18 +224,25 @@ export function stepMatch(g, inputs, dt = MATCH_TICK) {
     }
     const input = inputs[p.id] || {},
       length = Math.max(1, Math.hypot(input.x || 0, input.z || 0));
-    const x = (input.x || 0) / length,
+    let x = (input.x || 0) / length,
       z = (input.z || 0) / length;
     if (Number.isFinite(input.aim)) p.angle = input.aim;
     else if (x || z) p.angle = Math.atan2(x, z);
-    if (input.dash && p.dashCooldown === 0 && (x || z)) {
+    if (input.dash && p.dashCooldown === 0) {
       p.dash = 0.18;
       p.dashCooldown = 1.2;
+      const size = Math.hypot(x, z);
+      p.dashX = size > 0.1 ? x / size : Math.sin(p.angle);
+      p.dashZ = size > 0.1 ? z / size : Math.cos(p.angle);
       emit(g, "dash", p);
     }
     const speed = p.dash > 0 ? 13 : p.overtime > 0 ? 5.9 : 4.7;
-    p.vx += (x * speed - p.vx) * Math.min(1, dt * 24);
-    p.vz += (z * speed - p.vz) * Math.min(1, dt * 24);
+    if (p.dash > 0) {
+      x = p.dashX;
+      z = p.dashZ;
+    }
+    p.vx += (x * speed - p.vx) * (p.dash > 0 ? 1 : Math.min(1, dt * 24));
+    p.vz += (z * speed - p.vz) * (p.dash > 0 ? 1 : Math.min(1, dt * 24));
     move(g, p, p.vx * dt, p.vz * dt);
     const ammo = coop ? g.sharedAmmo : p.ammo;
     if (input.fire && p.fireCooldown === 0 && (ammo > 0 || p.overtime > 0)) {

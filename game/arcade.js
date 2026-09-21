@@ -1,4 +1,5 @@
 import { LEVELS } from "./levels.js";
+import { UPGRADE_LIMITS } from "./sim.js";
 
 const drawings = {
   rapid:
@@ -56,24 +57,47 @@ export const UPGRADES = {
     tag: "EXTRA HEART",
     description: () => "One extra heart slot, plus a repair.",
   },
+  ricochet: {
+    name: "Bad bounce",
+    tag: "BANK SHOTS",
+    description: (n) =>
+      `Shots bounce off ${n + 1} ${n ? "walls" : "wall"}. Hit enemies around corners.`,
+  },
+  frost: {
+    name: "Cold shoulder",
+    tag: "FREEZE SHOTS",
+    description: (n) =>
+      `Freeze enemies for ${(0.8 + n * 0.35).toFixed(2)}s. Interrupt shots and charges.`,
+  },
 };
 export function upgradeChoices(game) {
-  return [
-    "rapid",
-    "spread",
-    ["pierce", "shield", "magnet", "heart"][game.levelIndex % 4],
+  const sets = [
+    ["rapid", "spread", "shield"],
+    ["frost", "magnet", "rapid"],
+    ["ricochet", "pierce", "heart"],
+    ["spread", "frost", "shield"],
+    ["ricochet", "heart", "rapid"],
   ];
+  const candidates = [
+    ...sets[game.levelIndex % sets.length],
+    ...Object.keys(UPGRADES),
+  ];
+  return [...new Set(candidates)]
+    .filter((key) => game.upgrades[key] < UPGRADE_LIMITS[key])
+    .slice(0, 3);
 }
 export function readProgress() {
   try {
     const value = JSON.parse(localStorage.getItem("hft-route-v1") || "{}");
     return {
       unlocked: Math.max(
-        0,
-        Math.min(9, Math.floor(Number(value.unlocked)) || 0),
+        Array.isArray(value.cleared) && value.cleared.includes(9) ? 10 : 0,
+        Math.min(LEVELS.length - 1, Math.floor(Number(value.unlocked)) || 0),
       ),
       cleared: Array.isArray(value.cleared)
-        ? value.cleared.filter((n) => Number.isInteger(n) && n >= 0 && n < 10)
+        ? value.cleared.filter(
+            (n) => Number.isInteger(n) && n >= 0 && n < LEVELS.length,
+          )
         : [],
     };
   } catch {
@@ -81,7 +105,10 @@ export function readProgress() {
   }
 }
 export function unlock(progress, index) {
-  progress.unlocked = Math.max(progress.unlocked, Math.min(9, index + 1));
+  progress.unlocked = Math.max(
+    progress.unlocked,
+    Math.min(LEVELS.length - 1, index + 1),
+  );
   if (!progress.cleared.includes(index)) progress.cleared.push(index);
   try {
     localStorage.setItem("hft-route-v1", JSON.stringify(progress));
@@ -102,11 +129,21 @@ function floorShape(level) {
 export function drawRoute(container, progress, current, select) {
   container.replaceChildren();
   LEVELS.forEach((level, index) => {
+    if (select && index % 10 === 0) {
+      const heading = document.createElement("div");
+      heading.className = "act-heading";
+      heading.textContent =
+        index === 0
+          ? "ACT I · RESCUE MOP-3"
+          : "ACT II · NO EMPLOYEE LEFT BEHIND";
+      container.append(heading);
+    }
     const node = document.createElement(select ? "button" : "div");
-    const boss = index === 4 || index === 9;
+    const boss = index % 5 === 4;
     const cleared = progress.cleared.includes(index);
     node.className = `route-node ${boss ? "boss-node" : ""} ${cleared ? "complete" : ""} ${index === current ? "current" : ""} ${index > progress.unlocked ? "locked" : ""}`;
-    node.innerHTML = `<span class="node-number">${String(index + 1).padStart(2, "0")}</span>${boss ? art(index === 4 ? "manager" : "director") : floorShape(level)}<b>${level.name}</b><small>${boss ? (index === 4 ? "MIDPOINT BOSS" : "FINAL BOSS · RESCUE") : cleared ? "CLEARED" : index > progress.unlocked ? "LOCKED" : "READY"}</small>`;
+    node.dataset.floor = index + 1;
+    node.innerHTML = `<span class="node-number">${String(index + 1).padStart(2, "0")}</span>${boss ? art(index === 4 ? "manager" : "director") : floorShape(level)}<b>${level.name}</b><small>${boss ? { 4: "BOSS · ACCESS CARD", 9: "BOSS · RESCUE MOP-3", 14: "BOSS · FREE THE CREW", 19: "FINAL BOSS · ESCAPE" }[index] : cleared ? "CLEARED" : index > progress.unlocked ? "LOCKED" : "READY"}</small>`;
     if (select) {
       node.disabled = index > progress.unlocked;
       node.onclick = () => select(index);

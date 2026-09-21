@@ -1,0 +1,139 @@
+{
+  "result": "PASS",
+  "fixture": "Practice unlocks only; real tap controls and read-only layout bounds.",
+  "bounds": {
+    "portrait": {
+      "#floor-name": {
+        "x": 23,
+        "y": 92.59375,
+        "w": 99,
+        "h": 44,
+        "hidden": false
+      },
+      "#boss-bar": {
+        "x": 112.5,
+        "y": 144,
+        "w": 165,
+        "h": 40.59375,
+        "hidden": false
+      },
+      "#radio": {
+        "x": 12,
+        "y": 194,
+        "w": 248,
+        "h": 61,
+        "hidden": false
+      },
+      "#minimap": {
+        "x": 306,
+        "y": 194,
+        "w": 72,
+        "h": 55,
+        "hidden": false
+      },
+      "#health": {
+        "x": 35,
+        "y": 597.40625,
+        "w": 176,
+        "h": 24,
+        "hidden": false
+      },
+      "#route-close": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": false
+      }
+    },
+    "landscape": {
+      "#floor-name": {
+        "x": 126.59375,
+        "y": 29,
+        "w": 137.421875,
+        "h": 22,
+        "hidden": false
+      },
+      "#boss-bar": {
+        "x": 329.5,
+        "y": 84,
+        "w": 185,
+        "h": 61,
+        "hidden": false
+      },
+      "#radio": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": true
+      },
+      "#minimap": {
+        "x": 740,
+        "y": 85,
+        "w": 83,
+        "h": 63,
+        "hidden": false
+      },
+      "#health": {
+        "x": 146,
+        "y": 289.859375,
+        "w": 175,
+        "h": 19,
+        "hidden": false
+      },
+      "#route-close": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": false
+      }
+    },
+    "desktop": {
+      "#floor-name": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": false
+      },
+      "#boss-bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": false
+      },
+      "#radio": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": true
+      },
+      "#minimap": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": false
+      },
+      "#health": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "hidden": false
+      },
+      "#route-close": {
+        "x": 628.875,
+        "y": 740.078125,
+        "w": 22.234375,
+        "h": 33,
+        "hidden": false
+      }
+    }
+  },
+  "errors": []
+}

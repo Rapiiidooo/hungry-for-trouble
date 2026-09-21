@@ -1,6 +1,6 @@
 import { newGame, stepGame, clamp } from "./sim.js";
 
-export const RULESET = "daily-rush-2";
+export const RULESET = "daily-rush-3";
 export const TICK = 1 / 60;
 export const DAILY_TICKS = 5400;
 

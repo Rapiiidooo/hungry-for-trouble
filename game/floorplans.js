@@ -149,6 +149,220 @@ const plans = {
     enemies: "RRTA",
     shape: "CONTROL WING",
   },
+  10: {
+    size: [23, 18],
+    rooms: [
+      [1, 10, 7, 6],
+      [8, 7, 7, 7],
+      [15, 1, 6, 9],
+      [2, 1, 8, 6],
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 0],
+    ],
+    start: [2, 14],
+    exit: [19, 2],
+    enemies: "NRREA",
+    vents: 3,
+    stock: true,
+    shape: "BOILER LOOP",
+  },
+  11: {
+    size: [24, 20],
+    rooms: [
+      [1, 12, 8, 6],
+      [2, 1, 7, 6],
+      [15, 1, 7, 6],
+      [14, 12, 8, 6],
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+    ],
+    start: [2, 16],
+    exit: [20, 16],
+    enemies: "NNRTA",
+    portals: 2,
+    stock: true,
+    shape: "LOST PROPERTY",
+  },
+  12: {
+    size: [25, 19],
+    rooms: [
+      [1, 11, 7, 6],
+      [9, 7, 7, 6],
+      [17, 1, 6, 7],
+      [1, 1, 7, 6],
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 0],
+    ],
+    start: [2, 15],
+    exit: [21, 2],
+    enemies: "LLRNE",
+    vents: 4,
+    stock: true,
+    shape: "PACKING ZIGZAG",
+  },
+  13: {
+    size: [23, 21],
+    rooms: [
+      [1, 13, 8, 6],
+      [1, 1, 8, 6],
+      [14, 1, 7, 6],
+      [14, 13, 7, 6],
+      [8, 8, 7, 5],
+    ],
+    links: [
+      [0, 4],
+      [4, 1],
+      [4, 2],
+      [4, 3],
+    ],
+    start: [2, 17],
+    exit: [19, 2],
+    enemies: "QQLNR",
+    portals: 2,
+    stock: true,
+    shape: "SECURITY SPIDER",
+  },
+  14: {
+    size: [23, 20],
+    rooms: [
+      [4, 1, 17, 12],
+      [1, 14, 8, 4],
+      [13, 14, 8, 4],
+    ],
+    links: [
+      [0, 1],
+      [0, 2],
+    ],
+    start: [2, 16],
+    exit: [19, 16],
+    boss: [12, 6],
+    enemies: "NLQ",
+    vents: 4,
+    stock: true,
+    shape: "FOREMAN'S FURNACE",
+  },
+  15: {
+    size: [24, 21],
+    rooms: [
+      [1, 13, 7, 6],
+      [2, 2, 6, 6],
+      [10, 8, 5, 6],
+      [16, 2, 6, 6],
+      [16, 14, 6, 5],
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 0],
+    ],
+    start: [2, 17],
+    exit: [20, 3],
+    enemies: "NQLRRA",
+    portals: 4,
+    vents: 3,
+    stock: true,
+    shape: "ICE SWITCHBOARD",
+  },
+  16: {
+    size: [23, 19],
+    rooms: [
+      [1, 1, 20, 4],
+      [1, 7, 20, 4],
+      [1, 13, 20, 4],
+    ],
+    links: [],
+    start: [2, 15],
+    exit: [19, 2],
+    enemies: "LLNQQR",
+    belts: true,
+    portals: 2,
+    vents: 4,
+    stock: true,
+    shape: "SORTING SERPENT",
+  },
+  17: {
+    size: [25, 21],
+    rooms: [
+      [1, 13, 7, 6],
+      [1, 1, 7, 6],
+      [9, 6, 7, 9],
+      [17, 1, 6, 6],
+      [17, 13, 6, 6],
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 0],
+    ],
+    start: [2, 17],
+    exit: [21, 2],
+    enemies: "NNNQLL",
+    portals: 4,
+    vents: 5,
+    stock: true,
+    shape: "RADIO NETWORK",
+  },
+  18: {
+    size: [25, 21],
+    rooms: [
+      [1, 13, 9, 6],
+      [1, 1, 7, 6],
+      [9, 5, 7, 8],
+      [17, 1, 6, 6],
+      [16, 14, 7, 5],
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 0],
+    ],
+    start: [2, 17],
+    exit: [21, 16],
+    enemies: "QQLNNR",
+    portals: 2,
+    vents: 6,
+    gates: true,
+    stock: true,
+    shape: "THE LAST DETOUR",
+  },
+  19: {
+    size: [25, 22],
+    rooms: [
+      [5, 1, 17, 13],
+      [1, 15, 8, 5],
+      [15, 15, 8, 5],
+    ],
+    links: [
+      [0, 1],
+      [0, 2],
+      [1, 2],
+    ],
+    start: [2, 18],
+    exit: [13, 2],
+    boss: [13, 7],
+    enemies: "NQLR",
+    portals: 4,
+    vents: 4,
+    stock: true,
+    shape: "SHELF CONTROL CORE",
+  },
 };
 const steps = [
   [1, 0],
@@ -252,6 +466,14 @@ export function floorplan(index, seed = DEFAULT_SEED) {
     const options = cells.filter(
       ({ p: [x, z] }) =>
         grid[z][x] === "." &&
+        (char !== "P" ||
+          [-1, 0, 1].every((dz) =>
+            [-1, 0, 1].every(
+              (dx) =>
+                grid[z + dz]?.[x + dx] &&
+                !["#", " "].includes(grid[z + dz][x + dx]),
+            ),
+          )) &&
         reserved.every(([a, b]) => Math.hypot(a - x, b - z) >= spacing),
     );
     options.sort(
@@ -268,6 +490,9 @@ export function floorplan(index, seed = DEFAULT_SEED) {
   if (plan.boss) put(plan.boss, "M");
   choose("V", 3, 1);
   const longest = Math.max(...routes.values());
+  // Pads belong in open rooms, with an ordinary walking route around every edge.
+  for (let i = 0; i < (plan.portals || 0); i++)
+    choose("P", longest * (i % 2 ? 0.88 : 0.2) + Math.floor(i / 2) * 4, 2);
   choose("B", 5);
   choose("B", longest * 0.55);
   choose("B", longest * 0.9);
@@ -301,6 +526,15 @@ export function floorplan(index, seed = DEFAULT_SEED) {
       for (let x = 2; x < 20; x++)
         if (grid[z][x] === ".") grid[z][x] = lane === 1 ? "<" : ">";
     }
+  // Hazard tiles never replace supplies, spawns or transit pads.
+  for (let i = 0; i < (plan.vents || 0); i++)
+    choose("!", 9 + ((longest - 9) * (i + 0.5)) / plan.vents, 2);
+  if (plan.stock) {
+    choose("C", 6, 2);
+    choose("C", longest * 0.65, 2);
+    choose("F", longest * 0.35, 2);
+    choose("F", longest * 0.8, 2);
+  }
   // Empty space remains empty: only the perimeter gets physical boundary fixtures.
   const wallCells = [];
   for (let z = 0; z < height; z++)

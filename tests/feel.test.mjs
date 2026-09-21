@@ -5,9 +5,14 @@ import { newGame, stepGame, nextLevel, canStand } from "../game/sim.js";
 import { challengeFor, newDaily, RULESET } from "../game/daily.js";
 
 test("200 run seeds preserve connected supplies, safe spawns and varied footprints", () => {
-  const variations = Array.from({ length: 10 }, () => new Set());
+  const variations = Array.from({ length: 20 }, () => new Set());
   for (let seed = 0; seed < 200; seed++)
-    for (const index of [1, 2, 3, 5, 6, 7, 8, 9]) {
+    for (const index of [
+      1,
+      2,
+      3,
+      ...Array.from({ length: 15 }, (_, i) => i + 5),
+    ]) {
       const m = layoutFor(index, seed),
         rows = m.level.map;
       const seen = new Set(),
@@ -33,6 +38,9 @@ test("200 run seeds preserve connected supplies, safe spawns and varied footprin
         ...m.repairs,
         ...m.batteries,
         ...m.enemies,
+        ...m.portals,
+        ...m.vents,
+        ...m.stock,
         ...(m.boss ? [m.boss] : []),
       ])
         assert.ok(
@@ -45,10 +53,17 @@ test("200 run seeds preserve connected supplies, safe spawns and varied footprin
           "No enemy spawns in immediate contact",
         );
       assert.equal(m.repairs.length, 2);
+      assert.equal(
+        m.portals.length % 2,
+        0,
+        "Transport pads must stay paired for every seed",
+      );
+      for (const portal of m.portals) assert.ok(m.portals[portal.target]);
       if ([2, 6].includes(index)) assert.ok(m.gates.length);
       variations[index].add(rows.join("\n"));
     }
-  for (const i of [1, 2, 3, 5, 6, 7, 8, 9]) assert.ok(variations[i].size > 190);
+  for (const i of [1, 2, 3, ...Array.from({ length: 15 }, (_, i) => i + 5)])
+    assert.ok(variations[i].size > 190);
 });
 
 test("repair kits heal exactly one heart, remain when full, and checkout heals on departure", () => {
@@ -79,7 +94,7 @@ test("repair kits heal exactly one heart, remain when full, and checkout heals o
   Object.assign(daily.player, daily.map.start);
   for (let i = 0; i < 1810; i++) stepGame(daily, {}, 1 / 60);
   assert.equal(dkit.collected, false);
-  assert.equal(RULESET, "daily-rush-2");
+  assert.equal(RULESET, "daily-rush-3");
 });
 
 test("receipt impacts respect walls and incoming damage carries a world direction", () => {

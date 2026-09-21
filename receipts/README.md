@@ -2,7 +2,7 @@
 
 ## Intent
 
-The user requested the next original maze-chase/shooter game after rejecting the previous game's contract-heavy progression and similar-feeling districts. This build prioritizes the action loop before menus and progression. The initial checkpoint is commit `986b0b5`.
+The user requested the next original maze-chase/shooter game after rejecting the previous game's contract-heavy progression and similar-feeling districts. This build prioritizes the action loop before menus and progression. The initial checkpoint is commit `986b0b5`. Sections below preserve successive historical checkpoints; the current twenty-floor expansion is documented in [verification-act-two/README.md](verification-act-two/README.md).
 
 ## Visual references
 
@@ -51,7 +51,7 @@ Visual review led to a quieter floor pattern, brighter crumbs, closer framing an
 
 ## Arcade expansion
 
-The user requested stronger health/ammunition feedback, illustrated upgrades, a longer escape route with boss milestones, tougher ranged enemies, a first-person pickup, a daily challenge and a real shared leaderboard. The original five-floor slice remains the baseline above; the current campaign has ten floors.
+The user requested stronger health/ammunition feedback, illustrated upgrades, a longer escape route with boss milestones, tougher ranged enemies, a first-person pickup, a daily challenge and a real shared leaderboard. The original five-floor slice remains the baseline above; this checkpoint extended the campaign to ten floors.
 
 The built-in ImageGen mode generated three new isolated references. Their exact prompts and saved paths are recorded in [reference-prompts-expansion.json](reference-prompts-expansion.json): [audit drone](references/audit_drone.png), [visor](references/visor.png), [Director](references/director.png). The main agent inspected these references before constructing the geometry. `scripts/generate-expansion.mjs` produced nine candidates using distinct shell constructions. All nine passed the official verifier; the five-view comparison is preserved in `candidates-expansion/_verify/`.
 
@@ -80,7 +80,7 @@ Visual inspection prompted a smaller first-person nozzle, lit ceiling panels, om
 
 ## Supermarket palette refresh
 
-The user found the previous colour theme too generic and AI-styled. The current runtime uses cream paper menus, tomato red actions, ink blue enamel and honey gold pickups. HUD damage stays bright salmon. CSS, SVG upgrade art, minimap markers, scene lighting and assembled material colours were changed together. No geometry or scored simulation was changed; original recipe source files and their historical verification remain intact.
+The user found the previous colour theme too generic and AI-styled. This checkpoint used cream paper menus, tomato red actions, ink blue enamel and honey gold pickups. HUD damage stayed bright salmon. CSS, SVG upgrade art, minimap markers, scene lighting and assembled material colours were changed together. No geometry or scored simulation was changed; original recipe source files and their historical verification remain intact.
 
 `verification-theme/` contains menu, route, daily board, gameplay, upgrade and first-person screenshots plus browser verification reports. Desktop, 390 × 844 portrait and 844 × 390 landscape views load without errors or horizontal overflow. The existing eight-restart smoke check retains 213 initial geometries and 208 on every retry. The existing FPS playthrough clears the first aisle with real input, equips an upgrade, collects the visor and checks mouse and simultaneous touch movement/look/fire, persisted unlocks and practice. The shipping checker passes all 24 modules and relative paths. The final UI contrast adjustment gives cream button text a 4.7:1 ratio against tomato red.
 
@@ -110,6 +110,6 @@ Both browser modes exercised rematches, reload reconnect and simultaneous phone 
 
 The 23 Node checks cover solo/daily regressions and room authentication, capacity, host controls, cross-origin rejection, forged inputs, stale sequences, replacement rosters, timeout/leave, friendly fire, repair, KOs and final results. The shipping check covers 31 modules. Empty touch-control space originally intercepted mouse shots; limiting pointer interception to actual controls fixed the real browser failure. Superseded failed test images remain local in ignored outputs, while the final reports here identify their actual scope.
 
-Atlas media remains generated but unintegrated pending workspace-access approval. No coffin-game source, track or asset was added. No deployment, public invitation, push or entry submission was performed.
+Atlas media remains generated but unintegrated. The user subsequently authorized workspace-catalog publication only after actual contest submission, so the project remains private until that condition is met. No coffin-game source, track or asset was added. No deployment, public invitation, push or entry submission was performed.
 
 The official local phone/4G gate passes for gameplay commit `18dfa76c2a4d5bf334dff21028d2e0ee6043c2d7`: readiness 5.3 seconds, 2.6 MB, a real start tap and 8.7 m of held finger movement, peak 296 draws and 574,668 triangles, zero console errors and 404s. It reports median 60 fps on the local Apple M5 Max through Chrome emulation with 2× CPU slowdown. `verification-multiplayer/jam/` contains its JSON, screenshots and unedited printed verdict. This covers the opening solo aisle; room behavior has separate two-browser checks. A published-URL gate is still required after deployment.

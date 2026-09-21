@@ -1,0 +1,3843 @@
+{
+  "input": "Real keyboard and pointer events; read-only telemetry. No state injection.",
+  "errors": [],
+  "checks": [
+    "Screen-relative left and right",
+    "Dash on a real Space press",
+    "Pause freezes simulation and resumes",
+    "Audio starts after the start gesture",
+    "Overhead-to-FPS camera interpolates continuously and settles",
+    "Visor pickup enters first person; real mouse look and firing work"
+  ],
+  "floors": [
+    {
+      "floor": 1,
+      "seconds": 19.800000000000157,
+      "kills": 3,
+      "crumbs": 49,
+      "score": 1792,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 0,
+        "spread": 0,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 2,
+      "seconds": 28.249999999999677,
+      "kills": 4,
+      "crumbs": 46,
+      "score": 3820,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 0,
+        "spread": 1,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 3,
+      "seconds": 33.46666666666605,
+      "kills": 5,
+      "crumbs": 71,
+      "score": 6195,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 1,
+        "spread": 1,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 0,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 4,
+      "seconds": 29.98333333333291,
+      "kills": 10,
+      "crumbs": 60,
+      "score": 10445,
+      "hp": 5,
+      "upgrades": {
+        "rapid": 1,
+        "spread": 1,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 5,
+      "seconds": 21.400000000000066,
+      "kills": 3,
+      "crumbs": 36,
+      "score": 15091,
+      "hp": 5,
+      "upgrades": {
+        "rapid": 1,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 6,
+      "seconds": 34.44999999999933,
+      "kills": 8,
+      "crumbs": 69,
+      "score": 18486,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 2,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 7,
+      "seconds": 33.23333333333273,
+      "kills": 4,
+      "crumbs": 72,
+      "score": 21024,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 0
+      }
+    },
+    {
+      "floor": 8,
+      "seconds": 35.316666666665945,
+      "kills": 6,
+      "crumbs": 66,
+      "score": 24131,
+      "hp": 5,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 1,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 9,
+      "seconds": 54.36666666666486,
+      "kills": 19,
+      "crumbs": 88,
+      "score": 30567,
+      "hp": 3,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 0,
+        "magnet": 0,
+        "heart": 2,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 10,
+      "seconds": 58.08333333333132,
+      "kills": 12,
+      "crumbs": 88,
+      "score": 37116,
+      "hp": 2,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 0,
+        "heart": 2,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 11,
+      "seconds": 30.53333333333288,
+      "kills": 7,
+      "crumbs": 65,
+      "score": 40411,
+      "hp": 4,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 1,
+        "magnet": 0,
+        "heart": 3,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 12,
+      "seconds": 36.98333333333252,
+      "kills": 9,
+      "crumbs": 86,
+      "score": 44151,
+      "hp": 6,
+      "upgrades": {
+        "rapid": 3,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 2,
+        "magnet": 0,
+        "heart": 3,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 13,
+      "seconds": 37.533333333332486,
+      "kills": 8,
+      "crumbs": 71,
+      "score": 47836,
+      "hp": 7,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 2,
+        "magnet": 0,
+        "heart": 3,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 14,
+      "seconds": 30.96666666666619,
+      "kills": 7,
+      "crumbs": 71,
+      "score": 51336,
+      "hp": 8,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 2,
+        "magnet": 0,
+        "heart": 4,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 15,
+      "seconds": 52.599999999998296,
+      "kills": 4,
+      "crumbs": 65,
+      "score": 57010,
+      "hp": 8,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 2,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 0,
+        "heart": 4,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 16,
+      "seconds": 40.616666666665644,
+      "kills": 12,
+      "crumbs": 72,
+      "score": 62874,
+      "hp": 8,
+      "upgrades": {
+        "rapid": 4,
+        "spread": 3,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 0,
+        "heart": 4,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 17,
+      "seconds": 35.26666666666595,
+      "kills": 8,
+      "crumbs": 82,
+      "score": 67291,
+      "hp": 8,
+      "upgrades": {
+        "rapid": 5,
+        "spread": 3,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 0,
+        "heart": 4,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 18,
+      "seconds": 43.766666666665465,
+      "kills": 11,
+      "crumbs": 92,
+      "score": 72623,
+      "hp": 8,
+      "upgrades": {
+        "rapid": 5,
+        "spread": 3,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 1,
+        "heart": 4,
+        "ricochet": 0,
+        "frost": 1
+      }
+    },
+    {
+      "floor": 19,
+      "seconds": 46.449999999998646,
+      "kills": 11,
+      "crumbs": 95,
+      "score": 77908,
+      "hp": 8,
+      "upgrades": {
+        "rapid": 5,
+        "spread": 3,
+        "pierce": 0,
+        "shield": 3,
+        "magnet": 1,
+        "heart": 4,
+        "ricochet": 1,
+        "frost": 1
+      }
+    }
+  ],
+  "samples": [
+    {
+      "floor": 1,
+      "elapsed": 0.1,
+      "pos": [
+        2,
+        22
+      ],
+      "waypoint": [
+        2,
+        20
+      ],
+      "crumbs": 0,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 268
+    },
+    {
+      "floor": 1,
+      "elapsed": 7,
+      "pos": [
+        7.8,
+        1.9
+      ],
+      "waypoint": [
+        10,
+        2
+      ],
+      "crumbs": 16,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 6.9,
+      "fps": 60,
+      "draws": 250
+    },
+    {
+      "floor": 1,
+      "elapsed": 14.1,
+      "pos": [
+        27.9,
+        1.9
+      ],
+      "waypoint": [
+        30,
+        2
+      ],
+      "crumbs": 34,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 236
+    },
+    {
+      "floor": 2,
+      "elapsed": 1.2,
+      "pos": [
+        4,
+        20.7
+      ],
+      "waypoint": [
+        4,
+        20
+      ],
+      "crumbs": 2,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 279
+    },
+    {
+      "floor": 2,
+      "elapsed": 8.2,
+      "pos": [
+        15.1,
+        10
+      ],
+      "waypoint": [
+        16,
+        10
+      ],
+      "crumbs": 14,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 2.5,
+      "fps": 60,
+      "draws": 231
+    },
+    {
+      "floor": 2,
+      "elapsed": 15.2,
+      "pos": [
+        29.6,
+        1.9
+      ],
+      "waypoint": [
+        32,
+        2
+      ],
+      "crumbs": 28,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 3.4,
+      "fps": 60,
+      "draws": 244
+    },
+    {
+      "floor": 2,
+      "elapsed": 22.2,
+      "pos": [
+        27.9,
+        9.9
+      ],
+      "waypoint": [
+        26,
+        10
+      ],
+      "crumbs": 42,
+      "hp": 4,
+      "kills": 3,
+      "overtime": 4.6,
+      "fps": 60,
+      "draws": 199
+    },
+    {
+      "floor": 3,
+      "elapsed": 0.9,
+      "pos": [
+        4,
+        25.1
+      ],
+      "waypoint": [
+        4,
+        24
+      ],
+      "crumbs": 1,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 338
+    },
+    {
+      "floor": 3,
+      "elapsed": 7.9,
+      "pos": [
+        8,
+        8.3
+      ],
+      "waypoint": [
+        8,
+        8
+      ],
+      "crumbs": 11,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 4.9,
+      "fps": 60,
+      "draws": 338
+    },
+    {
+      "floor": 3,
+      "elapsed": 14.9,
+      "pos": [
+        2.4,
+        9.9
+      ],
+      "waypoint": [
+        2,
+        10
+      ],
+      "crumbs": 29,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 318
+    },
+    {
+      "floor": 3,
+      "elapsed": 22,
+      "pos": [
+        13.9,
+        6.6
+      ],
+      "waypoint": [
+        14,
+        8
+      ],
+      "crumbs": 43,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 284
+    },
+    {
+      "floor": 3,
+      "elapsed": 29,
+      "pos": [
+        36,
+        6.2
+      ],
+      "waypoint": [
+        36,
+        8
+      ],
+      "crumbs": 59,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 6.6,
+      "fps": 60,
+      "draws": 288
+    },
+    {
+      "floor": 4,
+      "elapsed": 2.4,
+      "pos": [
+        20,
+        21.6
+      ],
+      "waypoint": [
+        20,
+        20
+      ],
+      "crumbs": 4,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 7.8,
+      "fps": 60,
+      "draws": 447
+    },
+    {
+      "floor": 4,
+      "elapsed": 9.5,
+      "pos": [
+        15,
+        14.1
+      ],
+      "waypoint": [
+        14,
+        14
+      ],
+      "crumbs": 24,
+      "hp": 5,
+      "kills": 5,
+      "overtime": 0.7,
+      "fps": 60,
+      "draws": 257
+    },
+    {
+      "floor": 4,
+      "elapsed": 16.5,
+      "pos": [
+        5.4,
+        20.1
+      ],
+      "waypoint": [
+        6,
+        20
+      ],
+      "crumbs": 40,
+      "hp": 5,
+      "kills": 8,
+      "overtime": 2.6,
+      "fps": 60,
+      "draws": 265
+    },
+    {
+      "floor": 4,
+      "elapsed": 23.5,
+      "pos": [
+        10.9,
+        19.9
+      ],
+      "waypoint": [
+        12,
+        20
+      ],
+      "crumbs": 45,
+      "hp": 5,
+      "kills": 8,
+      "overtime": 5.5,
+      "fps": 60,
+      "draws": 273
+    },
+    {
+      "floor": 5,
+      "elapsed": 0.4,
+      "pos": [
+        2.6,
+        22
+      ],
+      "waypoint": [
+        4,
+        22
+      ],
+      "crumbs": 0,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "boss": 180,
+      "fps": 58,
+      "draws": 322
+    },
+    {
+      "floor": 5,
+      "elapsed": 7.4,
+      "pos": [
+        7.5,
+        2
+      ],
+      "waypoint": [
+        6,
+        2
+      ],
+      "crumbs": 18,
+      "hp": 5,
+      "kills": 2,
+      "overtime": 3.2,
+      "boss": 96,
+      "fps": 60,
+      "draws": 231
+    },
+    {
+      "floor": 5,
+      "elapsed": 14.5,
+      "pos": [
+        10.6,
+        9.9
+      ],
+      "waypoint": [
+        12,
+        10
+      ],
+      "crumbs": 31,
+      "hp": 5,
+      "kills": 2,
+      "overtime": 5,
+      "boss": 96,
+      "fps": 60,
+      "draws": 280
+    },
+    {
+      "floor": 6,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        28
+      ],
+      "waypoint": [
+        4,
+        26
+      ],
+      "crumbs": 0,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 322
+    },
+    {
+      "floor": 6,
+      "elapsed": 7.2,
+      "pos": [
+        7.9,
+        20.1
+      ],
+      "waypoint": [
+        6,
+        20
+      ],
+      "crumbs": 17,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 3,
+      "fps": 60,
+      "draws": 302
+    },
+    {
+      "floor": 6,
+      "elapsed": 14.3,
+      "pos": [
+        14.1,
+        14.1
+      ],
+      "waypoint": [
+        16,
+        14
+      ],
+      "crumbs": 32,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 310
+    },
+    {
+      "floor": 6,
+      "elapsed": 21.3,
+      "pos": [
+        26,
+        16.9
+      ],
+      "waypoint": [
+        26,
+        16
+      ],
+      "crumbs": 47,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 7.3,
+      "fps": 60,
+      "draws": 283
+    },
+    {
+      "floor": 6,
+      "elapsed": 28.4,
+      "pos": [
+        22.1,
+        14.7
+      ],
+      "waypoint": [
+        22,
+        14
+      ],
+      "crumbs": 62,
+      "hp": 4,
+      "kills": 7,
+      "overtime": 0.3,
+      "fps": 60,
+      "draws": 271
+    },
+    {
+      "floor": 7,
+      "elapsed": 0.8,
+      "pos": [
+        6.1,
+        4.7
+      ],
+      "waypoint": [
+        6,
+        6
+      ],
+      "crumbs": 1,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 318
+    },
+    {
+      "floor": 7,
+      "elapsed": 7.8,
+      "pos": [
+        13.2,
+        3.9
+      ],
+      "waypoint": [
+        12,
+        4
+      ],
+      "crumbs": 18,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 2.4,
+      "fps": 60,
+      "draws": 309
+    },
+    {
+      "floor": 7,
+      "elapsed": 14.8,
+      "pos": [
+        11.1,
+        12.1
+      ],
+      "waypoint": [
+        10,
+        12
+      ],
+      "crumbs": 33,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 324
+    },
+    {
+      "floor": 7,
+      "elapsed": 21.9,
+      "pos": [
+        10,
+        24.1
+      ],
+      "waypoint": [
+        12,
+        24
+      ],
+      "crumbs": 50,
+      "hp": 4,
+      "kills": 3,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 327
+    },
+    {
+      "floor": 7,
+      "elapsed": 28.9,
+      "pos": [
+        30.5,
+        22.1
+      ],
+      "waypoint": [
+        32,
+        22
+      ],
+      "crumbs": 61,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 5.5,
+      "fps": 60,
+      "draws": 335
+    },
+    {
+      "floor": 8,
+      "elapsed": 2.5,
+      "pos": [
+        10,
+        29.3
+      ],
+      "waypoint": [
+        10,
+        28
+      ],
+      "crumbs": 4,
+      "hp": 5,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 342
+    },
+    {
+      "floor": 8,
+      "elapsed": 9.6,
+      "pos": [
+        8,
+        4.6
+      ],
+      "waypoint": [
+        8,
+        4
+      ],
+      "crumbs": 19,
+      "hp": 5,
+      "kills": 2,
+      "overtime": 1.7,
+      "fps": 60,
+      "draws": 281
+    },
+    {
+      "floor": 8,
+      "elapsed": 16.6,
+      "pos": [
+        18.7,
+        10
+      ],
+      "waypoint": [
+        20,
+        10
+      ],
+      "crumbs": 31,
+      "hp": 5,
+      "kills": 5,
+      "overtime": 7.7,
+      "fps": 60,
+      "draws": 287
+    },
+    {
+      "floor": 8,
+      "elapsed": 23.7,
+      "pos": [
+        26.7,
+        18
+      ],
+      "waypoint": [
+        26,
+        18
+      ],
+      "crumbs": 47,
+      "hp": 5,
+      "kills": 6,
+      "overtime": 0.7,
+      "fps": 60,
+      "draws": 348
+    },
+    {
+      "floor": 8,
+      "elapsed": 30.7,
+      "pos": [
+        35.9,
+        8.4
+      ],
+      "waypoint": [
+        36,
+        6
+      ],
+      "crumbs": 59,
+      "hp": 5,
+      "kills": 6,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 320
+    },
+    {
+      "floor": 9,
+      "elapsed": 2.4,
+      "pos": [
+        4.1,
+        24.8
+      ],
+      "waypoint": [
+        4,
+        24
+      ],
+      "crumbs": 2,
+      "hp": 6,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 374
+    },
+    {
+      "floor": 9,
+      "elapsed": 9.5,
+      "pos": [
+        2,
+        31.4
+      ],
+      "waypoint": [
+        2,
+        32
+      ],
+      "crumbs": 20,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 2.2,
+      "fps": 60,
+      "draws": 314
+    },
+    {
+      "floor": 9,
+      "elapsed": 16.5,
+      "pos": [
+        30,
+        26.1
+      ],
+      "waypoint": [
+        32,
+        26
+      ],
+      "crumbs": 37,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 353
+    },
+    {
+      "floor": 9,
+      "elapsed": 23.5,
+      "pos": [
+        28.6,
+        28
+      ],
+      "waypoint": [
+        28,
+        28
+      ],
+      "crumbs": 49,
+      "hp": 6,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 351
+    },
+    {
+      "floor": 9,
+      "elapsed": 30.5,
+      "pos": [
+        11.7,
+        28
+      ],
+      "waypoint": [
+        10,
+        28
+      ],
+      "crumbs": 57,
+      "hp": 4,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 312
+    },
+    {
+      "floor": 9,
+      "elapsed": 37.6,
+      "pos": [
+        28,
+        26.9
+      ],
+      "waypoint": [
+        28,
+        26
+      ],
+      "crumbs": 70,
+      "hp": 4,
+      "kills": 9,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 313
+    },
+    {
+      "floor": 9,
+      "elapsed": 44.6,
+      "pos": [
+        4,
+        17.5
+      ],
+      "waypoint": [
+        4,
+        16
+      ],
+      "crumbs": 70,
+      "hp": 2,
+      "kills": 12,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 345
+    },
+    {
+      "floor": 9,
+      "elapsed": 51.6,
+      "pos": [
+        33,
+        13.9
+      ],
+      "waypoint": [
+        34,
+        14
+      ],
+      "crumbs": 82,
+      "hp": 3,
+      "kills": 17,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 311
+    },
+    {
+      "floor": 10,
+      "elapsed": 4,
+      "pos": [
+        6.7,
+        25.9
+      ],
+      "waypoint": [
+        6,
+        26
+      ],
+      "crumbs": 9,
+      "hp": 4,
+      "kills": 1,
+      "overtime": 5.8,
+      "boss": 300,
+      "fps": 60,
+      "draws": 290
+    },
+    {
+      "floor": 10,
+      "elapsed": 11.1,
+      "pos": [
+        17.9,
+        28.1
+      ],
+      "waypoint": [
+        18,
+        26
+      ],
+      "crumbs": 28,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 0,
+      "boss": 300,
+      "fps": 60,
+      "draws": 313
+    },
+    {
+      "floor": 10,
+      "elapsed": 18.1,
+      "pos": [
+        20,
+        11.2
+      ],
+      "waypoint": [
+        20,
+        12
+      ],
+      "crumbs": 45,
+      "hp": 4,
+      "kills": 3,
+      "overtime": 4.6,
+      "boss": 292,
+      "fps": 60,
+      "draws": 319
+    },
+    {
+      "floor": 10,
+      "elapsed": 25.2,
+      "pos": [
+        23,
+        1.9
+      ],
+      "waypoint": [
+        24,
+        2
+      ],
+      "crumbs": 51,
+      "hp": 3,
+      "kills": 4,
+      "overtime": 0,
+      "boss": 181,
+      "fps": 60,
+      "draws": 306
+    },
+    {
+      "floor": 10,
+      "elapsed": 32.3,
+      "pos": [
+        30.8,
+        12
+      ],
+      "waypoint": [
+        30,
+        12
+      ],
+      "crumbs": 64,
+      "hp": 3,
+      "kills": 6,
+      "overtime": 3,
+      "boss": 159,
+      "fps": 60,
+      "draws": 279
+    },
+    {
+      "floor": 10,
+      "elapsed": 39.3,
+      "pos": [
+        26.1,
+        28.6
+      ],
+      "waypoint": [
+        26,
+        30
+      ],
+      "crumbs": 74,
+      "hp": 2,
+      "kills": 9,
+      "overtime": 0,
+      "boss": 61,
+      "fps": 60,
+      "draws": 268
+    },
+    {
+      "floor": 10,
+      "elapsed": 46.4,
+      "pos": [
+        18,
+        19.6
+      ],
+      "waypoint": [
+        18,
+        18
+      ],
+      "crumbs": 77,
+      "hp": 3,
+      "kills": 9,
+      "overtime": 4.5,
+      "boss": 61,
+      "fps": 60,
+      "draws": 321
+    },
+    {
+      "floor": 10,
+      "elapsed": 53.5,
+      "pos": [
+        13.2,
+        16.1
+      ],
+      "waypoint": [
+        12,
+        16
+      ],
+      "crumbs": 84,
+      "hp": 2,
+      "kills": 11,
+      "overtime": 0,
+      "boss": 10,
+      "fps": 60,
+      "draws": 258
+    },
+    {
+      "floor": 11,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        28
+      ],
+      "waypoint": [
+        4,
+        26
+      ],
+      "crumbs": 0,
+      "hp": 4,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 56,
+      "draws": 363
+    },
+    {
+      "floor": 11,
+      "elapsed": 7.3,
+      "pos": [
+        6.1,
+        2.1
+      ],
+      "waypoint": [
+        4,
+        2
+      ],
+      "crumbs": 17,
+      "hp": 4,
+      "kills": 2,
+      "overtime": 2.9,
+      "fps": 60,
+      "draws": 317
+    },
+    {
+      "floor": 11,
+      "elapsed": 14.3,
+      "pos": [
+        15.9,
+        3.8
+      ],
+      "waypoint": [
+        16,
+        2
+      ],
+      "crumbs": 31,
+      "hp": 4,
+      "kills": 3,
+      "overtime": 7.5,
+      "fps": 60,
+      "draws": 321
+    },
+    {
+      "floor": 11,
+      "elapsed": 21.4,
+      "pos": [
+        18,
+        6.4
+      ],
+      "waypoint": [
+        18,
+        6
+      ],
+      "crumbs": 49,
+      "hp": 4,
+      "kills": 4,
+      "overtime": 0.4,
+      "fps": 60,
+      "draws": 309
+    },
+    {
+      "floor": 11,
+      "elapsed": 28.4,
+      "pos": [
+        37.2,
+        8
+      ],
+      "waypoint": [
+        38,
+        8
+      ],
+      "crumbs": 60,
+      "hp": 4,
+      "kills": 7,
+      "overtime": 8,
+      "fps": 60,
+      "draws": 337
+    },
+    {
+      "floor": 12,
+      "elapsed": 4.7,
+      "pos": [
+        10.1,
+        19
+      ],
+      "waypoint": [
+        10,
+        18
+      ],
+      "crumbs": 10,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 5.5,
+      "fps": 60,
+      "draws": 371
+    },
+    {
+      "floor": 12,
+      "elapsed": 11.8,
+      "pos": [
+        3.9,
+        11.5
+      ],
+      "waypoint": [
+        4,
+        12
+      ],
+      "crumbs": 29,
+      "hp": 5,
+      "kills": 1,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 370
+    },
+    {
+      "floor": 12,
+      "elapsed": 18.8,
+      "pos": [
+        30.1,
+        4.9
+      ],
+      "waypoint": [
+        30,
+        4
+      ],
+      "crumbs": 42,
+      "hp": 5,
+      "kills": 6,
+      "overtime": 6.9,
+      "fps": 60,
+      "draws": 305
+    },
+    {
+      "floor": 12,
+      "elapsed": 25.8,
+      "pos": [
+        39.9,
+        8.1
+      ],
+      "waypoint": [
+        40,
+        6
+      ],
+      "crumbs": 62,
+      "hp": 5,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 308
+    },
+    {
+      "floor": 12,
+      "elapsed": 32.8,
+      "pos": [
+        31.5,
+        24.1
+      ],
+      "waypoint": [
+        30,
+        24
+      ],
+      "crumbs": 76,
+      "hp": 6,
+      "kills": 9,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 349
+    },
+    {
+      "floor": 13,
+      "elapsed": 2.7,
+      "pos": [
+        14,
+        27.9
+      ],
+      "waypoint": [
+        14,
+        26
+      ],
+      "crumbs": 5,
+      "hp": 7,
+      "kills": 1,
+      "overtime": 7.5,
+      "fps": 60,
+      "draws": 385
+    },
+    {
+      "floor": 13,
+      "elapsed": 9.7,
+      "pos": [
+        2.5,
+        2
+      ],
+      "waypoint": [
+        2,
+        2
+      ],
+      "crumbs": 23,
+      "hp": 7,
+      "kills": 1,
+      "overtime": 0.5,
+      "fps": 60,
+      "draws": 356
+    },
+    {
+      "floor": 13,
+      "elapsed": 16.7,
+      "pos": [
+        9.2,
+        7.9
+      ],
+      "waypoint": [
+        10,
+        8
+      ],
+      "crumbs": 38,
+      "hp": 7,
+      "kills": 2,
+      "overtime": 3.4,
+      "fps": 60,
+      "draws": 330
+    },
+    {
+      "floor": 13,
+      "elapsed": 23.8,
+      "pos": [
+        5.5,
+        6.1
+      ],
+      "waypoint": [
+        4,
+        6
+      ],
+      "crumbs": 51,
+      "hp": 7,
+      "kills": 3,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 319
+    },
+    {
+      "floor": 13,
+      "elapsed": 30.8,
+      "pos": [
+        29.6,
+        8
+      ],
+      "waypoint": [
+        30,
+        8
+      ],
+      "crumbs": 58,
+      "hp": 7,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 341
+    },
+    {
+      "floor": 14,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        34
+      ],
+      "waypoint": [
+        4,
+        32
+      ],
+      "crumbs": 0,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 56,
+      "draws": 384
+    },
+    {
+      "floor": 14,
+      "elapsed": 7.3,
+      "pos": [
+        10,
+        26
+      ],
+      "waypoint": [
+        10,
+        24
+      ],
+      "crumbs": 18,
+      "hp": 8,
+      "kills": 1,
+      "overtime": 2.9,
+      "fps": 60,
+      "draws": 363
+    },
+    {
+      "floor": 14,
+      "elapsed": 14.3,
+      "pos": [
+        26.1,
+        19.5
+      ],
+      "waypoint": [
+        26,
+        20
+      ],
+      "crumbs": 33,
+      "hp": 8,
+      "kills": 4,
+      "overtime": 6.9,
+      "fps": 60,
+      "draws": 384
+    },
+    {
+      "floor": 14,
+      "elapsed": 21.4,
+      "pos": [
+        28,
+        23.6
+      ],
+      "waypoint": [
+        28,
+        22
+      ],
+      "crumbs": 51,
+      "hp": 8,
+      "kills": 6,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 336
+    },
+    {
+      "floor": 14,
+      "elapsed": 28.4,
+      "pos": [
+        31.8,
+        2.1
+      ],
+      "waypoint": [
+        30,
+        2
+      ],
+      "crumbs": 66,
+      "hp": 8,
+      "kills": 7,
+      "overtime": 7.1,
+      "fps": 60,
+      "draws": 341
+    },
+    {
+      "floor": 15,
+      "elapsed": 4.3,
+      "pos": [
+        13.5,
+        30.1
+      ],
+      "waypoint": [
+        12,
+        30
+      ],
+      "crumbs": 9,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 6.3,
+      "boss": 320,
+      "fps": 60,
+      "draws": 398
+    },
+    {
+      "floor": 15,
+      "elapsed": 11.3,
+      "pos": [
+        24.1,
+        25
+      ],
+      "waypoint": [
+        24,
+        24
+      ],
+      "crumbs": 26,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 0,
+      "boss": 320,
+      "fps": 60,
+      "draws": 404
+    },
+    {
+      "floor": 15,
+      "elapsed": 18.3,
+      "pos": [
+        23.9,
+        5.9
+      ],
+      "waypoint": [
+        24,
+        8
+      ],
+      "crumbs": 38,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 2.8,
+      "boss": 259,
+      "fps": 60,
+      "draws": 354
+    },
+    {
+      "floor": 15,
+      "elapsed": 25.4,
+      "pos": [
+        31.9,
+        7.8
+      ],
+      "waypoint": [
+        32,
+        10
+      ],
+      "crumbs": 47,
+      "hp": 8,
+      "kills": 1,
+      "overtime": 6.2,
+      "boss": 156,
+      "fps": 60,
+      "draws": 314
+    },
+    {
+      "floor": 15,
+      "elapsed": 32.4,
+      "pos": [
+        28.1,
+        18.5
+      ],
+      "waypoint": [
+        28,
+        20
+      ],
+      "crumbs": 54,
+      "hp": 8,
+      "kills": 1,
+      "overtime": 0,
+      "boss": 56,
+      "fps": 60,
+      "draws": 408
+    },
+    {
+      "floor": 15,
+      "elapsed": 39.5,
+      "pos": [
+        12.5,
+        28
+      ],
+      "waypoint": [
+        12,
+        28
+      ],
+      "crumbs": 58,
+      "hp": 8,
+      "kills": 3,
+      "overtime": 8,
+      "boss": 41,
+      "fps": 60,
+      "draws": 353
+    },
+    {
+      "floor": 15,
+      "elapsed": 46.5,
+      "pos": [
+        24.1,
+        16.6
+      ],
+      "waypoint": [
+        24,
+        16
+      ],
+      "crumbs": 58,
+      "hp": 8,
+      "kills": 3,
+      "overtime": 6.3,
+      "boss": 27,
+      "fps": 60,
+      "draws": 374
+    },
+    {
+      "floor": 16,
+      "elapsed": 0.2,
+      "pos": [
+        4,
+        34
+      ],
+      "waypoint": [
+        4,
+        32
+      ],
+      "crumbs": 0,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 369
+    },
+    {
+      "floor": 16,
+      "elapsed": 7.2,
+      "pos": [
+        2,
+        33.7
+      ],
+      "waypoint": [
+        2,
+        36
+      ],
+      "crumbs": 11,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 4.2,
+      "fps": 60,
+      "draws": 353
+    },
+    {
+      "floor": 16,
+      "elapsed": 14.3,
+      "pos": [
+        10.1,
+        24.7
+      ],
+      "waypoint": [
+        10,
+        24
+      ],
+      "crumbs": 25,
+      "hp": 8,
+      "kills": 1,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 360
+    },
+    {
+      "floor": 16,
+      "elapsed": 21.4,
+      "pos": [
+        4.4,
+        5.9
+      ],
+      "waypoint": [
+        4,
+        8
+      ],
+      "crumbs": 38,
+      "hp": 8,
+      "kills": 4,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 300
+    },
+    {
+      "floor": 16,
+      "elapsed": 28.4,
+      "pos": [
+        12.1,
+        4.1
+      ],
+      "waypoint": [
+        14,
+        4
+      ],
+      "crumbs": 50,
+      "hp": 8,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 311
+    },
+    {
+      "floor": 16,
+      "elapsed": 35.4,
+      "pos": [
+        32,
+        8.3
+      ],
+      "waypoint": [
+        32,
+        6
+      ],
+      "crumbs": 64,
+      "hp": 8,
+      "kills": 11,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 356
+    },
+    {
+      "floor": 17,
+      "elapsed": 1.7,
+      "pos": [
+        3.9,
+        23.7
+      ],
+      "waypoint": [
+        4,
+        22
+      ],
+      "crumbs": 3,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 429
+    },
+    {
+      "floor": 17,
+      "elapsed": 8.7,
+      "pos": [
+        7.4,
+        18
+      ],
+      "waypoint": [
+        8,
+        18
+      ],
+      "crumbs": 23,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 1.6,
+      "fps": 60,
+      "draws": 392
+    },
+    {
+      "floor": 17,
+      "elapsed": 15.7,
+      "pos": [
+        35.5,
+        14
+      ],
+      "waypoint": [
+        36,
+        14
+      ],
+      "crumbs": 38,
+      "hp": 8,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 435
+    },
+    {
+      "floor": 17,
+      "elapsed": 22.7,
+      "pos": [
+        20,
+        2
+      ],
+      "waypoint": [
+        18,
+        2
+      ],
+      "crumbs": 56,
+      "hp": 8,
+      "kills": 5,
+      "overtime": 1.6,
+      "fps": 60,
+      "draws": 354
+    },
+    {
+      "floor": 17,
+      "elapsed": 29.8,
+      "pos": [
+        3,
+        6
+      ],
+      "waypoint": [
+        2,
+        6
+      ],
+      "crumbs": 73,
+      "hp": 8,
+      "kills": 7,
+      "overtime": 4.2,
+      "fps": 60,
+      "draws": 322
+    },
+    {
+      "floor": 18,
+      "elapsed": 1.4,
+      "pos": [
+        9.3,
+        34
+      ],
+      "waypoint": [
+        10,
+        34
+      ],
+      "crumbs": 3,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 399
+    },
+    {
+      "floor": 18,
+      "elapsed": 8.4,
+      "pos": [
+        8.1,
+        25.9
+      ],
+      "waypoint": [
+        8,
+        24
+      ],
+      "crumbs": 18,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 1.8,
+      "fps": 60,
+      "draws": 387
+    },
+    {
+      "floor": 18,
+      "elapsed": 15.4,
+      "pos": [
+        4,
+        4.6
+      ],
+      "waypoint": [
+        4,
+        6
+      ],
+      "crumbs": 34,
+      "hp": 8,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 419
+    },
+    {
+      "floor": 18,
+      "elapsed": 22.4,
+      "pos": [
+        12,
+        3.8
+      ],
+      "waypoint": [
+        12,
+        2
+      ],
+      "crumbs": 47,
+      "hp": 8,
+      "kills": 4,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 357
+    },
+    {
+      "floor": 18,
+      "elapsed": 29.4,
+      "pos": [
+        24,
+        9.1
+      ],
+      "waypoint": [
+        24,
+        10
+      ],
+      "crumbs": 61,
+      "hp": 8,
+      "kills": 8,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 382
+    },
+    {
+      "floor": 18,
+      "elapsed": 36.5,
+      "pos": [
+        28.9,
+        19.9
+      ],
+      "waypoint": [
+        30,
+        20
+      ],
+      "crumbs": 77,
+      "hp": 8,
+      "kills": 10,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 448
+    },
+    {
+      "floor": 18,
+      "elapsed": 43.5,
+      "pos": [
+        39.9,
+        4.3
+      ],
+      "waypoint": [
+        42,
+        4
+      ],
+      "crumbs": 92,
+      "hp": 8,
+      "kills": 11,
+      "overtime": 2.3,
+      "fps": 60,
+      "draws": 328
+    },
+    {
+      "floor": 19,
+      "elapsed": 6.6,
+      "pos": [
+        2.1,
+        26.4
+      ],
+      "waypoint": [
+        2,
+        26
+      ],
+      "crumbs": 13,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 3.5,
+      "fps": 60,
+      "draws": 418
+    },
+    {
+      "floor": 19,
+      "elapsed": 13.7,
+      "pos": [
+        10.1,
+        4
+      ],
+      "waypoint": [
+        8,
+        4
+      ],
+      "crumbs": 30,
+      "hp": 8,
+      "kills": 1,
+      "overtime": 7.2,
+      "fps": 60,
+      "draws": 369
+    },
+    {
+      "floor": 19,
+      "elapsed": 20.7,
+      "pos": [
+        10.3,
+        9.9
+      ],
+      "waypoint": [
+        12,
+        10
+      ],
+      "crumbs": 45,
+      "hp": 8,
+      "kills": 2,
+      "overtime": 0.1,
+      "fps": 60,
+      "draws": 414
+    },
+    {
+      "floor": 19,
+      "elapsed": 27.8,
+      "pos": [
+        11.7,
+        6.1
+      ],
+      "waypoint": [
+        12,
+        8
+      ],
+      "crumbs": 57,
+      "hp": 8,
+      "kills": 2,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 391
+    },
+    {
+      "floor": 19,
+      "elapsed": 34.8,
+      "pos": [
+        18.1,
+        20.1
+      ],
+      "waypoint": [
+        18,
+        22
+      ],
+      "crumbs": 70,
+      "hp": 8,
+      "kills": 7,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 419
+    },
+    {
+      "floor": 19,
+      "elapsed": 41.9,
+      "pos": [
+        33.5,
+        18.1
+      ],
+      "waypoint": [
+        34,
+        18
+      ],
+      "crumbs": 86,
+      "hp": 8,
+      "kills": 9,
+      "overtime": 0,
+      "fps": 60,
+      "draws": 451
+    },
+    {
+      "floor": 20,
+      "elapsed": 2.8,
+      "pos": [
+        11.5,
+        36
+      ],
+      "waypoint": [
+        12,
+        36
+      ],
+      "crumbs": 3,
+      "hp": 8,
+      "kills": 0,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 432
+    },
+    {
+      "floor": 20,
+      "elapsed": 9.8,
+      "pos": [
+        7.8,
+        30.1
+      ],
+      "waypoint": [
+        6,
+        30
+      ],
+      "crumbs": 18,
+      "hp": 8,
+      "kills": 1,
+      "overtime": 1.8,
+      "boss": 420,
+      "fps": 60,
+      "draws": 429
+    },
+    {
+      "floor": 20,
+      "elapsed": 16.9,
+      "pos": [
+        14.1,
+        29.9
+      ],
+      "waypoint": [
+        16,
+        30
+      ],
+      "crumbs": 23,
+      "hp": 8,
+      "kills": 2,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 466
+    },
+    {
+      "floor": 20,
+      "elapsed": 23.9,
+      "pos": [
+        11.6,
+        30
+      ],
+      "waypoint": [
+        12,
+        30
+      ],
+      "crumbs": 23,
+      "hp": 7,
+      "kills": 6,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 377
+    },
+    {
+      "floor": 20,
+      "elapsed": 30.9,
+      "pos": [
+        21.9,
+        33.9
+      ],
+      "waypoint": [
+        24,
+        34
+      ],
+      "crumbs": 23,
+      "hp": 7,
+      "kills": 6,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 449
+    },
+    {
+      "floor": 20,
+      "elapsed": 37.9,
+      "pos": [
+        5.5,
+        34.1
+      ],
+      "waypoint": [
+        6,
+        34
+      ],
+      "crumbs": 35,
+      "hp": 7,
+      "kills": 7,
+      "overtime": 3.8,
+      "boss": 420,
+      "fps": 60,
+      "draws": 407
+    },
+    {
+      "floor": 20,
+      "elapsed": 44.9,
+      "pos": [
+        13.3,
+        30
+      ],
+      "waypoint": [
+        14,
+        30
+      ],
+      "crumbs": 35,
+      "hp": 6,
+      "kills": 7,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 421
+    },
+    {
+      "floor": 20,
+      "elapsed": 52,
+      "pos": [
+        11.5,
+        30
+      ],
+      "waypoint": [
+        12,
+        30
+      ],
+      "crumbs": 35,
+      "hp": 4,
+      "kills": 9,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 423
+    },
+    {
+      "floor": 20,
+      "elapsed": 59,
+      "pos": [
+        10.6,
+        30
+      ],
+      "waypoint": [
+        12,
+        30
+      ],
+      "crumbs": 35,
+      "hp": 3,
+      "kills": 12,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 402
+    },
+    {
+      "floor": 20,
+      "elapsed": 66.1,
+      "pos": [
+        15.9,
+        30.5
+      ],
+      "waypoint": [
+        16,
+        32
+      ],
+      "crumbs": 35,
+      "hp": 3,
+      "kills": 13,
+      "overtime": 5.3,
+      "boss": 420,
+      "fps": 60,
+      "draws": 441
+    },
+    {
+      "floor": 20,
+      "elapsed": 73.1,
+      "pos": [
+        16,
+        30.9
+      ],
+      "waypoint": [
+        16,
+        32
+      ],
+      "crumbs": 35,
+      "hp": 3,
+      "kills": 13,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 417
+    },
+    {
+      "floor": 20,
+      "elapsed": 80.1,
+      "pos": [
+        16,
+        30.4
+      ],
+      "waypoint": [
+        16,
+        32
+      ],
+      "crumbs": 35,
+      "hp": 1,
+      "kills": 15,
+      "overtime": 0,
+      "boss": 420,
+      "fps": 60,
+      "draws": 423
+    }
+  ],
+  "result": "FAIL",
+  "failure": "Error: Lost on aisle 20, crumbs 35/42, time 165.5\n    at file:///Users/rapido/perso/bittensor/404/hungry-for-trouble/scripts/playthrough.mjs:368:13",
+  "last": {
+    "fps": 60,
+    "draws": 382,
+    "tris": 618680,
+    "geometries": 346,
+    "pos": [
+      16.934351895720017,
+      33.94621418772721
+    ],
+    "speed": 4.683599963898462,
+    "mode": "playing",
+    "paused": false,
+    "state": "lost",
+    "floor": 20,
+    "theme": "core",
+    "hp": 0,
+    "ammo": 96,
+    "score": 81408,
+    "collected": 35,
+    "quota": 42,
+    "overtime": 0,
+    "elapsed": 84.44999999999649,
+    "time": 165.5499999999328,
+    "shots": 125,
+    "kills": 17,
+    "dashCooldown": 0.6999999999999997,
+    "upgrades": {
+      "rapid": 5,
+      "spread": 3,
+      "pierce": 0,
+      "shield": 3,
+      "magnet": 2,
+      "heart": 4,
+      "ricochet": 1,
+      "frost": 1
+    },
+    "angle": 1.5593,
+    "map": [
+      "     #################   ",
+      "    #...B..........P..#  ",
+      "    #......H.X...#....#  ",
+      "    #...P.............#  ",
+      "    #...#.......#F....#  ",
+      "    #R..#.............#  ",
+      "    #................!#  ",
+      "    #........M....#...#  ",
+      "    #.#.!.............#  ",
+      "    #.#...............#  ",
+      "    #...C........##...#  ",
+      "    #....##...#B..##..#  ",
+      "    #L................#  ",
+      "    #.....Q..F..!.....#  ",
+      " ############.#####.###  ",
+      "#C...P.H.#  #!#........# ",
+      "#....##..####.#........# ",
+      "#...........P..N..##...# ",
+      "#.S...V.B######........# ",
+      "#........#    #........# ",
+      " ########      ########  ",
+      "                         "
+    ],
+    "exit": {
+      "x": 26,
+      "z": 4,
+      "screen": {
+        "x": 1147.2294604132367,
+        "y": -888.5731511642268
+      }
+    },
+    "playerScreen": {
+      "x": 660.2883274840468,
+      "y": 447.3014137205178
+    },
+    "enemies": [
+      {
+        "x": 25.936669166559188,
+        "z": 33.982792103357966,
+        "hp": 5,
+        "respawn": -0.0166666666666468,
+        "kind": "shooter",
+        "screen": {
+          "x": 1140.406597872752,
+          "y": 449.7999712381454
+        }
+      },
+      {
+        "x": 26,
+        "z": 33.92947722536195,
+        "hp": 0,
+        "respawn": 4.783333333333341,
+        "kind": "layer",
+        "screen": {
+          "x": 1143.7903607242717,
+          "y": 447.42617940598393
+        }
+      },
+      {
+        "x": 26.000000385473992,
+        "z": 33.55738471112476,
+        "hp": 0,
+        "respawn": 1.4666666666666863,
+        "kind": "shieldcart",
+        "screen": {
+          "x": 1143.8331372334455,
+          "y": 430.81662271114584
+        }
+      },
+      {
+        "x": 30,
+        "z": 34,
+        "hp": 0,
+        "respawn": 5.08333333333334,
+        "kind": "sniper",
+        "screen": {
+          "x": 1357.1150953787162,
+          "y": 450.9588859301795
+        }
+      }
+    ],
+    "batteries": [
+      {
+        "x": 16,
+        "z": 2,
+        "collected": false
+      },
+      {
+        "x": 30,
+        "z": 22,
+        "collected": false
+      },
+      {
+        "x": 16,
+        "z": 36,
+        "collected": true
+      }
+    ],
+    "crumbs": [
+      [
+        10,
+        2
+      ],
+      [
+        12,
+        2
+      ],
+      [
+        14,
+        2
+      ],
+      [
+        18,
+        2
+      ],
+      [
+        20,
+        2
+      ],
+      [
+        22,
+        2
+      ],
+      [
+        24,
+        2
+      ],
+      [
+        26,
+        2
+      ],
+      [
+        28,
+        2
+      ],
+      [
+        30,
+        2
+      ],
+      [
+        32,
+        2
+      ],
+      [
+        34,
+        2
+      ],
+      [
+        36,
+        2
+      ],
+      [
+        40,
+        2
+      ],
+      [
+        42,
+        2
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        12,
+        4
+      ],
+      [
+        14,
+        4
+      ],
+      [
+        16,
+        4
+      ],
+      [
+        18,
+        4
+      ],
+      [
+        20,
+        4
+      ],
+      [
+        24,
+        4
+      ],
+      [
+        28,
+        4
+      ],
+      [
+        30,
+        4
+      ],
+      [
+        32,
+        4
+      ],
+      [
+        36,
+        4
+      ],
+      [
+        38,
+        4
+      ],
+      [
+        40,
+        4
+      ],
+      [
+        42,
+        4
+      ],
+      [
+        10,
+        6
+      ],
+      [
+        12,
+        6
+      ],
+      [
+        14,
+        6
+      ],
+      [
+        18,
+        6
+      ],
+      [
+        20,
+        6
+      ],
+      [
+        22,
+        6
+      ],
+      [
+        24,
+        6
+      ],
+      [
+        26,
+        6
+      ],
+      [
+        28,
+        6
+      ],
+      [
+        30,
+        6
+      ],
+      [
+        32,
+        6
+      ],
+      [
+        34,
+        6
+      ],
+      [
+        36,
+        6
+      ],
+      [
+        38,
+        6
+      ],
+      [
+        40,
+        6
+      ],
+      [
+        42,
+        6
+      ],
+      [
+        10,
+        8
+      ],
+      [
+        12,
+        8
+      ],
+      [
+        14,
+        8
+      ],
+      [
+        18,
+        8
+      ],
+      [
+        20,
+        8
+      ],
+      [
+        22,
+        8
+      ],
+      [
+        24,
+        8
+      ],
+      [
+        26,
+        8
+      ],
+      [
+        28,
+        8
+      ],
+      [
+        30,
+        8
+      ],
+      [
+        36,
+        8
+      ],
+      [
+        38,
+        8
+      ],
+      [
+        40,
+        8
+      ],
+      [
+        42,
+        8
+      ],
+      [
+        10,
+        10
+      ],
+      [
+        12,
+        10
+      ],
+      [
+        14,
+        10
+      ],
+      [
+        18,
+        10
+      ],
+      [
+        20,
+        10
+      ],
+      [
+        22,
+        10
+      ],
+      [
+        24,
+        10
+      ],
+      [
+        26,
+        10
+      ],
+      [
+        28,
+        10
+      ],
+      [
+        30,
+        10
+      ],
+      [
+        32,
+        10
+      ],
+      [
+        34,
+        10
+      ],
+      [
+        36,
+        10
+      ],
+      [
+        38,
+        10
+      ],
+      [
+        40,
+        10
+      ],
+      [
+        42,
+        10
+      ],
+      [
+        10,
+        12
+      ],
+      [
+        12,
+        12
+      ],
+      [
+        14,
+        12
+      ],
+      [
+        16,
+        12
+      ],
+      [
+        18,
+        12
+      ],
+      [
+        20,
+        12
+      ],
+      [
+        22,
+        12
+      ],
+      [
+        24,
+        12
+      ],
+      [
+        26,
+        12
+      ],
+      [
+        28,
+        12
+      ],
+      [
+        30,
+        12
+      ],
+      [
+        32,
+        12
+      ],
+      [
+        34,
+        12
+      ],
+      [
+        36,
+        12
+      ],
+      [
+        38,
+        12
+      ],
+      [
+        40,
+        12
+      ],
+      [
+        10,
+        14
+      ],
+      [
+        12,
+        14
+      ],
+      [
+        14,
+        14
+      ],
+      [
+        16,
+        14
+      ],
+      [
+        18,
+        14
+      ],
+      [
+        20,
+        14
+      ],
+      [
+        22,
+        14
+      ],
+      [
+        24,
+        14
+      ],
+      [
+        28,
+        14
+      ],
+      [
+        30,
+        14
+      ],
+      [
+        32,
+        14
+      ],
+      [
+        34,
+        14
+      ],
+      [
+        38,
+        14
+      ],
+      [
+        40,
+        14
+      ],
+      [
+        42,
+        14
+      ],
+      [
+        10,
+        16
+      ],
+      [
+        14,
+        16
+      ],
+      [
+        18,
+        16
+      ],
+      [
+        20,
+        16
+      ],
+      [
+        22,
+        16
+      ],
+      [
+        24,
+        16
+      ],
+      [
+        26,
+        16
+      ],
+      [
+        28,
+        16
+      ],
+      [
+        30,
+        16
+      ],
+      [
+        32,
+        16
+      ],
+      [
+        34,
+        16
+      ],
+      [
+        36,
+        16
+      ],
+      [
+        38,
+        16
+      ],
+      [
+        40,
+        16
+      ],
+      [
+        42,
+        16
+      ],
+      [
+        10,
+        18
+      ],
+      [
+        14,
+        18
+      ],
+      [
+        16,
+        18
+      ],
+      [
+        18,
+        18
+      ],
+      [
+        20,
+        18
+      ],
+      [
+        22,
+        18
+      ],
+      [
+        24,
+        18
+      ],
+      [
+        26,
+        18
+      ],
+      [
+        28,
+        18
+      ],
+      [
+        30,
+        18
+      ],
+      [
+        32,
+        18
+      ],
+      [
+        34,
+        18
+      ],
+      [
+        36,
+        18
+      ],
+      [
+        38,
+        18
+      ],
+      [
+        40,
+        18
+      ],
+      [
+        42,
+        18
+      ],
+      [
+        10,
+        20
+      ],
+      [
+        12,
+        20
+      ],
+      [
+        14,
+        20
+      ],
+      [
+        18,
+        20
+      ],
+      [
+        20,
+        20
+      ],
+      [
+        22,
+        20
+      ],
+      [
+        24,
+        20
+      ],
+      [
+        26,
+        20
+      ],
+      [
+        28,
+        20
+      ],
+      [
+        30,
+        20
+      ],
+      [
+        32,
+        20
+      ],
+      [
+        38,
+        20
+      ],
+      [
+        40,
+        20
+      ],
+      [
+        42,
+        20
+      ],
+      [
+        10,
+        22
+      ],
+      [
+        12,
+        22
+      ],
+      [
+        14,
+        22
+      ],
+      [
+        16,
+        22
+      ],
+      [
+        22,
+        22
+      ],
+      [
+        24,
+        22
+      ],
+      [
+        26,
+        22
+      ],
+      [
+        32,
+        22
+      ],
+      [
+        34,
+        22
+      ],
+      [
+        40,
+        22
+      ],
+      [
+        42,
+        22
+      ],
+      [
+        10,
+        24
+      ],
+      [
+        12,
+        24
+      ],
+      [
+        14,
+        24
+      ],
+      [
+        16,
+        24
+      ],
+      [
+        18,
+        24
+      ],
+      [
+        20,
+        24
+      ],
+      [
+        22,
+        24
+      ],
+      [
+        24,
+        24
+      ],
+      [
+        26,
+        24
+      ],
+      [
+        28,
+        24
+      ],
+      [
+        30,
+        24
+      ],
+      [
+        32,
+        24
+      ],
+      [
+        34,
+        24
+      ],
+      [
+        36,
+        24
+      ],
+      [
+        38,
+        24
+      ],
+      [
+        40,
+        24
+      ],
+      [
+        42,
+        24
+      ],
+      [
+        10,
+        26
+      ],
+      [
+        12,
+        26
+      ],
+      [
+        14,
+        26
+      ],
+      [
+        16,
+        26
+      ],
+      [
+        18,
+        26
+      ],
+      [
+        20,
+        26
+      ],
+      [
+        22,
+        26
+      ],
+      [
+        24,
+        26
+      ],
+      [
+        28,
+        26
+      ],
+      [
+        30,
+        26
+      ],
+      [
+        34,
+        26
+      ],
+      [
+        36,
+        26
+      ],
+      [
+        38,
+        26
+      ],
+      [
+        40,
+        26
+      ],
+      [
+        42,
+        26
+      ],
+      [
+        26,
+        28
+      ],
+      [
+        38,
+        28
+      ],
+      [
+        30,
+        30
+      ],
+      [
+        32,
+        30
+      ],
+      [
+        34,
+        30
+      ],
+      [
+        36,
+        30
+      ],
+      [
+        38,
+        30
+      ],
+      [
+        40,
+        30
+      ],
+      [
+        42,
+        30
+      ],
+      [
+        44,
+        30
+      ],
+      [
+        26,
+        32
+      ],
+      [
+        30,
+        32
+      ],
+      [
+        32,
+        32
+      ],
+      [
+        34,
+        32
+      ],
+      [
+        36,
+        32
+      ],
+      [
+        38,
+        32
+      ],
+      [
+        40,
+        32
+      ],
+      [
+        42,
+        32
+      ],
+      [
+        44,
+        32
+      ],
+      [
+        26,
+        34
+      ],
+      [
+        28,
+        34
+      ],
+      [
+        30,
+        34
+      ],
+      [
+        32,
+        34
+      ],
+      [
+        34,
+        34
+      ],
+      [
+        40,
+        34
+      ],
+      [
+        42,
+        34
+      ],
+      [
+        44,
+        34
+      ],
+      [
+        30,
+        36
+      ],
+      [
+        32,
+        36
+      ],
+      [
+        34,
+        36
+      ],
+      [
+        36,
+        36
+      ],
+      [
+        38,
+        36
+      ],
+      [
+        40,
+        36
+      ],
+      [
+        42,
+        36
+      ],
+      [
+        44,
+        36
+      ],
+      [
+        30,
+        38
+      ],
+      [
+        32,
+        38
+      ],
+      [
+        34,
+        38
+      ],
+      [
+        36,
+        38
+      ],
+      [
+        38,
+        38
+      ],
+      [
+        40,
+        38
+      ],
+      [
+        42,
+        38
+      ],
+      [
+        44,
+        38
+      ]
+    ],
+    "gates": [],
+    "boss": {
+      "x": 26,
+      "z": 14,
+      "hp": 420,
+      "maxHp": 420,
+      "director": true,
+      "kind": "core",
+      "name": "SHELF CONTROL",
+      "special": 0.8666666666666787,
+      "phase": 84.43333333332983,
+      "fire": 0.48333333333333217,
+      "exposed": false,
+      "hit": 0,
+      "screen": {
+        "x": 1146.0803926687286,
+        "y": -442.1907033485002
+      }
+    },
+    "audio": {
+      "enabled": true,
+      "state": "running",
+      "score": "idle"
+    },
+    "multiplayer": null,
+    "firstPerson": false,
+    "viewBlend": 0,
+    "shape": "SHELF CONTROL CORE",
+    "seed": 3809365241,
+    "repairs": [
+      {
+        "x": 22,
+        "z": 4,
+        "collected": false,
+        "respawn": 0
+      },
+      {
+        "x": 14,
+        "z": 30,
+        "collected": true,
+        "respawn": -30.199999999999147
+      }
+    ],
+    "hazards": [
+      {
+        "x": 9.317750798465262,
+        "z": 23.43735517446548,
+        "vx": -4.351891096052495,
+        "vz": 2.4619187411649097,
+        "life": 0.16666666666667584,
+        "age": 3.8333333333333246
+      },
+      {
+        "x": 25.831864724856096,
+        "z": 33.16592918802431,
+        "vx": -0.04386137612443573,
+        "vz": 4.99980761426722,
+        "life": 0.16666666666667584,
+        "age": 3.8333333333333246
+      },
+      {
+        "x": 42.68224920153421,
+        "z": 4.5626448255345196,
+        "vx": 4.351891096052504,
+        "vz": -2.4619187411648937,
+        "life": 0.16666666666667584,
+        "age": 3.8333333333333246
+      },
+      {
+        "x": 24.537181356201778,
+        "z": 15.598313504854708,
+        "vx": -3.375735331841966,
+        "vz": 3.6884157804338997,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 24.959032018915217,
+        "z": 15.90021843660163,
+        "vx": -2.4022338025033916,
+        "vz": 4.385119469080642,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 25.440555182532727,
+        "z": 16.093195151115495,
+        "vx": -1.2910265018475044,
+        "vz": 4.830450348728097,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 24.00705039023677,
+        "z": 13.14994335636436,
+        "vx": -4.5991144840689815,
+        "vz": -1.961669177620656,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 23.849026687664953,
+        "z": 14.26030415683745,
+        "vx": -4.963784566927027,
+        "vz": 0.6007019003940893,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 24.26735454707422,
+        "z": 15.300916668699408,
+        "vx": -3.998412583674911,
+        "vz": 3.0021153893063675,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 25.14994335636436,
+        "z": 15.99294960976323,
+        "vx": -1.9616691776206483,
+        "vz": 4.599114484068985,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 26.26030415683745,
+        "z": 16.150973312335047,
+        "vx": 0.6007019003940626,
+        "vz": 4.96378456692703,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 27.300916668699408,
+        "z": 15.73264545292578,
+        "vx": 3.0021153893063746,
+        "vz": 3.998412583674906,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 27.99294960976323,
+        "z": 14.850056643635593,
+        "vx": 4.5991144840689895,
+        "vz": 1.96166917762064,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 28.150973312335047,
+        "z": 13.73969584316255,
+        "vx": 4.963784566927028,
+        "vz": -0.600701900394071,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 27.73264545292578,
+        "z": 12.699083331300546,
+        "vx": 3.9984125836749005,
+        "vz": -3.002115389306381,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 26.85005664363564,
+        "z": 12.00705039023677,
+        "vx": 1.9616691776206652,
+        "vz": -4.599114484068979,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 25.73969584316255,
+        "z": 11.849026687664953,
+        "vx": -0.6007019003940796,
+        "vz": -4.963784566927028,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      },
+      {
+        "x": 24.699083331300592,
+        "z": 12.26735454707422,
+        "vx": -3.0021153893063595,
+        "vz": -3.998412583674917,
+        "life": 3.566666666666668,
+        "age": 0.4333333333333333
+      }
+    ],
+    "fpsTime": 0,
+    "fpsYaw": -3.0739,
+    "fpsPitch": 0,
+    "pointerLocked": false,
+    "runKind": "campaign",
+    "dailyTicks": 0,
+    "visors": [
+      {
+        "x": 12,
+        "z": 36,
+        "collected": true,
+        "respawn": -46.66666666666454
+      }
+    ],
+    "maxHp": 8,
+    "shield": 0,
+    "portals": [
+      {
+        "x": 38,
+        "z": 2,
+        "pair": 0,
+        "target": 1
+      },
+      {
+        "x": 16,
+        "z": 6,
+        "pair": 0,
+        "target": 0
+      },
+      {
+        "x": 10,
+        "z": 30,
+        "pair": 1,
+        "target": 3
+      },
+      {
+        "x": 24,
+        "z": 34,
+        "pair": 1,
+        "target": 2
+      }
+    ],
+    "transportCooldown": 0,
+    "vents": [
+      {
+        "x": 42,
+        "z": 12,
+        "phase": 0,
+        "phaseState": "safe"
+      },
+      {
+        "x": 16,
+        "z": 16,
+        "phase": 1.35,
+        "phaseState": "safe"
+      },
+      {
+        "x": 32,
+        "z": 26,
+        "phase": 2.7,
+        "phaseState": "safe"
+      },
+      {
+        "x": 26,
+        "z": 30,
+        "phase": 4.050000000000001,
+        "phaseState": "warning"
+      }
+    ],
+    "mines": [
+      {
+        "x": 25.99999999999989,
+        "z": 20.81947722536215,
+        "arm": 0,
+        "life": 2.8166666666666362,
+        "blast": 0
+      },
+      {
+        "x": 14.189859272236582,
+        "z": 34.65381665689647,
+        "arm": 0,
+        "life": 5.349999999999961,
+        "blast": 0
+      },
+      {
+        "x": 16.189859272236582,
+        "z": 36.65381665689647,
+        "arm": 0,
+        "life": 5.349999999999961,
+        "blast": 0
+      }
+    ],
+    "stock": [
+      {
+        "x": 34,
+        "z": 8,
+        "kind": "flour",
+        "hp": 2,
+        "vx": 0,
+        "vz": 0,
+        "cooldown": 0,
+        "cloud": 0,
+        "broken": false,
+        "hits": []
+      },
+      {
+        "x": 16,
+        "z": 20,
+        "kind": "cart",
+        "hp": 2,
+        "vx": 0,
+        "vz": 0,
+        "cooldown": 0,
+        "cloud": 0,
+        "broken": false,
+        "hits": []
+      },
+      {
+        "x": 26,
+        "z": 26,
+        "kind": "flour",
+        "hp": 2,
+        "vx": 0,
+        "vz": 0,
+        "cooldown": 0,
+        "cloud": 0,
+        "broken": false,
+        "hits": []
+      },
+      {
+        "x": 2,
+        "z": 30,
+        "kind": "cart",
+        "hp": 2,
+        "vx": 0,
+        "vz": 0,
+        "cooldown": 0,
+        "cloud": 0,
+        "broken": false,
+        "hits": []
+      }
+    ],
+    "unlocked": 20
+  }
+}

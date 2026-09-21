@@ -1,0 +1,6 @@
+
+> hungry-for-trouble@0.2.0 check
+> node ../404-game-recipe/harness/ship.mjs game
+
+33 module(s), 1 page(s) in game
+every module parses, every path stays inside the folder

@@ -1,6 +1,6 @@
 # Hungry for Trouble
 
-SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must unplug the store AI and rescue MOP-3. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
+SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must rescue MOP-3, free the basement crew and unplug the store AI across twenty floors. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
 
 ## Play locally
 
@@ -10,15 +10,17 @@ npm run dev
 
 Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installation or API key is required to run the game, leaderboard and room server. The complete static browser build is in `game/`, including Three.js and its license. Google Fonts is optional; system fonts provide a fallback.
 
-| Action                     | Desktop               | Touch                    |
-| -------------------------- | --------------------- | ------------------------ |
-| Move                       | WASD or arrow keys    | Left stick               |
-| Aim and fire               | Mouse and left button | Right stick              |
-| Dash                       | Space while moving    | Dash button while moving |
-| Pause                      | Escape                | Pause button             |
-| Change view during Vac Cam | V                     | View button              |
+| Action                     | Desktop               | Touch        |
+| -------------------------- | --------------------- | ------------ |
+| Move                       | WASD or arrow keys    | Left stick   |
+| Aim and fire               | Mouse and left button | Right stick  |
+| Dash to dodge hits         | Space                 | Dodge button |
+| Pause                      | Escape                | Pause button |
+| Change view during Vac Cam | V                     | View button  |
 
 Crumbs refill ammunition and advance the collection goal. Once the goal is met, reach the marked checkout. Batteries give eight seconds of invulnerability, free spread shots and reversed enemy pursuit. White/red repair kits restore one heart and remain available when health is full. Checkout restores one heart on departure. Pick one upgrade between aisles; the cards show before/after mechanics and exact stats. Campaign records and unlocked aisles are saved in this browser. Vac Cam goggles grant 18 seconds of first-person play, extra ammunition and faster firing. Click to lock mouse aim, or drag if pointer lock is unavailable. The right touch stick turns and fires. V returns to overhead while keeping the fire-rate bonus.
+
+Dash gives a short protected burst in your movement direction, or your aim direction when stationary. It recharges in 1.2 seconds and cannot cross shelves. Blue trails and the Dodge button show protection and recharge. Gold batteries announce Overtime with an original faster musical theme, a timer, a gold border and flashing enemies marked **CHOMP**. Touch those enemies to scrap them; bosses still require their attack windows. The last two seconds warn you to make space.
 
 ## The escape route
 
@@ -31,9 +33,23 @@ Crumbs refill ammunition and advance the collection goal. Once the goal is met, 
 7. **Heavy Delivery:** tougher armoured trolleys and drones patrol moving shutters.
 8. **Brain Freeze:** sliding movement, ranged crossfire and armoured enemies.
 9. **Express Distress:** opposing conveyor lanes push players through a crowded layout.
-10. **Exit Interview:** the Director guards the street with rotating receipt volleys and shield windows.
+10. **Exit Interview:** defeat the Director and rescue MOP-3, who reveals the trapped basement crew.
+11. **Hot Under the Collar:** boiler vents warn before steam damages anything on the tile.
+12. **Returns to Nowhere:** matching transport pads connect distant parts of the lost-property rooms.
+13. **Expiry Date:** mine layers leave shootable mines with an arming delay and a blast warning.
+14. **No Refunds:** shield carts block frontal shots; flank them or use Overtime.
+15. **The Foreman:** a third boss marks the player's floor while cycling receipt volleys and shield openings.
+16. **Cold Connection:** four paired transport pads connect icy islands and steam traps.
+17. **Special Delivery:** conveyor lanes mix mine layers, shield carts and transport shortcuts.
+18. **Dead Air:** long-range snipers lock their aim before firing fast receipts across a radio network.
+19. **Final Final Notice:** shutters, vents and the new enemies guard the last detour.
+20. **Shelf Destruction:** SHELF CONTROL marks a cross of mine warnings; defeat it and escape with every colleague.
 
-After the familiar first aisle, seeded rooms and corridors change the footprint: dogleg, loading loop, crossroads, food court, horseshoe, frozen islands, switchback and control wing. Cover and supplies vary each campaign. The route announces both bosses and saves each real clear. Unlocked aisles can be practised directly. Full campaign personal records remain separate from practice. Upgrade cards illustrate faster firing, spread, piercing, a rechargeable warranty shield, crumb attraction and extra health.
+After the familiar first aisle, eighteen floors use seeded room connections, cover and supplies while preserving reachable objectives. The two-act map announces four boss milestones and saves each real clear. Existing Director clears unlock floor 11. Unlocked aisles can be practised directly, with starter upgrades from floor 6 onward. Full campaign personal records remain separate from practice.
+
+Act-two stock is interactive: dash into or shoot a yellow stock cart to launch it at enemies. Shoot a flour display to interrupt and blind nearby enemies for three seconds. Transport pads use matching A/B labels and colours; step off the destination before returning. Arrivals grant brief protection.
+
+Eight capped upgrade types support different builds: faster firing, spread, piercing, a warranty shield, crumb attraction, extra health, wall ricochets and freezing shots that interrupt attacks. Ricochet, spread, piercing and frost combine. Original robot portraits identify MOP-3, BUFF-0 and SHELF CONTROL; the current radio message can be reread in the pause menu. The rescues at floors 10 and 15 lead into the next chapter, and floor 20 ends with the crew celebrating together.
 
 ## Daily Rush and shared scores
 
@@ -68,6 +84,7 @@ node scripts/playthrough.mjs --fps
 node scripts/playthrough.mjs --daily
 node scripts/arcade-playtest.mjs
 node scripts/feel-playtest.mjs
+node scripts/act-two-playtest.mjs
 node scripts/multiplayer-playtest.mjs
 node scripts/multiplayer-playtest.mjs --coop
 ```
@@ -76,6 +93,6 @@ The simulation tests use Node's built-in test runner. The shipping and browser c
 
 The original object references, three construction candidates per object, selections and verification evidence are in [receipts/README.md](receipts/README.md). Runtime meshes are procedural Three.js through the official 404 recipe. Runtime audio currently uses original Web Audio music and effects. Three new original Atlas outputs have been generated (a Lyria soundtrack and two Gemini portraits). The owner permits their workspace-catalog publication only after actual contest submission, so that download method is deferred and they are not yet used at runtime.
 
-The official phone/4G gate passes locally on the current gameplay commit: 5.3-second readiness, 2.6 MB, real touch movement and no errors. The [verdict](receipts/verification-multiplayer/jam/verdict.txt) records its exact scope; the live-URL gate remains outstanding.
+The twenty-floor expansion passes 34 Node checks and the official 33-module shipping check. [Expansion evidence](receipts/verification-act-two/README.md) records real-input campaign completion, machinery, phone controls, FPS, daily scores and two-player regressions. The new official local phone/4G gate will be recorded against the gameplay commit; the previous [verdict](receipts/verification-multiplayer/jam/verdict.txt) covers the earlier ten-floor version. The live-URL gate remains outstanding.
 
 For the next development session, read [docs/resume.md](docs/resume.md). [Contest readiness](docs/contest-readiness.md) records the supplied rules, remaining submission work and TAO prizes. Hosting and contest submission have not been performed.

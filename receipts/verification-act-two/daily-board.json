@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "Twenty-node escape map, four boss milestones and honest locked stages",
+    "A real daily run records inputs and is accepted by server replay",
+    "An independent browser identity reads the same accepted score",
+    "Unavailable ranking is explicit and does not show fabricated scores"
+  ],
+  "errors": [],
+  "input": "Real DOM clicks, keyboard and pointer events. Simulation snapshots are read only.",
+  "run": {
+    "score": 10,
+    "ticks": 959,
+    "state": "lost",
+    "day": "2026-09-21"
+  },
+  "result": "PASS"
+}

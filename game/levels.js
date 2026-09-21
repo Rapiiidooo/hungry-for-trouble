@@ -253,7 +253,104 @@ export const LEVELS = [
     quota: 40,
     time: 210,
     speed: 3.6,
-    tagline: "Your resignation has been violently declined.",
+    tagline: "Rescue MOP-3. The Director is only the first problem.",
+  },
+  {
+    name: "Hot Under the Collar",
+    department: "AISLE 11 · BOILER ROOM",
+    theme: "boiler",
+    quota: 64,
+    time: 170,
+    speed: 3.7,
+    tagline:
+      "Steam flashes amber before it burns. Dash when the floor turns red.",
+  },
+  {
+    name: "Returns to Nowhere",
+    department: "AISLE 12 · LOST PROPERTY",
+    theme: "transit",
+    quota: 68,
+    time: 170,
+    speed: 3.75,
+    tagline:
+      "Matching transport pads connect. Step off before using one again.",
+  },
+  {
+    name: "Expiry Date",
+    department: "AISLE 13 · EXPLOSIVE OFFERS",
+    theme: "packing",
+    quota: 70,
+    time: 180,
+    speed: 3.8,
+    tagline: "Mine layers leave bad surprises. Shoot a mine before it arms.",
+  },
+  {
+    name: "No Refunds",
+    department: "AISLE 14 · SECURITY DESK",
+    theme: "security",
+    quota: 70,
+    time: 185,
+    speed: 3.8,
+    tagline:
+      "Shield carts block frontal shots. Flank them or chase them in Overtime.",
+  },
+  {
+    name: "The Foreman",
+    department: "AISLE 15 · FIRE THE BOSS",
+    theme: "boiler",
+    quota: 36,
+    time: 230,
+    speed: 3.6,
+    bossKind: "foreman",
+    tagline: "Leave the marked floor. Attack while the Foreman cools down.",
+  },
+  {
+    name: "Cold Connection",
+    department: "AISLE 16 · BELOW ZERO",
+    theme: "ice",
+    quota: 72,
+    time: 190,
+    speed: 3.85,
+    tagline:
+      "Two pairs of transport pads. Slippery bridges. Take the shortcut.",
+  },
+  {
+    name: "Special Delivery",
+    department: "AISLE 17 · SORTING OFFICE",
+    theme: "conveyor",
+    quota: 74,
+    time: 190,
+    speed: 3.9,
+    tagline: "Ride the belts, push stock carts and leave the mines behind.",
+  },
+  {
+    name: "Dead Air",
+    department: "AISLE 18 · RADIO SILENCE",
+    theme: "transit",
+    quota: 76,
+    time: 195,
+    speed: 3.9,
+    tagline: "Snipers lock a red line. Break their sight or dodge sideways.",
+  },
+  {
+    name: "Final Final Notice",
+    department: "AISLE 19 · NO WAY BACK",
+    theme: "packing",
+    quota: 78,
+    time: 200,
+    speed: 3.95,
+    tagline: "The whole store is against you. Make the stock fight back.",
+  },
+  {
+    name: "Shelf Destruction",
+    department: "AISLE 20 · SHELF CONTROL",
+    theme: "core",
+    quota: 42,
+    time: 250,
+    speed: 3.8,
+    bossKind: "core",
+    tagline:
+      "Unplug the real boss. Get every robot out. No employee left behind.",
   },
 ];
 
@@ -279,7 +376,10 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
     gates = [],
     visors = [],
     belts = [],
-    repairs = [];
+    repairs = [],
+    portals = [],
+    vents = [],
+    stock = [];
   let start, exit, boss;
   for (let z = 0; z < height; z++)
     for (let x = 0; x < width; x++) {
@@ -291,12 +391,18 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
         if (char === "X") exit = position;
         if (char === "B")
           batteries.push({ ...position, collected: false, respawn: 0 });
-        if (["E", "A", "R", "T"].includes(char))
+        if (["E", "A", "R", "T", "N", "L", "Q"].includes(char))
           enemies.push({
             ...position,
-            kind: { E: "hunter", A: "ambusher", R: "shooter", T: "armoured" }[
-              char
-            ],
+            kind: {
+              E: "hunter",
+              A: "ambusher",
+              R: "shooter",
+              T: "armoured",
+              N: "sniper",
+              L: "layer",
+              Q: "shieldcart",
+            }[char],
           });
         if (char === "H")
           repairs.push({ ...position, collected: false, respawn: 0 });
@@ -307,7 +413,26 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
         if (char === "G")
           gates.push({ ...position, col: x, row: z, phase: gates.length % 2 });
         if (char === "M") boss = position;
-        if (!["S", "X", "B", "G", "M", "V", "H"].includes(char))
+        if (char === "P") portals.push({ ...position });
+        if (char === "!")
+          vents.push({ ...position, phase: vents.length * 1.35 });
+        if (char === "C" || char === "F")
+          stock.push({
+            ...position,
+            kind: char === "C" ? "cart" : "flour",
+            hp: 2,
+            vx: 0,
+            vz: 0,
+            cooldown: 0,
+            cloud: 0,
+            broken: false,
+            hits: [],
+          });
+        if (
+          !["S", "X", "B", "G", "M", "V", "H", "P", "!", "C", "F"].includes(
+            char,
+          )
+        )
           crumbs.push({ ...position, collected: false });
       }
     }
@@ -323,6 +448,13 @@ export function layoutFor(index, seed = DEFAULT_SEED) {
     visors,
     repairs,
     belts,
+    portals: portals.map((p, i) => ({
+      ...p,
+      pair: Math.floor(i / 2),
+      target: i ^ 1,
+    })),
+    vents,
+    stock,
     start,
     exit,
     boss,

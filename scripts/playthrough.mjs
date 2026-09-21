@@ -7,12 +7,23 @@ const require = createRequire(
 const puppeteer = require("puppeteer");
 const fpsOnly = process.argv.includes("--fps");
 const dailyOnly = process.argv.includes("--daily");
+const fromFloor = Math.max(
+  1,
+  Math.min(
+    20,
+    Number(
+      process.argv.find((arg) => arg.startsWith("--from="))?.split("=")[1],
+    ) || 1,
+  ),
+);
 const output = new URL(
   fpsOnly
     ? "../outputs/fps/"
     : dailyOnly
       ? "../outputs/daily-survival/"
-      : "../outputs/playthrough/",
+      : fromFloor > 1
+        ? `../outputs/continuation-${fromFloor}/`
+        : "../outputs/playthrough/",
   import.meta.url,
 );
 await mkdir(output, { recursive: true });
@@ -25,7 +36,9 @@ const browser = await puppeteer.launch({
 });
 const report = {
   input:
-    "Real keyboard and pointer events; read-only telemetry. No state injection.",
+    fromFloor > 1
+      ? `Practice route unlocks are preloaded for a floor ${fromFloor} continuation; real keyboard and pointer events, read-only combat telemetry.`
+      : "Real keyboard and pointer events; read-only telemetry. No state injection.",
   errors: [],
   checks: [],
   floors: [],
@@ -66,7 +79,7 @@ function routes(g) {
         key = next.join(",");
       if (
         !g.map[next[1]]?.[next[0]] ||
-        ["#", " "].includes(g.map[next[1]][next[0]]) ||
+        ["#", " ", "P"].includes(g.map[next[1]][next[0]]) ||
         found.has(key)
       )
         continue;
@@ -159,6 +172,13 @@ function choosePath(g) {
 
 try {
   page = await browser.newPage();
+  if (fromFloor > 1)
+    await page.evaluateOnNewDocument(() =>
+      localStorage.setItem(
+        "hft-route-v1",
+        JSON.stringify({ unlocked: 19, cleared: [] }),
+      ),
+    );
   page.on("pageerror", (e) => report.errors.push(e.stack));
   page.on("console", (e) => {
     if (e.type() === "error") report.errors.push(e.text());
@@ -226,6 +246,17 @@ try {
       () =>
         window.__GAME__.runKind === "daily" && window.__GAME__.elapsed > 0.2,
     );
+  } else if (fromFloor > 1) {
+    await page.keyboard.press("Escape");
+    await page.click("#pause-route");
+    await page.click(`#route-map button[data-floor="${fromFloor}"]`);
+    await page.click("#practice-start");
+    await page.waitForFunction(
+      (floor) =>
+        window.__GAME__.floor === floor && window.__GAME__.elapsed > 0.2,
+      {},
+      fromFloor,
+    );
   }
 
   let waypoint = null,
@@ -235,7 +266,7 @@ try {
     sawOvertime = false,
     sawFPS = false,
     screenshots = new Set();
-  const deadline = Date.now() + 720000;
+  const deadline = Date.now() + 1440000;
   while (Date.now() < deadline) {
     const g = await read();
     if (g.firstPerson) {
@@ -385,9 +416,25 @@ try {
       });
       console.log(JSON.stringify({ cleared: report.floors.at(-1) }));
       if (g.state === "won") break;
-      await page.click(
-        `[data-upgrade="${g.floor === 1 || g.floor === 3 ? "spread" : "rapid"}"]`,
+      await page.waitForSelector("#upgrade-screen", { visible: true });
+      const choices = await page.$$eval("#upgrade-options button", (buttons) =>
+        buttons.map((b) => b.dataset.upgrade),
       );
+      const preferred = [
+        ...(g.upgrades.spread < 2 ? ["spread"] : []),
+        ...(g.upgrades.rapid < 3 ? ["rapid"] : []),
+        ...(g.upgrades.frost < 1 ? ["frost"] : []),
+        "shield",
+        "heart",
+        "spread",
+        "rapid",
+        "ricochet",
+        "magnet",
+        "pierce",
+        "frost",
+      ];
+      const chosen = preferred.find((key) => choices.includes(key));
+      await page.click(`[data-upgrade="${chosen}"]`);
       await page.waitForFunction(
         (old) => window.__GAME__.floor > old && window.__GAME__.elapsed > 0.2,
         {},
@@ -405,6 +452,7 @@ try {
       });
       screenshots.add(g.floor);
     }
+    if (previous && distance(g.pos, previous.pos) > 4) waypoint = null;
     if (
       !waypoint ||
       distance(g.pos, waypoint) < (g.theme === "ice" ? 0.45 : 0.32)
@@ -429,6 +477,14 @@ try {
     if (Math.abs(dx) > 0.12) next.push(dx > 0 ? "KeyD" : "KeyA");
     if (Math.abs(dz) > 0.12) next.push(dz > 0 ? "KeyS" : "KeyW");
     await setKeys(next);
+    if (
+      g.dashCooldown === 0 &&
+      (g.vents.some(
+        (v) => v.phaseState !== "safe" && distance(g.pos, [v.x, v.z]) < 1.8,
+      ) ||
+        g.mines.some((m) => m.blast > 0 && distance(g.pos, [m.x, m.z]) < 2.2))
+    )
+      await page.keyboard.press("Space");
     const targets = [
       ...g.enemies.filter((e) => e.respawn <= 0),
       ...(g.boss?.hp > 0 ? [g.boss] : []),
@@ -494,31 +550,39 @@ try {
       "won",
       "Campaign must end through its real checkout",
     );
-    assert.equal(report.floors.length, 10);
+    assert.equal(report.floors.length, 21 - fromFloor);
     assert.ok(sawOvertime);
     assert.ok(report.floors.some((f) => f.kills > 0));
     report.checks.push(
-      "All ten floors cleared through actual movement and firing",
+      `Floors ${fromFloor} to 20 cleared through actual movement and firing`,
       "Overtime collected through movement",
       "Shots defeat pursuing enemies",
       "Repeated upgrades change the arsenal",
       "Final boss defeated before checkout",
     );
-    await page.click("#retry");
-    await page.waitForFunction(
-      () => window.__GAME__.state === "playing" && window.__GAME__.floor === 1,
-    );
-    assert.equal((await read()).hp, 4);
-    report.checks.push("Retry resets campaign, health and upgrades");
-    await page.waitForFunction(() => window.__GAME__.state === "lost", {
-      timeout: 70000,
-    });
-    await page.screenshot({ path: new URL("lost.png", output).pathname });
-    report.checks.push("Enemy contact causes a real loss");
-    await page.click("#retry");
-    await page.waitForFunction(() => window.__GAME__.state === "playing");
-    assert.equal((await read()).hp, 4);
-    report.checks.push("Immediate retry after death");
+    await page.waitForSelector("#result", { visible: true });
+    if (fromFloor > 1) {
+      await page.screenshot({ path: new URL("ending.png", output).pathname });
+      assert.deepEqual(report.errors, []);
+      report.result = "PASS";
+    } else {
+      await page.click("#retry");
+      await page.waitForFunction(
+        () =>
+          window.__GAME__.state === "playing" && window.__GAME__.floor === 1,
+      );
+      assert.equal((await read()).hp, 4);
+      report.checks.push("Retry resets campaign, health and upgrades");
+      await page.waitForFunction(() => window.__GAME__.state === "lost", {
+        timeout: 70000,
+      });
+      await page.screenshot({ path: new URL("lost.png", output).pathname });
+      report.checks.push("Enemy contact causes a real loss");
+      await page.click("#retry");
+      await page.waitForFunction(() => window.__GAME__.state === "playing");
+      assert.equal((await read()).hp, 4);
+      report.checks.push("Immediate retry after death");
+    }
   } else {
     assert.ok(sawFPS);
     assert.equal(end.firstPerson, false);
@@ -544,7 +608,7 @@ try {
       ),
       2,
     );
-    await page.click("#route-map button:nth-child(2)");
+    await page.click('#route-map button[data-floor="2"]');
     await page.click("#practice-start");
     await page.waitForFunction(
       () =>

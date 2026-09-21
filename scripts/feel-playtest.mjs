@@ -80,7 +80,7 @@ try {
   await page.waitForFunction(() => window.__READY__);
   await page.click("#open-route");
   await page.screenshot({ path: new URL("route-shapes.png", out).pathname });
-  await page.click("#route-map button:nth-child(6)");
+  await page.click('#route-map button[data-floor="6"]');
   await page.click("#practice-start");
   await page.waitForFunction(
     () => window.__GAME__.floor === 6 && window.__GAME__.elapsed > 0.1,

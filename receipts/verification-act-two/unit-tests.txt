@@ -1,0 +1,46 @@
+
+> hungry-for-trouble@0.2.0 test
+> node --test tests/*.test.mjs
+
+✔ twenty floors introduce new rules and preserve the act-one clear (18.899875ms)
+✔ transport pads never force a player into a corridor loop, including the reported final-floor seed (2625.104334ms)
+✔ room players can dash from stationary aim and the burst keeps its direction (2.385458ms)
+✔ transport is paired, safe on arrival and requires leaving the destination (4.575583ms)
+✔ vents warn before damage, while dash blocks the hit and cannot cross shelves (2.187834ms)
+✔ mine warning permits escape, shooting defuses it and Overtime blocks the blast (0.973584ms)
+✔ snipers lock aim during their warning and mine layers leave timed hazards (4.107458ms)
+✔ shield carts block their front but take flank damage (2.168083ms)
+✔ ricochet reflects a real wall collision and frost interrupts enemy attacks (1.217125ms)
+✔ stock carts hit enemies once per push and flour interrupts nearby shooters (1.904625ms)
+✔ new bosses mark hazards, builds cap correctly and old clears unlock act two (5.849875ms)
+✔ drones telegraph locked aim, launch receipts and cannot shoot through shelves (5.486709ms)
+✔ late stages change movement and durability, visor lasts 18 seconds (12.359542ms)
+✔ defensive upgrades carry and block damage without hiding the health loss (1.561625ms)
+✔ every seeded daily layout keeps reflected actors and pickups on walkable cells (229.42625ms)
+✔ daily seeds, quantized replays, end conditions and score verification agree (152.205084ms)
+✔ 200 run seeds preserve connected supplies, safe spawns and varied footprints (4729.7635ms)
+✔ repair kits heal exactly one heart, remain when full, and checkout heals on departure (12.381167ms)
+✔ receipt impacts respect walls and incoming damage carries a world direction (0.353542ms)
+✔ shared board verifies two identities, rejects tampering/reuse and survives restart (217.178167ms)
+✔ co-op shares supplies, prevents friendly fire, revives and requires both players at checkout (8.880833ms)
+✔ versus authoritative hits cause KOs, crumb drops, protected respawns and a seven-KO finish (13.629917ms)
+✔ room API isolates sessions, validates controls, limits membership and handles departure (47.878375ms)
+✔ every floor has a connected maze, reachable pickups and enough crumbs (25.354125ms)
+✔ left and right are screen-relative and dashes cannot tunnel through walls (4.610958ms)
+✔ shots hit enemies in open corridors and walls absorb shots (2.263167ms)
+✔ overtime reverses contact damage, makes firing free and expires (6.463ms)
+✔ damage has a grace period, death stops play and restart clears state (5.155666ms)
+✔ exit requires the quota and final boss, upgrades transfer between floors (4.270333ms)
+✔ shutters alternate and wait for occupied cells; enemies can route around shelves (1.072ms)
+✔ ice preserves momentum and repeated spread upgrades add real pellets (1.453333ms)
+✔ an ambusher still pursues a predicted target outside the store (0.200334ms)
+✔ polishers announce a charge, and an overtime pickup cancels it (0.940833ms)
+✔ the Manager shield blocks overtime, opens, and enrages below half health (3.078125ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4814.302709

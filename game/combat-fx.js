@@ -96,9 +96,10 @@ export function receiptEffects(parent, ownGeometry) {
         if (e.tell > 0 && e.respawn <= 0 && n < 16) {
           const dx = Math.sin(e.shotAngle),
             dz = Math.cos(e.shotAngle);
+          const range = e.kind === "sniper" ? 20 : 14;
           let reach = 0.25;
           while (
-            reach < 14 &&
+            reach < range &&
             canStand(game, e.x + dx * reach, e.z + dz * reach, 0.15)
           )
             reach += 0.25;

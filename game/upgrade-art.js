@@ -5,6 +5,24 @@ const robot = (x, y, shield = false) =>
 const heart = (x, y, full = true) =>
   `<path transform="translate(${x} ${y}) scale(.6)" d="M0 8C-12-8-25 5-17 15L0 32 17 15C25 5 12-8 0 8Z" fill="${full ? "#ed604e" : "#3c485c"}" stroke="${full ? "#ff978a" : "#798499"}" stroke-width="2"/>`;
 function diagram(key, after, n) {
+  if (key === "ricochet")
+    return (
+      robot(20, 88) +
+      '<path d="M72 20v90" stroke="#697587" stroke-width="7"/>' +
+      `<path d="M35 82 66 54${after ? " 29 28" : ""}" fill="none" stroke="${after ? "#efb546" : "#697587"}" stroke-width="4"/>` +
+      (after
+        ? robot(20, 24)
+        : '<path d="m60 47 12 14m-12 0 12-14" stroke="#ed604e" stroke-width="3"/>')
+    );
+  if (key === "frost")
+    return (
+      robot(22, 65) +
+      pellet(46, 61, after) +
+      robot(99, 65, after) +
+      (after
+        ? '<path d="M99 33v63M72 48l54 32m-54 0 54-32" stroke="#a4ddff" stroke-width="3"/><text x="66" y="114" text-anchor="middle" fill="#a4ddff" font-size="10">ATTACK CANCELLED</text>'
+        : '<path d="M82 98h35" stroke="#ed604e" stroke-width="4"/>')
+    );
   if (key === "rapid")
     return (
       robot(24, 61) +
@@ -74,9 +92,12 @@ export function upgradeStats(key, n) {
     shield: [n, n + 1, "blocks/aisle"],
     magnet: [0.85 + n * 0.32, 0.85 + (n + 1) * 0.32, "metre range"],
     heart: [4 + n, 5 + n, "max hearts"],
+    ricochet: [n, n + 1, "wall bounces"],
+    frost: [n ? 0.45 + n * 0.35 : 0, 0.8 + n * 0.35, "seconds frozen"],
   };
   const [a, b, unit] = values[key];
-  const fmt = (v) => (Number.isInteger(v) ? v : v.toFixed(1));
+  const fmt = (v) =>
+    Number.isInteger(v) ? v : v.toFixed(key === "frost" ? 2 : 1);
   return `<span>${fmt(a)}</span><i>→</i><strong>${fmt(b)}</strong><small>${unit}</small>`;
 }
 export function upgradeArt(key, n) {
