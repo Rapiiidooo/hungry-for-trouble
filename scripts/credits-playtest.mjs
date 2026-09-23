@@ -65,6 +65,7 @@ try {
   for (const name of [
     "Rapido",
     "Codex",
+    "Claude Code",
     "Three.js",
     "404 game recipe",
     "Bittensor",
@@ -76,9 +77,10 @@ try {
     "INSPIRATIONS",
   ])
     assert.ok(text.includes(name), name);
+  // Atlas media ship at runtime since the Atlas release; the roll names the platform.
   assert.ok(
-    text.includes("not used in this build"),
-    "Atlas studies are attributed accurately",
+    text.includes("Generated on Atlas"),
+    "Atlas runtime media are attributed accurately",
   );
   await at(5.8);
   const braking = await robot("brake");

@@ -224,15 +224,24 @@ try {
   report.checks.push(
     "Walking onto a pad interpolates the camera over multiple frames and settles at the destination",
   );
-  await floor(10);
-  g = await read();
-  await travel(g.visors[0], (state) => state.fpsTime > 0);
-  if ((await read()).firstPerson) {
-    await page.keyboard.press("KeyV");
-    await sleep(900);
+  // Walking unarmed through the Director's arena can lose; retry only after a loss.
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await floor(10);
+      g = await read();
+      await travel(g.visors[0], (state) => state.fpsTime > 0);
+      if ((await read()).firstPerson) {
+        await page.keyboard.press("KeyV");
+        await sleep(900);
+      }
+      g = await read();
+      await travel(g.boss, (state) => gap(state, state.boss) < 5);
+      break;
+    } catch (error) {
+      if (attempt >= 3 || (await read()).state !== "lost") throw error;
+      report.bossApproachRetries = attempt;
+    }
   }
-  g = await read();
-  await travel(g.boss, (state) => gap(state, state.boss) < 5);
   g = await read();
   const bar = await page.$eval("#boss-bar", (el) => ({
     hidden: el.hidden,

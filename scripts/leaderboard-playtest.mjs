@@ -164,9 +164,11 @@ try {
   await page.click("#open-settings");
   await page.click("#reset-save");
   await page.click("#confirm-reset");
-  assert.match(
-    await page.$eval("#settings-status", (el) => el.textContent),
-    /save reset/,
+  // Reset waits for pending autosaves and IndexedDB before reporting success.
+  await page.waitForFunction(() =>
+    document
+      .getElementById("settings-status")
+      .textContent.includes("save reset"),
   );
   await page.click("#settings-close");
   await page.reload({ waitUntil: "networkidle0" });

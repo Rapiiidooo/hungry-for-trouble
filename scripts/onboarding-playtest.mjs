@@ -205,12 +205,18 @@ try {
     "Reached aisles 6, 10 and 20 start and restart with three hearts, ten shots and no upgrades",
   );
   await load(390, 844, true);
-  await page.touchscreen.tap(
-    ...(await page.$eval("#start", (el) => {
-      const r = el.getBoundingClientRect();
-      return [r.x + r.width / 2, r.y + r.height / 2];
-    })),
-  );
+  const tap = async (selector) =>
+    page.touchscreen.tap(
+      ...(await page.$eval(selector, (el) => {
+        const r = el.getBoundingClientRect();
+        return [r.x + r.width / 2, r.y + r.height / 2];
+      })),
+    );
+  // The desktop run saved a shift, so Play became Continue; replace it to see the briefing.
+  if (await page.$eval("#new-campaign", (el) => !el.hidden)) {
+    await tap("#new-campaign");
+    await tap("#replace-campaign");
+  } else await tap("#start");
   await page.waitForFunction(() => window.__GAME__.briefing);
   await shot("briefing-phone");
   const beforeTouch = await read();
