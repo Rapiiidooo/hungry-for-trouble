@@ -180,9 +180,55 @@ export function lockEffects({
   });
   const faceOffset = 0.98,
     roofHeight = 1.84;
+  // A ground chevron beside the vacuum points at the door its held key opens.
+  const chevron = new THREE.Shape();
+  chevron.moveTo(0, 0.36);
+  chevron.lineTo(0.26, -0.1);
+  chevron.lineTo(0, 0.04);
+  chevron.lineTo(-0.26, -0.1);
+  chevron.closePath();
+  const arrowGeometry = new THREE.ShapeGeometry(chevron);
+  arrowGeometry.rotateX(-Math.PI / 2);
+  ownedGeometry.push(arrowGeometry);
+  const arrow = owned(
+    new THREE.Mesh(
+      arrowGeometry,
+      new THREE.MeshBasicMaterial({
+        transparent: true,
+        depthTest: false,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        toneMapped: false,
+      }),
+    ),
+  );
+  // Drawn over nearby shelves so the guide never disappears into a wall.
+  arrow.renderOrder = 11;
+  arrow.visible = false;
+  if (doors.length) world.add(arrow);
   return {
-    update(clock, reduced) {
+    update(clock, reduced, blend = 0) {
       const pulse = reduced ? 0.5 : (Math.sin(clock * 4) + 1) / 2;
+      const p = game.player;
+      const target = doors
+        .filter(({ door }) => !door.open && game.keyring.includes(door.color))
+        .sort(
+          (a, b) =>
+            Math.hypot(a.door.x - p.x, a.door.z - p.z) -
+            Math.hypot(b.door.x - p.x, b.door.z - p.z),
+        )[0];
+      const gap = target
+        ? Math.hypot(target.door.x - p.x, target.door.z - p.z)
+        : 0;
+      arrow.visible = !!target && gap > 2.6 && blend < 0.5;
+      if (arrow.visible) {
+        const dx = (target.door.x - p.x) / gap,
+          dz = (target.door.z - p.z) / gap;
+        arrow.position.set(p.x + dx * 1.25, 0.07, p.z + dz * 1.25);
+        arrow.rotation.y = Math.atan2(-dx, -dz);
+        arrow.material.color.setHex(target.key.enamel);
+        arrow.material.opacity = 0.65 + pulse * 0.35;
+      }
       for (const { card, token, ring, disc, light } of cards) {
         token.visible =
           ring.visible =
@@ -239,7 +285,8 @@ export function lockEffects({
         light.scale.set(1.5, 1, 1.5);
         const near =
           Math.hypot(door.x - game.player.x, door.z - game.player.z) < 10;
-        closed.visible = !door.open && near;
+        // Once the key is held, the beam and glow replace the lock label.
+        closed.visible = !door.open && near && !ready;
         opened.visible = door.open && near && game.elapsed - door.openedAt < 2;
         ring.material.opacity = door.open
           ? 0.25

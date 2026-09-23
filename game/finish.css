@@ -81,10 +81,11 @@
   font-size: 11px;
   white-space: nowrap;
 }
+/* Below the HUD (z-index 3) so status stays readable through the goggles. */
 #visor-boot {
   position: absolute;
   inset: 0;
-  z-index: 3;
+  z-index: 2;
   pointer-events: none;
   opacity: 0;
   background:

@@ -908,6 +908,7 @@ function instanceAsset(name, points, parent, colorAt) {
       transform.position.set(point.x, point.y || 0, point.z);
       transform.rotation.set(0, point.rotation || 0, 0);
       transform.scale.setScalar(point.scale || 1);
+      if (point.stretch) transform.scale.set(...point.stretch);
       transform.updateMatrix();
       batch.setMatrixAt(i, transform.matrix.clone().multiply(mesh.matrixWorld));
       if (colorAt) batch.setColorAt(i, new THREE.Color(colorAt(point, i)));
@@ -1258,7 +1259,8 @@ async function buildWorld() {
           t.row % 4 === 2 &&
           game.map.level.map[t.row][t.col] !== "#",
       )
-      .map((t) => ({ x: t.x, z: t.z, y: 3.03, scale: 0.4 })),
+      // Thin strips read as fluorescent tubes rather than floating panels.
+      .map((t) => ({ x: t.x, z: t.z, y: 3.03, stretch: [0.62, 0.4, 0.1] })),
     ceiling,
   );
   for (const { mesh } of [...ceilingTiles, ...lamps]) {
@@ -1268,7 +1270,7 @@ async function buildWorld() {
       lamps.some((l) => l.mesh === mesh) ? 0xe7f1ff : 0x33394d,
     );
     mesh.material.emissiveIntensity = lamps.some((l) => l.mesh === mesh)
-      ? 0.8
+      ? 1
       : 0.65;
   }
   ceiling.visible = false;
@@ -2214,7 +2216,14 @@ function updateModels(dt) {
   for (const [i, model] of enemies.entries()) {
     const enemy = game.enemies[i];
     const fall = clock - (model.userData.fallAt ?? -10);
-    model.visible = enemy.respawn <= 0 || fall < 0.65;
+    // At eye level, a machine scrapped beside the lens would spin across it; the burst remains.
+    const grazing =
+      viewRig.blend > 0.5 &&
+      Math.hypot(
+        enemy.x - fpsCamera.position.x,
+        enemy.z - fpsCamera.position.z,
+      ) < 1.6;
+    model.visible = enemy.respawn <= 0 || (fall < 0.65 && !grazing);
     model.position.set(
       enemy.x,
       (["shooter", "sniper"].includes(enemy.kind) ? 0.25 : 0) +
@@ -2438,7 +2447,7 @@ function updateModels(dt) {
   for (const sprite of worldLabels)
     sprite.scale.copy(sprite.userData.baseScale).multiplyScalar(labelScale);
   floorEffects?.update(game, clock, reducedMotion.matches);
-  lockFX?.update(clock, reducedMotion.matches);
+  lockFX?.update(clock, reducedMotion.matches, viewRig.blend);
   presentationFX?.update(game, clock, viewRig.blend, reducedMotion.matches);
 }
 
