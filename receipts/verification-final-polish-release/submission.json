@@ -1,0 +1,31 @@
+{
+  "pr": "https://github.com/404-Repo/404-game-jam/pull/6",
+  "utc": "2026-09-23T23:00:53.746264+00:00",
+  "head": "ed99b40b120b4bf641d141ef7609568002f2d722",
+  "state": "OPEN",
+  "mergeable": "MERGEABLE",
+  "entryCommit": "0ac02f146f6a21e933780fad916d48f7b83321af",
+  "verdictCommit": "0ac02f146f6a21e933780fad916d48f7b83321af",
+  "liveRuntimeCommit": "0ac02f146f6a21e933780fad916d48f7b83321af",
+  "consistent": true,
+  "agent": "OpenAI Codex and Claude Code",
+  "models": [
+    "GPT-6 via OpenAI Codex (final integration and review; earlier session model IDs were not recorded)",
+    "Claude Opus 5.5 via Claude Code (competitor review, perspective camera, silhouettes, visual finish and trailer re-edit)",
+    "OpenAI ImageGen (original concept references; exact model ID was not exposed)",
+    "Google Lyria 3 Clip via Atlas (runtime soundtrack)",
+    "Gemini 3.1 Flash Lite Image via Atlas (runtime robot portraits)"
+  ],
+  "wallet": "5HRAPidoCoZPYsLE2q7Ge8WWAfQ3XZpSYoz7aGYJYRmMQpt1",
+  "contact": "@Rapido_ai",
+  "declarationsChecked": 5,
+  "trailerLinked": true,
+  "checks": [
+    {
+      "name": "Cursor Bugbot",
+      "status": "COMPLETED",
+      "conclusion": "SUCCESS"
+    }
+  ],
+  "unresolvedReviewThreads": 0
+}

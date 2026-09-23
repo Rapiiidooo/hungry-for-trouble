@@ -14,3 +14,7 @@ A portrait framing change was tried and reverted: following further south raised
 ## Verification
 
 57 Node checks and the 48-module ship check pass. Smoke, visual finish, phone Vac Cam, first-person feel, locked wing, endings, presentation, act two and phone layout browser checks pass, each against a freshly started local server. [Deployment checks](deployment.json) compare eight served files with the committed bytes; all match, the endpoints respond and the score store checksum was identical before and after the restart. The unmodified recipe gate passes against the HTTPS URL and commit: [verdict](jam/verdict.txt) and [JSON](jam/verdict.json), ready in 2.1 seconds with 3.5 MB, 333 peak draws, 614,866 peak triangles and no errors, missing files or external dependency. This is Chrome phone emulation, not a physical-phone benchmark. The published trailer from [the visual finish release](../verification-visual-finish-release/README.md) remains current.
+
+## Entry
+
+[Submission verification](submission.json) confirms that PR #6 names this runtime commit and pastes its exact public verdict, with the wallet, contact, five declarations, declared agents and trailer link unchanged. The PR body was refreshed before the matching entry commit was pushed; Cursor Bugbot completed successfully with no unresolved review thread. Organizer review and their own gate rerun remain pending.
