@@ -230,9 +230,10 @@ try {
     "A real finger moves toward the red lock; the missing key blocks entry and names its color",
   );
   await walkTo(g.keycards[0], (state) => state.keyring.includes("red"));
-  assert.equal(
-    await page.$$eval("#key-ring .held", (nodes) => nodes.length),
-    1,
+  // The HUD refreshes on its own 80 ms cadence after the pickup.
+  await page.waitForFunction(
+    () => document.querySelectorAll("#key-ring .held").length === 1,
+    { timeout: 2000 },
   );
   await snap("red-key-collected-phone");
   await walkTo({ x: door.x - 2, z: door.z });

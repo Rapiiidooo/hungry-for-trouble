@@ -141,11 +141,17 @@ export function visibleFloorCount(progress) {
     return LEVELS.length;
   return progress.unlocked >= 10 || progress.cleared.includes(9) ? 20 : 10;
 }
-export function drawRoute(container, progress, current, select) {
+export function drawRoute(
+  container,
+  progress,
+  current,
+  select,
+  { headings = true } = {},
+) {
   container.replaceChildren();
   container.style.setProperty("--route-count", visibleFloorCount(progress));
   LEVELS.slice(0, visibleFloorCount(progress)).forEach((level, index) => {
-    if (select && index % 10 === 0) {
+    if (select && headings && index % 10 === 0) {
       const heading = document.createElement("div");
       heading.className = "act-heading";
       heading.textContent =
@@ -161,7 +167,7 @@ export function drawRoute(container, progress, current, select) {
     const cleared = progress.cleared.includes(index);
     node.className = `route-node ${boss ? "boss-node" : ""} ${cleared ? "complete" : ""} ${index === current ? "current" : ""} ${index > progress.unlocked ? "locked" : ""}`;
     node.dataset.floor = index + 1;
-    node.innerHTML = `<span class="node-number">${String(index + 1).padStart(2, "0")}</span>${boss ? art(index === 4 ? "manager" : "director") : floorShape(level)}<b>${level.name}</b><small>${boss ? { 4: "BOSS · ACCESS CARD", 9: "BOSS · RESCUE MOP-3", 14: "BOSS · FREE THE CREW", 19: "BOSS · ESCAPE", 24: "FINAL BOSS · MASTER VAULT" }[index] : cleared ? "CLEARED" : index > progress.unlocked ? "LOCKED" : "READY"}</small>`;
+    node.innerHTML = `<span class="node-number">${String(index + 1).padStart(2, "0")}</span>${boss ? art(index === 4 ? "manager" : "director") : floorShape(level)}<b>${level.name}</b><small>${boss ? { 4: "BOSS · ACCESS CARD", 9: "BOSS · RESCUE MOP-3", 14: "BOSS · FREE THE CREW", 19: "BOSS · POWER DOWN", 24: "FINAL BOSS · ESCAPE" }[index] : cleared ? "CLEARED" : index > progress.unlocked ? "LOCKED" : "READY"}</small>`;
     if (select) {
       node.disabled = index > progress.unlocked;
       node.onclick = () => select(index);

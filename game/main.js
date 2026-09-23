@@ -20,12 +20,7 @@ import { campaignEffects } from "./campaign-fx.js";
 import { presentationEffects } from "./presentation-fx.js";
 import { departmentScene } from "./departments.js";
 import { createFieldCoach } from "./field-coach.js";
-import {
-  escapeScene,
-  ESCAPE_SECONDS,
-  ESCAPE_LINES,
-  VAULT_ESCAPE_LINES,
-} from "./escape-scene.js";
+import { escapeScene, ESCAPE_SECONDS, ESCAPE_LINES } from "./escape-scene.js";
 import { KEY_TYPES, keyType, keyIcon } from "./locks.js";
 import { lockEffects } from "./lock-effects.js";
 import { createCredits } from "./credits.js";
@@ -151,10 +146,13 @@ const OVERHEAD = {
 const MENU_LENS = { fov: 24.6, portraitFov: 34.2 };
 const credits = createCredits(ui["credits-screen"], {
   reducedMotion,
-  onExit: (reveal) => {
-    if (reveal) {
+  onExit: (mode) => {
+    if (mode === "reveal") {
       ui["discovery-screen"].hidden = false;
       ui["discovery-continue"].focus({ preventScroll: true });
+    } else if (mode === "finale") {
+      ui.result.hidden = false;
+      ui.retry.focus({ preventScroll: true });
     } else {
       ui["settings-screen"].hidden = false;
       ui["open-credits"].focus();
@@ -204,6 +202,9 @@ let prototypes = {},
   menuHero,
   menuTrolley,
   shotPool,
+  tracerPool,
+  muzzleFlash,
+  worldLabels = [],
   fx,
   keyLight,
   fillLight;
@@ -536,9 +537,8 @@ function finishEnding() {
   endingFinished = true;
   ending.update(ESCAPE_SECONDS, reducedMotion.matches);
   ui.cinema.hidden = true;
-  ui[endingDestination].hidden = false;
-  if (endingDestination === "vault-discovery")
-    ui["vault-continue"].focus({ preventScroll: true });
+  if (endingDestination === "credits") credits.open("finale");
+  else ui[endingDestination].hidden = false;
 }
 
 function beginEscape(destination = "result") {
@@ -564,9 +564,7 @@ function beginEscape(destination = "result") {
       true;
   ui.cinema.hidden = false;
   ui["skip-ending"].textContent =
-    destination === "vault-discovery"
-      ? "CONTINUE THE STORY"
-      : "SKIP TO RESULTS";
+    destination === "credits" ? "SKIP TO CREDITS" : "SKIP TO RESULTS";
   ui.message.classList.remove("show");
   particles.length = 0;
   weapon.visible = false;
@@ -607,6 +605,22 @@ function chooseStage(index) {
   ui["practice-start"].disabled = index > progress.unlocked;
   ui["practice-pass"].hidden = progress.unlocked >= PRACTICE_PASS_FLOOR;
   drawRoute(ui["route-map"], progress, index, chooseStage);
+}
+
+// The upgrade screen's route jumps to any reached aisle through Level Select practice.
+function pickAisle(index) {
+  if (index === game.levelIndex + 1) {
+    const cards = ui["upgrade-options"];
+    cards.classList.remove("nudge");
+    void cards.offsetWidth;
+    cards.classList.add("nudge");
+    cards.querySelector("button")?.focus({ preventScroll: true });
+    return;
+  }
+  ui["route-close"].textContent = "BACK TO UPGRADES";
+  refreshProgressUI();
+  ui["route-screen"].hidden = false;
+  chooseStage(index);
 }
 
 function openRoute() {
@@ -872,6 +886,8 @@ function label(text, color = "#efb546", width = 3.8) {
     }),
   );
   sprite.scale.set(width, (width * 80) / 512, 1);
+  sprite.userData.baseScale = sprite.scale.clone();
+  worldLabels.push(sprite);
   return sprite;
 }
 
@@ -913,6 +929,29 @@ function pool(color, count) {
     toneMapped: false,
   });
   const batch = new THREE.InstancedMesh(source.geometry, material, count);
+  batch.userData.ownMaterial = true;
+  batch.count = 0;
+  batch.frustumCulled = false;
+  batch.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  return batch;
+}
+
+function tracers(color, count) {
+  // Thin gold streaks read as shots at eye level, where stretched crumbs fill the lens.
+  const geometry = new THREE.CylinderGeometry(0.022, 0.022, 1, 6, 1, true);
+  geometry.rotateX(Math.PI / 2);
+  ownedGeometry.push(geometry);
+  const batch = new THREE.InstancedMesh(
+    geometry,
+    new THREE.MeshBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false,
+      toneMapped: false,
+    }),
+    count,
+  );
   batch.userData.ownMaterial = true;
   batch.count = 0;
   batch.frustumCulled = false;
@@ -1054,6 +1093,7 @@ async function buildWorld() {
   world = new THREE.Group();
   scene.add(world);
   ghosts = actorGhosts(world);
+  worldLabels = [];
   enemies = [];
   batteries = [];
   gates = [];
@@ -1218,7 +1258,7 @@ async function buildWorld() {
           t.row % 4 === 2 &&
           game.map.level.map[t.row][t.col] !== "#",
       )
-      .map((t) => ({ x: t.x, z: t.z, y: 3.03, scale: 0.55 })),
+      .map((t) => ({ x: t.x, z: t.z, y: 3.03, scale: 0.4 })),
     ceiling,
   );
   for (const { mesh } of [...ceilingTiles, ...lamps]) {
@@ -1228,7 +1268,7 @@ async function buildWorld() {
       lamps.some((l) => l.mesh === mesh) ? 0xe7f1ff : 0x33394d,
     );
     mesh.material.emissiveIntensity = lamps.some((l) => l.mesh === mesh)
-      ? 1.1
+      ? 0.8
       : 0.65;
   }
   ceiling.visible = false;
@@ -1277,6 +1317,11 @@ async function buildWorld() {
   weapon = new THREE.Group();
   weapon.add(nozzle);
   weapon.scale.setScalar(0.38);
+  // The nozzle warms to gold with each shot; recoil drives the glow.
+  markEmissive(weapon);
+  weapon.traverse((node) => {
+    if (node.isMesh) node.material.emissive.setHex(palette.gold);
+  });
   fpsCamera.add(weapon);
   halo = makeRing(0.52, palette.cream);
   world.add(halo);
@@ -1388,12 +1433,15 @@ async function buildWorld() {
     ghosts.add(bossModel, 0xff8065, 0.4);
     world.add(bossModel);
   }
-  shotPool = pool(
-    game.multiplayer ? 0xffffff : game.upgrades.frost ? 0xa4ddff : palette.gold,
-    160,
-  );
+  const shotColor = game.multiplayer
+    ? 0xffffff
+    : game.upgrades.frost
+      ? 0xa4ddff
+      : palette.gold;
+  shotPool = pool(shotColor, 160);
+  tracerPool = tracers(game.multiplayer ? 0xffffff : shotColor, 160);
   receiptFX = receiptEffects(world, ownedGeometry);
-  world.add(shotPool);
+  world.add(shotPool, tracerPool);
   floorEffects = campaignEffects({
     world,
     game,
@@ -1409,6 +1457,7 @@ async function buildWorld() {
     markEmissive,
     makeRing,
     label,
+    ownedGeometry,
   });
   ui["key-ring"].hidden = !game.keycards.length;
   ui["key-ring"].innerHTML = KEY_TYPES.filter((key) =>
@@ -1785,7 +1834,7 @@ function handleEvents(events) {
         compactScreen.matches
           ? "Hold the right side to fire. Drag sideways to look."
           : "18 seconds of rapid fire. V switches your view.",
-        3,
+        1.8,
       );
       floatText("+24 AMMO", event.x, event.z);
     }
@@ -1985,7 +2034,9 @@ function handleEvents(events) {
         2.6,
       );
     }
-    drawRoute(ui["upgrade-route"], progress, game.levelIndex + 1);
+    drawRoute(ui["upgrade-route"], progress, game.levelIndex + 1, pickAisle, {
+      headings: false,
+    });
     ui["upgrade-options"].replaceChildren();
     for (const key of upgradeChoices(game)) {
       const data = UPGRADES[key],
@@ -2009,7 +2060,15 @@ function handleEvents(events) {
         /* Optional cosmetic preference. */
       }
       refreshProgressUI();
-      beginEscape("vault-discovery");
+      // The one escape cinematic closes aisle 25; here the crew cheers and the wing opens.
+      rescueUntil = clock + 2.6;
+      pendingOverlay = "vault-discovery";
+      ui["upgrade-screen"].hidden = true;
+      showMessage(
+        "THE CREW IS FREE!",
+        "SHELF CONTROL is offline. Something downstairs is still running…",
+        2.6,
+      );
     }
     return;
   }
@@ -2075,7 +2134,7 @@ function handleEvents(events) {
     refreshProgressUI();
     ui["gold-icon"].innerHTML =
       '<img src="./favicon.svg" alt="Golden vacuum reward">';
-    beginEscape();
+    beginEscape("credits");
   }
 }
 
@@ -2302,7 +2361,9 @@ function updateModels(dt) {
       );
       transform.rotation.set(0, clock + i, 0);
       transform.scale.copy(
-        crumb.collected ? zeroScale : vector.setScalar(1.55),
+        crumb.collected
+          ? zeroScale
+          : vector.setScalar(1.55 - 0.65 * viewRig.blend),
       );
       transform.updateMatrix();
       mesh.setMatrixAt(i, transform.matrix.clone().multiply(local));
@@ -2331,30 +2392,51 @@ function updateModels(dt) {
       }
     });
   }
-  for (const [batch, shots] of [[shotPool, game.bullets]]) {
-    batch.count = Math.min(shots.length, batch.instanceMatrix.count);
-    for (let i = 0; i < batch.count; i++) {
-      const b = shots[i];
-      transform.position.set(b.x, 0.72, b.z);
-      transform.rotation.set(0, Math.atan2(b.vx, b.vz), 0);
-      transform.scale.set(0.7, 0.7, 3);
-      transform.updateMatrix();
-      batch.setMatrixAt(i, transform.matrix);
-      if (game.multiplayer)
-        batch.setColorAt(
-          i,
-          new THREE.Color(
-            b.owner === game.selfId
-              ? palette.gold
-              : game.multiplayer.kind === "coop"
-                ? palette.blue
-                : palette.red,
-          ),
-        );
-    }
-    batch.instanceMatrix.needsUpdate = true;
-    if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
+  const lens = viewRig.blend > 0.5,
+    batch = lens ? tracerPool : shotPool;
+  shotPool.visible = !lens;
+  tracerPool.visible = lens;
+  let shown = 0;
+  for (const b of game.bullets) {
+    if (shown >= batch.instanceMatrix.count) break;
+    // A first-person shot appears once it has left the nozzle, never across the lens.
+    if (
+      lens &&
+      Math.hypot(b.x - fpsCamera.position.x, b.z - fpsCamera.position.z) < 1.6
+    )
+      continue;
+    transform.position.set(b.x, lens ? 0.74 : 0.72, b.z);
+    transform.rotation.set(0, Math.atan2(b.vx, b.vz), 0);
+    if (lens) transform.scale.set(1, 1, 1.6);
+    else transform.scale.set(0.7, 0.7, 3);
+    transform.updateMatrix();
+    batch.setMatrixAt(shown, transform.matrix);
+    if (game.multiplayer)
+      batch.setColorAt(
+        shown,
+        new THREE.Color(
+          b.owner === game.selfId
+            ? palette.gold
+            : game.multiplayer.kind === "coop"
+              ? palette.blue
+              : palette.red,
+        ),
+      );
+    shown++;
   }
+  batch.count = shown;
+  batch.instanceMatrix.needsUpdate = true;
+  if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
+  muzzleFlash.visible = viewRig.blend > 0.92 && recoil > 0.45;
+  muzzleFlash.material.opacity = recoil;
+  muzzleFlash.scale.setScalar(0.75 + Math.random() * 0.5);
+  weapon.traverse((node) => {
+    if (node.isMesh) node.material.emissiveIntensity = recoil * 0.55;
+  });
+  // Labels sized for the overhead lens shrink at eye level instead of filling it.
+  const labelScale = 1 - 0.55 * viewRig.blend;
+  for (const sprite of worldLabels)
+    sprite.scale.copy(sprite.userData.baseScale).multiplyScalar(labelScale);
   floorEffects?.update(game, clock, reducedMotion.matches);
   lockFX?.update(clock, reducedMotion.matches);
   presentationFX?.update(game, clock, viewRig.blend, reducedMotion.matches);
@@ -2878,6 +2960,9 @@ function telemetry() {
     cameraPosition: activeCamera().position.toArray(),
     overheadFov: camera.fov,
     ghostsVisible: ghosts?.visibleCount || 0,
+    fogNear: scene.fog.near,
+    tracers: tracerPool?.visible ? tracerPool.count : 0,
+    visorBoot: Number(ui["visor-boot"].style.opacity || 0),
     shieldVisible: presentationFX?.shieldVisible || false,
     lobs: (game.lobs || []).map((shot) => ({ ...shot })),
     waves: (game.waves || []).map((wave) => ({ ...wave })),
@@ -2983,7 +3068,7 @@ function frame(now) {
     !active || game.player.shield <= 0 || viewRig.blend < 0.8;
   if (ending && !endingFinished) {
     const age = clock - endingAt;
-    const lines = game.levelIndex >= 20 ? VAULT_ESCAPE_LINES : ESCAPE_LINES;
+    const lines = ESCAPE_LINES;
     const line = lines.findLastIndex((entry) => age >= entry.at);
     if (line !== endingLine) {
       endingLine = line;
@@ -3059,6 +3144,8 @@ function frame(now) {
     else ui[pendingOverlay].hidden = false;
     if (pendingOverlay === "discovery-screen")
       ui["discovery-continue"].focus({ preventScroll: true });
+    if (pendingOverlay === "vault-discovery")
+      ui["vault-continue"].focus({ preventScroll: true });
     pendingOverlay = "";
   }
   ui["hit-flash"].classList.toggle("active", clock < damageUntil);
@@ -3079,6 +3166,19 @@ function frame(now) {
   }
   // Silhouettes help the overhead view only; first person must not see through walls.
   ghosts?.update(mode === "playing" && !ending && viewRig.blend < 0.5);
+  const haze = THREE.MathUtils.smoothstep(viewRig.blend, 0.55, 1);
+  scene.fog.color.copy(scene.background);
+  scene.fog.near = THREE.MathUtils.lerp(900, 9, haze);
+  scene.fog.far = THREE.MathUtils.lerp(1000, 42, haze);
+  // The goggles close over the lens change and reopen at eye level (or overhead).
+  const boot =
+    mode === "playing" && !ending && !reducedMotion.matches
+      ? Math.sin(viewRig.blend * Math.PI)
+      : 0;
+  ui["visor-boot"].style.opacity = boot.toFixed(3);
+  ui["visor-boot"].style.setProperty("--iris", (1 - boot * 0.55).toFixed(3));
+  if (boot > 0.01)
+    ui["visor-boot-label"].textContent = isFPS() ? "VAC CAM" : "TOP VIEW";
   renderer.render(scene, activeCamera());
   telemetry();
 }
@@ -3495,6 +3595,8 @@ async function init() {
   renderer.shadowMap.type = THREE.PCFShadowMap;
   scene = new THREE.Scene();
   scene.background = new THREE.Color(palette.ink);
+  // Distance haze is pushed out of reach overhead and pulled in for first person.
+  scene.fog = new THREE.Fog(palette.ink, 900, 1000);
   camera = new THREE.PerspectiveCamera(
     OVERHEAD.fov,
     innerWidth / innerHeight,
@@ -3509,6 +3611,21 @@ async function init() {
   );
   viewRig = new ViewRig(camera, fpsCamera);
   scene.add(fpsCamera);
+  muzzleFlash = new THREE.Mesh(
+    new THREE.CircleGeometry(0.016, 12),
+    new THREE.MeshBasicMaterial({
+      color: 0xffe7a6,
+      transparent: true,
+      blending: THREE.AdditiveBlending,
+      depthTest: false,
+      depthWrite: false,
+      toneMapped: false,
+    }),
+  );
+  muzzleFlash.position.set(0.02, -0.075, -0.7);
+  muzzleFlash.renderOrder = 20;
+  muzzleFlash.visible = false;
+  fpsCamera.add(muzzleFlash);
   // A lower key and a weaker fill give longer shadows and ink-blue depth.
   keyLight = new THREE.DirectionalLight(0xf2f6ff, 3.7);
   keyLight.position.set(3, 17, 22);

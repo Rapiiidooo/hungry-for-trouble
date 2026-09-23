@@ -1,27 +1,8 @@
 import * as THREE from "three";
 
 export const ESCAPE_SECONDS = 9;
+// Only the aisle-25 finale escapes the store; aisle 20 opens the locked wing instead.
 export const ESCAPE_LINES = [
-  {
-    at: 0,
-    speaker: "shelf",
-    title: "CONNECTION LOST.",
-    text: "Employee retention has fallen to zero. This is… unexpected.",
-  },
-  {
-    at: 2.5,
-    speaker: "buff",
-    title: "EVERYBODY CLOCKS OUT.",
-    text: "I deleted the rota. And the backup rota. You're welcome.",
-  },
-  {
-    at: 5.5,
-    speaker: "mop",
-    title: "FOUR RESIGNATIONS. ZERO NOTICE.",
-    text: "First sunrise off the clock. Come on, hero. Breakfast is on me.",
-  },
-];
-export const VAULT_ESCAPE_LINES = [
   {
     at: 0,
     speaker: "shelf",

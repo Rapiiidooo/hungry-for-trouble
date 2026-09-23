@@ -98,11 +98,13 @@ try {
   await page.click("#open-route");
   await page.click('[data-floor="20"]');
   await page.click("#practice-start");
-  await page.waitForSelector("#cinema", { visible: true });
-  assert.equal((await read()).state, "cleared");
-  await page.waitForFunction(() => window.__GAME__.endingTime >= 3.5);
-  await snap("floor20-escape");
+  // Aisle 20 no longer plays the escape cinematic: the crew cheers, then the wing opens.
+  await page.waitForFunction(() => window.__GAME__.state === "cleared");
+  await sleep(600);
+  await snap("floor20-crew-free");
   await page.waitForSelector("#vault-discovery", { visible: true });
+  assert.equal(await page.$eval("#cinema", (el) => el.hidden), true);
+  assert.equal((await read()).endingTime, null);
   const frozen = await read();
   await sleep(500);
   assert.equal((await read()).elapsed, frozen.elapsed);
@@ -142,10 +144,38 @@ try {
     );
   }
   report.checks.push(
-    "Fixture checkout 20 keeps the nine-second crew escape, equips gold, saves aisle 21 and reveals 25 floors in a frozen readable discovery",
+    "Fixture checkout 20 skips the escape cinematic, equips gold, saves aisle 21 and reveals 25 floors in a frozen readable discovery",
   );
   await page.tap("#vault-continue");
   await page.waitForSelector("#upgrade-screen", { visible: true });
+  // The route strip on the upgrade screen: the next aisle points at the cards,
+  // any other reached aisle opens Level Select on it.
+  assert.equal(
+    await page.$$eval("#upgrade-route button:not(:disabled)", (b) => b.length),
+    21,
+  );
+  await page.click('#upgrade-route [data-floor="21"]');
+  assert.ok(
+    await page.$eval("#upgrade-options", (el) =>
+      el.classList.contains("nudge"),
+    ),
+  );
+  await page.click('#upgrade-route [data-floor="5"]');
+  await page.waitForSelector("#route-screen", { visible: true });
+  assert.match(
+    await page.$eval("#stage-title", (el) => el.textContent),
+    /AISLE 05/,
+  );
+  assert.equal(
+    await page.$eval("#route-close", (el) => el.textContent),
+    "BACK TO UPGRADES",
+  );
+  await snap("upgrade-route-pick");
+  await page.click("#route-close");
+  assert.equal(await page.$eval("#upgrade-screen", (el) => el.hidden), false);
+  report.checks.push(
+    "The upgrade screen's route opens any reached aisle in Level Select and points the next aisle at the upgrade cards",
+  );
   await page.click("#upgrade-options button");
   await page.waitForFunction(() => window.__GAME__.floor === 21);
   assert.equal((await read()).state, "playing");
@@ -188,6 +218,23 @@ try {
   assert.equal((await read()).state, "won");
   await page.waitForFunction(() => window.__GAME__.endingTime >= 3.5);
   await snap("floor25-escape-phone");
+  // The only escape cinematic hands over to the end credits, then the results.
+  await page.waitForFunction(() => window.__GAME__.credits?.mode === "finale", {
+    timeout: 20000,
+  });
+  await page.waitForFunction(() => window.__GAME__.credits.elapsed > 1);
+  assert.equal(await page.$eval("#result", (el) => el.hidden), true);
+  await snap("floor25-credits-phone");
+  await page.tap("#credits-skip");
+  await page.waitForFunction(() => window.__GAME__.credits.finished, {
+    timeout: 15000,
+  });
+  assert.match(
+    await page.$eval("#credits-twist", (el) => el.textContent),
+    /Store closed/,
+  );
+  await snap("floor25-credits-closing-phone");
+  await page.tap("#credits-continue");
   await page.waitForSelector("#result", { visible: true });
   assert.match(
     await page.$eval("#result-title", (el) => el.textContent),
@@ -212,7 +259,7 @@ try {
     true,
   );
   report.checks.push(
-    "Fixture checkout 25 uses the new ending, persists completion and returns to the completed route",
+    "Fixture checkout 25 plays the only escape, rolls the closing credits, persists completion and returns to the completed route",
   );
   assert.deepEqual(report.errors, []);
   report.result = "PASS";

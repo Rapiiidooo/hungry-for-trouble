@@ -261,6 +261,11 @@ try {
         Math.round(visor.z / 2),
         (state) => state.firstPerson,
       );
+      // The goggles close over the lens change, then first person gets its haze.
+      await page.waitForFunction(() => window.__GAME__.visorBoot > 0.5, {
+        timeout: 4000,
+      });
+      await shot("vac-cam-boot");
       await page.waitForFunction(() => window.__GAME__.viewBlend > 0.98, {
         timeout: 8000,
       });
@@ -268,6 +273,15 @@ try {
       assert.equal(g.state, "playing");
       assert.equal(g.firstPerson, true);
       assert.equal(g.ghostsVisible, 0);
+      assert.ok(g.fogNear < 20, `first-person haze ${g.fogNear}`);
+      // Shots render as thin tracers once they have left the lens.
+      await page.mouse.move(width / 2, height / 2);
+      await page.mouse.down();
+      await page.waitForFunction(() => window.__GAME__.tracers > 0, {
+        timeout: 3000,
+      });
+      await shot("vac-cam-tracers");
+      await page.mouse.up();
       await shot("vac-cam");
       await page.keyboard.press("KeyV");
       await page.waitForFunction(() => window.__GAME__.viewBlend === 0, {
@@ -277,13 +291,15 @@ try {
       g = await read();
       assert.equal(g.state, "playing");
       assert.ok(g.ghostsVisible > 0);
+      assert.ok(g.fogNear > 800, `no overhead haze ${g.fogNear}`);
+      assert.equal(g.tracers, 0);
       await shot("overhead-return");
     } else {
       await sleep(600);
       await shot("aisle-01");
     }
     report.checks.push(
-      `${profile}: local OFL fonts only, practice pass opens aisles 1-10 without clears, perspective lens ${fov} degrees, silhouettes enabled overhead${mobile ? "" : ", compact status panel, mouse aim on the perspective ray, silhouette behind a shelf, none in Vac Cam and restored overhead"}`,
+      `${profile}: local OFL fonts only, practice pass opens aisles 1-10 without clears, perspective lens ${fov} degrees, silhouettes enabled overhead${mobile ? "" : ", compact status panel, mouse aim on the perspective ray, silhouette behind a shelf, goggle transition, first-person haze and tracers, no silhouettes in Vac Cam and restored overhead"}`,
     );
     console.log(report.checks.at(-1));
     await context.close();

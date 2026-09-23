@@ -73,6 +73,21 @@ const ROLES = [
 ];
 
 const ROLL_SECONDS = 60;
+// After the roll: the aisle-10 twist teases the basement; the finale closes the store.
+const CLOSINGS = {
+  reveal: [
+    "YOU MISSED A SPOT.",
+    "The adventure<br><em>continues.</em>",
+    "A service lift. Ten hidden aisles. You're not clocking out yet.",
+    "WHAT'S DOWNSTAIRS?",
+  ],
+  finale: [
+    "ALL 25 AISLES CLEARED",
+    "Store closed.<br><em>For real.</em>",
+    "Every colleague is free. SHELF CONTROL has no backups left.",
+    "SEE YOUR RESULTS",
+  ],
+};
 const DELIVERY_SECONDS = 4.4;
 const clamp = (value) => Math.max(0, Math.min(1, value));
 const smooth = (value) => {
@@ -249,10 +264,12 @@ export function createCredits(root, { reducedMotion, onExit }) {
     finale.hidden = false;
     finale.inert = true;
     finale.scrollTop = 0;
-    find("credits-twist").hidden = !state.reveal;
-    find("credits-continue").textContent = state.reveal
-      ? "WHAT'S DOWNSTAIRS?"
-      : "BACK TO SETTINGS";
+    const closing = CLOSINGS[state.mode];
+    find("credits-twist").hidden = !closing;
+    if (closing)
+      find("credits-twist").innerHTML =
+        `<small>${closing[0]}</small><h3>${closing[1]}</h3><p>${closing[2]}</p>`;
+    find("credits-continue").textContent = closing?.[3] || "BACK TO SETTINGS";
     find("credits-delivery").hidden = reducedMotion.matches;
     updateControls();
     if (reducedMotion.matches) settleFinale();
@@ -264,9 +281,9 @@ export function createCredits(root, { reducedMotion, onExit }) {
   }
   function close() {
     if (!state) return;
-    const reveal = state.reveal;
+    const mode = state.mode;
     hide();
-    onExit(reveal);
+    onExit(mode);
   }
   find("credits-skip").onclick = finish;
   find("credits-continue").onclick = close;
@@ -283,10 +300,16 @@ export function createCredits(root, { reducedMotion, onExit }) {
       return state ? { ...state } : null;
     },
     hide,
-    skip: () => (state?.reveal && !state.finished ? finish() : close()),
-    open(reveal = false) {
+    // Story rolls skip to the receipt first; the Settings roll closes at once.
+    skip: () =>
+      state && state.mode !== "settings" && !state.finished
+        ? finish()
+        : close(),
+    open(mode = "settings") {
+      if (typeof mode === "boolean") mode = mode ? "reveal" : "settings";
       state = {
-        reveal,
+        mode,
+        reveal: mode === "reveal",
         elapsed: 0,
         paused: false,
         finished: false,

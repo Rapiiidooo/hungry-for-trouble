@@ -73,10 +73,15 @@ export function receiptEffects(parent, ownGeometry) {
       head.count = trail.count = Math.min(game.hazards.length, 128);
       for (let i = 0; i < head.count; i++) {
         const shot = game.hazards[i];
+        // At eye level a receipt brushing the lens would fill the screen; damage cues cover it.
+        const grazing =
+          camera.position.y < 2 &&
+          Math.hypot(shot.x - camera.position.x, shot.z - camera.position.z) <
+            1.1;
         t.position.set(shot.x, 0.78, shot.z);
         t.quaternion.copy(camera.quaternion);
         t.rotateZ(Math.sin((shot.age || 0) * 20 + i) * 0.25);
-        t.scale.set(0.24, 0.43, 1);
+        t.scale.set(grazing ? 0 : 0.24, grazing ? 0 : 0.43, 1);
         t.updateMatrix();
         head.setMatrixAt(i, t.matrix);
         direction.set(shot.vx, 0, shot.vz).normalize();
@@ -86,7 +91,7 @@ export function receiptEffects(parent, ownGeometry) {
         basis.makeBasis(side, direction, normal);
         t.quaternion.setFromRotationMatrix(basis);
         t.position.addScaledVector(direction, -0.36);
-        t.scale.set(0.09, 0.75, 1);
+        t.scale.set(grazing ? 0 : 0.09, grazing ? 0 : 0.75, 1);
         t.updateMatrix();
         trail.setMatrixAt(i, t.matrix);
       }
