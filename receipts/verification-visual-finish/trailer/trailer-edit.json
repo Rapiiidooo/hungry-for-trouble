@@ -1,0 +1,120 @@
+{
+  "source": "http://localhost:3001/",
+  "gameplayCommit": "d3189497996019ce2f836779f614096589b9d5c3",
+  "editing": "Real-speed excerpts; short crossfades and two dips to black; original English caption overlays and end card. No combat manipulation or duplicated freeze frames in gameplay shots.",
+  "bpmGrid": 132,
+  "transitionSeconds": 0.18,
+  "clips": [
+    {
+      "floor": 1,
+      "start": 0.65,
+      "beats": 8,
+      "label": "CRUMBS ARE AMMO.",
+      "tag": "HUNGRY FOR TROUBLE",
+      "file": "edit/part-0.mp4",
+      "duration": 3.8
+    },
+    {
+      "floor": 1,
+      "start": 5.648,
+      "beats": 8,
+      "label": "OVERTIME. EAT THE COMPETITION.",
+      "file": "edit/part-1.mp4",
+      "duration": 3.8
+    },
+    {
+      "floor": 24,
+      "start": 3.6710000000000003,
+      "beats": 12,
+      "label": "STEAL THEIR POINT OF VIEW.",
+      "file": "edit/part-2.mp4",
+      "duration": 5.633333
+    },
+    {
+      "floor": 3,
+      "start": 4.4,
+      "beats": 6,
+      "label": "NEW AISLE. NEW PROBLEMS.",
+      "file": "edit/part-3.mp4",
+      "duration": 2.9
+    },
+    {
+      "floor": 12,
+      "start": 11.241,
+      "beats": 10,
+      "label": "TAKE THE STAFF SHORTCUT.",
+      "file": "edit/part-4.mp4",
+      "duration": 4.733333
+    },
+    {
+      "floor": 11,
+      "start": 7.4,
+      "beats": 6,
+      "label": "WATCH YOUR WHEELS.",
+      "file": "edit/part-5.mp4",
+      "duration": 2.9
+    },
+    {
+      "floor": 15,
+      "start": 9.2,
+      "beats": 8,
+      "label": "MANAGEMENT WOULD LIKE A WORD.",
+      "file": "edit/part-6.mp4",
+      "duration": 3.8
+    },
+    {
+      "floor": 24,
+      "start": 15.231,
+      "beats": 6,
+      "label": "FIND THE KEYS...",
+      "file": "edit/part-7.mp4",
+      "duration": 2.9
+    },
+    {
+      "floor": 24,
+      "start": 22.179000000000002,
+      "beats": 8,
+      "label": "...BREAK INTO THE LOCKED WING.",
+      "file": "edit/part-8.mp4",
+      "duration": 3.8
+    },
+    {
+      "floor": 1,
+      "start": 19.501,
+      "beats": 6,
+      "label": "PICK YOUR NEXT BAD IDEA.",
+      "file": "edit/part-9.mp4",
+      "duration": 2.9
+    },
+    {
+      "floor": 20,
+      "start": 10.3,
+      "beats": 10,
+      "label": "HAND IN YOUR RESIGNATION.",
+      "file": "edit/part-10.mp4",
+      "duration": 4.733333
+    },
+    {
+      "file": "edit/part-11.mp4",
+      "duration": 3.8,
+      "label": "PLAY / CREDITS"
+    }
+  ],
+  "music": {
+    "file": "game/media/night-shift.mp3",
+    "platform": "Atlas",
+    "generator": "Google Lyria 3 Clip",
+    "sha256": "777f6302cd48f827c4f5d34a663bd750e348004ce3543001d5aec40fac8879ca",
+    "processing": "Original instrumental, repeated with a 350 ms crossfade, normalized and faded at the edges."
+  },
+  "output": {
+    "file": "hungry-for-trouble-trailer.mp4",
+    "bytes": 23220569,
+    "sha256": "b114cdfd0c3af6938437bd2041f7dbae2c4b9f73f3664f68958638f198ea5578",
+    "seconds": 43.733333,
+    "width": 1280,
+    "height": 720,
+    "fps": 30,
+    "audio": "AAC stereo, 48 kHz"
+  }
+}

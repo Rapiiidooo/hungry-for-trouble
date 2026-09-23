@@ -14,6 +14,10 @@ const ffmpeg = "/opt/homebrew/bin/ffmpeg";
 const ffprobe = "/opt/homebrew/bin/ffprobe";
 const beat = 60 / 132,
   fade = 0.18;
+// Provenance names the exact build that was recorded.
+const source = process.env.GAME_URL || "https://trouble.rapidoai.dev/";
+const gameplayCommit = process.env.GAMEPLAY_COMMIT;
+assert.match(gameplayCommit || "", /^[0-9a-f]{40}$/, "Set GAMEPLAY_COMMIT.");
 const metadata = {};
 for (const floor of [1, 2, 3, 11, 12, 15, 24, 20])
   metadata[floor] = JSON.parse(
@@ -34,8 +38,10 @@ const clips = [
     label: "OVERTIME. EAT THE COMPETITION.",
   },
   {
-    floor: 2,
-    start: Math.max(0, metadata[2].marks.visor - 0.8),
+    // The aisle-24 take shows the goggle change and a clean first-person kill;
+    // recorded aisle-2 takes walked into scenery at point-blank range.
+    floor: 24,
+    start: Math.max(0, metadata[24].marks.visor - 0.8),
     beats: 12,
     label: "STEAL THEIR POINT OF VIEW.",
   },
@@ -266,8 +272,8 @@ await writeFile(
   new URL("edit.json", out),
   JSON.stringify(
     {
-      source: "https://trouble.rapidoai.dev/",
-      gameplayCommit: "53def44f599b46edf8722b58b954896a6187b0dc",
+      source,
+      gameplayCommit,
       editing:
         "Real-speed excerpts; short crossfades and two dips to black; original English caption overlays and end card. No combat manipulation or duplicated freeze frames in gameplay shots.",
       bpmGrid: 132,

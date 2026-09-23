@@ -1,0 +1,175 @@
+{
+  "scope": "Real keyboard and mouse gameplay in disposable practice profiles with route unlocks preloaded and the standard enamel livery. No combat, health, ammunition, upgrade or position injection; no score submission. Edited excerpts are not a continuous campaign playthrough.",
+  "source": "http://localhost:3001/ serving runtime commit d3189497996019ce2f836779f614096589b9d5c3",
+  "recorder": "scripts/record-trailer.mjs",
+  "clips": [
+    {
+      "floor": 1,
+      "file": "aisle-1.webm",
+      "mode": "clear",
+      "marks": {
+        "overtime": 6.098,
+        "upgrade": 19.701,
+        "upgraded": 21.666
+      },
+      "chosenUpgrade": "spread",
+      "end": {
+        "floor": 2,
+        "state": "playing",
+        "hp": 3,
+        "shots": 4,
+        "kills": 1,
+        "collected": 5,
+        "keyring": []
+      },
+      "wallSeconds": 25.538
+    },
+    {
+      "floor": 2,
+      "file": "aisle-2.webm",
+      "mode": "visor",
+      "marks": {
+        "visor": 1.437,
+        "top-view": 6.999
+      },
+      "end": {
+        "floor": 2,
+        "state": "playing",
+        "hp": 2,
+        "shots": 37,
+        "kills": 3,
+        "collected": 12,
+        "keyring": []
+      },
+      "wallSeconds": 7.809
+    },
+    {
+      "floor": 3,
+      "file": "aisle-3.webm",
+      "mode": "action",
+      "marks": {
+        "overtime": 2.1
+      },
+      "end": {
+        "floor": 3,
+        "state": "playing",
+        "hp": 3,
+        "shots": 10,
+        "kills": 2,
+        "collected": 32,
+        "keyring": []
+      },
+      "wallSeconds": 12.893
+    },
+    {
+      "floor": 11,
+      "file": "aisle-11.webm",
+      "mode": "action",
+      "marks": {
+        "overtime": 2.141
+      },
+      "end": {
+        "floor": 11,
+        "state": "playing",
+        "hp": 3,
+        "shots": 13,
+        "kills": 2,
+        "collected": 28,
+        "keyring": []
+      },
+      "wallSeconds": 13.074
+    },
+    {
+      "floor": 12,
+      "file": "aisle-12.webm",
+      "mode": "portal",
+      "marks": {
+        "visor": 1.209,
+        "top-view": 6.768,
+        "teleport": 12.491
+      },
+      "end": {
+        "floor": 12,
+        "state": "playing",
+        "hp": 2,
+        "shots": 24,
+        "kills": 2,
+        "collected": 26,
+        "keyring": []
+      },
+      "wallSeconds": 17.262
+    },
+    {
+      "floor": 15,
+      "file": "aisle-15.webm",
+      "mode": "boss",
+      "marks": {
+        "overtime": 2.088,
+        "lob": 3.924,
+        "boss-hit": 11.54
+      },
+      "initialBossHp": 320,
+      "end": {
+        "floor": 15,
+        "state": "playing",
+        "hp": 3,
+        "shots": 41,
+        "kills": 2,
+        "collected": 26,
+        "keyring": [],
+        "bossHp": 317
+      },
+      "wallSeconds": 15.975
+    },
+    {
+      "floor": 20,
+      "file": "aisle-20.webm",
+      "mode": "boss",
+      "marks": {
+        "overtime": 2.09,
+        "lob": 3.926
+      },
+      "initialBossHp": 420,
+      "end": {
+        "floor": 20,
+        "state": "playing",
+        "hp": 2,
+        "shots": 44,
+        "kills": 3,
+        "collected": 26,
+        "keyring": [],
+        "bossHp": 420
+      },
+      "wallSeconds": 16.006
+    },
+    {
+      "floor": 24,
+      "file": "aisle-24.webm",
+      "mode": "keys",
+      "marks": {
+        "teleport": 3.173,
+        "visor": 4.471,
+        "top-view": 10.035,
+        "overtime": 11.373,
+        "key-red": 16.381,
+        "door-red": 23.379,
+        "key-green": 25.721,
+        "door-green": 34.917
+      },
+      "end": {
+        "floor": 24,
+        "state": "playing",
+        "hp": 2,
+        "shots": 72,
+        "kills": 5,
+        "collected": 38,
+        "keyring": [
+          "red",
+          "green"
+        ]
+      },
+      "wallSeconds": 35.959
+    }
+  ],
+  "takes": "Aisle 2 was recorded three times. Each take walked into a wall, a repair kit or an enemy at point-blank range in first person, so the Vac Cam shot uses the aisle-24 recording instead. The aisle-2 metadata above is the last take; it is not used in the cut."
+}

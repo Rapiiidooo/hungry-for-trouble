@@ -1,0 +1,27 @@
+{
+  "scope": "Existing browser checks that failed on the new build were rerun unchanged on the previous commit, from a detached worktree served locally with the same Chrome and Puppeteer. Disposable profiles; no score posted.",
+  "baselineCommit": "083469601e7ddbc0c1b65d1e3fcdc44ffcbeea96",
+  "results": [
+    {
+      "script": "scripts/onboarding-playtest.mjs",
+      "baseline": "FAIL",
+      "cause": "The desktop run saves a shift, so Play becomes Continue; the phone step waited 30 s for a briefing that Continue never opens."
+    },
+    {
+      "script": "scripts/credits-playtest.mjs",
+      "baseline": "FAIL",
+      "cause": "It expected the phrase 'not used in this build', removed when the Atlas media became runtime assets."
+    },
+    {
+      "script": "scripts/leaderboard-playtest.mjs",
+      "baseline": "FAIL in 3 of 3 runs",
+      "cause": "It read the Settings status before the asynchronous local reset finished."
+    },
+    {
+      "script": "scripts/presentation-playtest.mjs",
+      "baseline": "PASS once, FAIL once",
+      "cause": "Its unarmed practice walk to the Director sometimes loses on aisle 10 before the boss-bar check."
+    }
+  ],
+  "fix": "Commit cc9bc12 repairs the four scripts without changing game code. One further presentation failure was real: the first perspective framing placed the Director above the boss bar's clamp, and the lens lead was rebalanced before commit 0f58563."
+}

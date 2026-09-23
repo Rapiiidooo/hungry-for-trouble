@@ -1,0 +1,10 @@
+{
+  "scope": "Fresh disposable browser profiles. Real clicks, keys, mouse and touchscreen gestures. Read-only game snapshots; no gameplay state injection or score submission. Emulated phones, not physical hardware.",
+  "checks": [
+    "desktop: local OFL fonts only, practice pass opens aisles 1-10 without clears, perspective lens 27 degrees, silhouettes enabled overhead, compact status panel, mouse aim on the perspective ray, silhouette behind a shelf, goggle transition, first-person haze and tracers, no silhouettes in Vac Cam and restored overhead",
+    "portrait: local OFL fonts only, practice pass opens aisles 1-10 without clears, perspective lens 40 degrees, silhouettes enabled overhead",
+    "landscape: local OFL fonts only, practice pass opens aisles 1-10 without clears, perspective lens 27 degrees, silhouettes enabled overhead"
+  ],
+  "errors": [],
+  "result": "PASS"
+}

@@ -303,6 +303,8 @@ try {
       "hft-lessons-v1",
       JSON.stringify({ ammo: true, dash: true, visor: true }),
     );
+    // Show the standard enamel vacuum that new players see, not the earned gold livery.
+    localStorage.setItem("hft-gold-v1", "off");
   });
   await page.goto(process.env.GAME_URL || "http://localhost:3001/", {
     waitUntil: "networkidle0",

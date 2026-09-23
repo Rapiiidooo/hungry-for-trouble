@@ -1,0 +1,24 @@
+{
+  "file": "outputs/trailer/hungry-for-trouble-trailer.mp4 (ignored locally; published only as a release asset once approved)",
+  "bytes": 23220569,
+  "sha256": "b114cdfd0c3af6938437bd2041f7dbae2c4b9f73f3664f68958638f198ea5578",
+  "seconds": 43.733333,
+  "video": {
+    "h264": [
+      1280,
+      720,
+      "30/1"
+    ]
+  },
+  "audio": {
+    "codec": "aac",
+    "meanVolume": "-18.1 dB",
+    "maxVolume": "-2.7 dB"
+  },
+  "review": [
+    "Every shot shows the perspective overhead camera or first person from the runtime commit; no orthographic frames remain.",
+    "The Vac Cam shot shows the goggle change, a first-person drone kill with tracers and the goggles closing back to the top view.",
+    "Aisle 24 shows key beams, a lit red door and the green-key route; SHELF CONTROL, the Foreman and an earned upgrade card appear.",
+    "Captions and end card are legible at 1280x720; the soundtrack is the unchanged Atlas creation."
+  ]
+}
