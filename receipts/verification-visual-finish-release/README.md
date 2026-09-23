@@ -13,3 +13,7 @@ The unmodified recipe gate passes against the HTTPS URL and runtime commit. The 
 ## Trailer
 
 [Watch or download the release](https://github.com/Rapiiidooo/hungry-for-trouble/releases/tag/jam-visual-finish-2026-09-24), or [download the MP4 directly](https://github.com/Rapiiidooo/hungry-for-trouble/releases/download/jam-visual-finish-2026-09-24/hungry-for-trouble-trailer.mp4). [Video publication verification](video-publication.json) confirms that an unauthenticated download matches the local export checksum. Capture, edit and quality receipts are in [the visual finish receipts](../verification-visual-finish/README.md#trailer). The earlier department-polish trailer remains on its own release.
+
+## Entry
+
+[Submission verification](submission.json) confirms that PR #6 names the runtime commit, pastes this exact verdict, keeps the supplied wallet, contact and five declarations, declares OpenAI Codex and Claude Code with their models and the self-hosted OFL typefaces, and links the new trailer. The PR body was refreshed before the matching entry commit was pushed. Cursor Bugbot completed successfully on that commit with no unresolved review thread. Organizer review and their own gate rerun remain pending; submission does not mean acceptance or a prize.
