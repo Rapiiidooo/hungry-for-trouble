@@ -105,17 +105,26 @@ export function readProgress() {
     return { unlocked: 0, cleared: [] };
   }
 }
+function saveProgress(progress) {
+  try {
+    localStorage.setItem("hft-route-v1", JSON.stringify(progress));
+  } catch {
+    /* Optional local persistence. */
+  }
+}
 export function unlock(progress, index) {
   progress.unlocked = Math.max(
     progress.unlocked,
     Math.min(LEVELS.length - 1, index + 1),
   );
   if (!progress.cleared.includes(index)) progress.cleared.push(index);
-  try {
-    localStorage.setItem("hft-route-v1", JSON.stringify(progress));
-  } catch {
-    /* Optional local persistence. */
-  }
+  saveProgress(progress);
+}
+// Practice access to the first ten aisles; clears and the hidden floors still need the Director.
+export const PRACTICE_PASS_FLOOR = 9;
+export function openPracticeAisles(progress) {
+  progress.unlocked = Math.max(progress.unlocked, PRACTICE_PASS_FLOOR);
+  saveProgress(progress);
 }
 function floorShape(level) {
   let cells = "";

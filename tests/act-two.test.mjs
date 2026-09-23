@@ -13,6 +13,7 @@ import {
   upgradeChoices,
   readProgress,
   visibleFloorCount,
+  openPracticeAisles,
 } from "../game/arcade.js";
 import { newMatch, stepMatch } from "../game/multiplayer-sim.js";
 const dt = 1 / 60;
@@ -286,6 +287,25 @@ test("the route conceals the basement until rescue, preserving prior unlocks", (
   assert.equal(visibleFloorCount({ unlocked: 9, cleared: [0, 4, 8] }), 10);
   assert.equal(visibleFloorCount({ unlocked: 9, cleared: [9] }), 20);
   assert.equal(visibleFloorCount({ unlocked: 15, cleared: [] }), 20);
+});
+
+test("the practice pass opens ten aisles without clears or the basement", () => {
+  const stored = [];
+  globalThis.localStorage = {
+    setItem: (key, value) => stored.push([key, value]),
+  };
+  try {
+    const fresh = { unlocked: 0, cleared: [] };
+    openPracticeAisles(fresh);
+    assert.deepEqual(fresh, { unlocked: 9, cleared: [] });
+    assert.equal(visibleFloorCount(fresh), 10);
+    assert.deepEqual(stored, [["hft-route-v1", JSON.stringify(fresh)]]);
+    const later = { unlocked: 15, cleared: [9] };
+    openPracticeAisles(later);
+    assert.deepEqual(later, { unlocked: 15, cleared: [9] });
+  } finally {
+    delete globalThis.localStorage;
+  }
 });
 
 test("lobbed parcels lock their targets and allow escape before a single impact", () => {

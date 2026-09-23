@@ -132,15 +132,13 @@ export function escapeScene({
         destination.quaternion,
         ease,
       );
-      const normalization = THREE.MathUtils.lerp(
-        Math.max(1, endPosition.distanceTo(target)),
-        1,
-        ease,
-      );
+      // The overhead and destination lenses are both perspective.
       for (let i = 0; i < 16; i++)
-        camera.projectionMatrix.elements[i] =
-          (1 - ease) * startProjection.elements[i] +
-          (ease * destination.projectionMatrix.elements[i]) / normalization;
+        camera.projectionMatrix.elements[i] = THREE.MathUtils.lerp(
+          startProjection.elements[i],
+          destination.projectionMatrix.elements[i],
+          ease,
+        );
       camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
       camera.updateMatrixWorld();
       scene.background.copy(background).lerp(warm, ease);

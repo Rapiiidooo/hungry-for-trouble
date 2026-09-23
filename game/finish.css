@@ -1,0 +1,83 @@
+/* Visual finish: a soft vignette around the lit store, quieter pickups and a compact desktop kit. */
+.playing:not(.first-person) .shade {
+  background:
+    radial-gradient(
+      ellipse 82% 78% at 50% 50%,
+      transparent 58%,
+      #111a2b8f 100%
+    ),
+    linear-gradient(
+      0deg,
+      #1a2232aa,
+      transparent 23%,
+      transparent 78%,
+      #1a2232cc
+    );
+}
+.world-pop.ammo {
+  padding: 0;
+  background: none;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  text-shadow:
+    0 1px 0 #1a2232,
+    0 0 6px #1a2232;
+}
+@media (min-width: 851px) and (pointer: fine) {
+  .vitals {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    column-gap: 20px;
+    width: auto;
+    padding: 10px 15px 11px;
+    border-left: 1px solid #f0f2f340;
+    border-bottom: 3px solid var(--red);
+  }
+  .vitals .health-label {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .vitals #health {
+    grid-column: 1;
+    grid-row: 2;
+    gap: 6px;
+    margin: 5px 0 0;
+  }
+  .vitals .heart {
+    width: 26px;
+    height: 25px;
+  }
+  .vitals #ammo-panel {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    padding-bottom: 10px;
+  }
+  .playing:not(.multiplayer) .vitals #heal-hint {
+    display: none;
+  }
+  .multiplayer .vitals #heal-hint {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin: 8px 0 0;
+  }
+}
+#practice-pass {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border: 1px dashed #26365066;
+  text-align: left;
+}
+#practice-pass p {
+  margin: 0;
+  font-size: 10px;
+  color: var(--paper-muted);
+}
+#open-aisles {
+  font-size: 11px;
+  white-space: nowrap;
+}

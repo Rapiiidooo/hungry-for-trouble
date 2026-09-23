@@ -12,6 +12,7 @@ import {
 import { Sound } from "./audio.js";
 import { LEVELS } from "./levels.js";
 import { ViewRig } from "./view-rig.js";
+import { actorGhosts } from "./actor-ghosts.js";
 import { dragYaw, assistTouchAim } from "./touch-aim.js";
 import { receiptEffects } from "./combat-fx.js";
 import { RADIO, SPEAKERS, MISSION, portrait, storyCard } from "./story.js";
@@ -51,6 +52,8 @@ import {
   readProgress,
   visibleFloorCount,
   unlock,
+  openPracticeAisles,
+  PRACTICE_PASS_FLOOR,
   drawRoute,
   api,
   drawBoard,
@@ -111,6 +114,7 @@ const enamelColors = new Map([
 ]);
 let renderer, scene, camera, world, menuWorld, hero, bossModel, exitModel, halo;
 let viewRig,
+  ghosts,
   receiptFX,
   friend,
   repairModels = [];
@@ -130,9 +134,21 @@ let floorEffects,
   rescueUntil = 0,
   pendingOverlay = "",
   crew = [];
-let dashTaught = false;
+let dashTaught = false,
+  overtimeTaught = false;
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
 const compactScreen = matchMedia("(max-width: 850px), (pointer: coarse)");
+// A long perspective lens adds depth while keeping north up and the maze readable.
+// Leads keep about eight metres of view ahead and five behind outside the HUD.
+const OVERHEAD = {
+  up: 25,
+  back: 16.3,
+  fov: 27,
+  portraitFov: 40,
+  lead: -0.6,
+  portraitLead: 2,
+};
+const MENU_LENS = { fov: 24.6, portraitFov: 34.2 };
 const credits = createCredits(ui["credits-screen"], {
   reducedMotion,
   onExit: (reveal) => {
@@ -589,6 +605,7 @@ function chooseStage(index) {
   ui["practice-start"].textContent =
     `START FROM AISLE ${String(index + 1).padStart(2, "0")}`;
   ui["practice-start"].disabled = index > progress.unlocked;
+  ui["practice-pass"].hidden = progress.unlocked >= PRACTICE_PASS_FLOOR;
   drawRoute(ui["route-map"], progress, index, chooseStage);
 }
 
@@ -1018,6 +1035,7 @@ async function makeMenu() {
 
 async function buildWorld() {
   departmentFX?.dispose();
+  ghosts?.dispose();
   if (world) {
     scene.remove(world);
     world.traverse((node) => {
@@ -1035,6 +1053,7 @@ async function buildWorld() {
   particles.length = 0;
   world = new THREE.Group();
   scene.add(world);
+  ghosts = actorGhosts(world);
   enemies = [];
   batteries = [];
   gates = [];
@@ -1243,8 +1262,10 @@ async function buildWorld() {
         name = label(peer.name, "#f0f2f3", 2.3);
       world.add(model, ring, name);
       peerModels.push({ id: peer.id, model, ring, name });
+      ghosts.add(model, color);
     }
   }
+  ghosts.add(hero, palette.cream, 0.55);
   weapon?.removeFromParent();
   const gunSource = compactActor(
     await ASSET("assets/vacuum.js", { keepHierarchy: true }),
@@ -1292,6 +1313,7 @@ async function buildWorld() {
         model.add(tag);
       }
     }
+    ghosts.add(model, 0xff8065);
     world.add(model);
     enemies.push(model);
   }
@@ -1363,6 +1385,7 @@ async function buildWorld() {
         if (node.isMesh && node.material.color.getHex() === palette.red)
           node.material.color.setHex(bossTint);
       });
+    ghosts.add(bossModel, 0xff8065, 0.4);
     world.add(bossModel);
   }
   shotPool = pool(
@@ -1405,11 +1428,6 @@ async function buildWorld() {
     markEmissive,
     ownedGeometry,
   });
-  if (game.levelIndex >= 10) {
-    const sign = label(game.map.level.shape, "#e3eaf4", 5.5);
-    sign.position.set(game.map.start.x + 2, 2.3, game.map.start.z - 3);
-    world.add(sign);
-  }
   departmentFX.landmarks();
   keyLight.color.setHex(departmentFX.theme.key);
   fillLight.color.setHex(departmentFX.theme.fill);
@@ -1749,7 +1767,8 @@ function handleEvents(events) {
     }
     if (event.type === "crumb") {
       burst(event.x, event.z, palette.gold, 5, 1.3);
-      if (clock - lastAmmoPop > 0.18) {
+      // Occasional pops keep the ammunition lesson without a label on every crumb.
+      if (clock - lastAmmoPop > 0.5) {
         floatText("+2 AMMO", event.x, event.z);
         lastAmmoPop = clock;
       }
@@ -1883,11 +1902,14 @@ function handleEvents(events) {
     if (event.type === "overtime") {
       burst(event.x, event.z, palette.gold, 55, 5);
       viewKick = 0.12;
-      showMessage(
-        "OVERTIME! YOU'RE INVINCIBLE.",
-        "Touch flashing enemies to scrap them. Unlimited ammo!",
-        2.3,
-      );
+      // The Overtime banner explains later pickups; the headline only teaches the first.
+      if (!overtimeTaught)
+        showMessage(
+          "OVERTIME! YOU'RE INVINCIBLE.",
+          "Touch flashing enemies to scrap them. Unlimited ammo!",
+          2.3,
+        );
+      overtimeTaught = true;
     }
     if (event.type === "exit-open")
       showMessage(
@@ -2203,7 +2225,9 @@ function updateModels(dt) {
   }
   for (const { model, ring, sign, i } of repairModels) {
     const item = game.repairs[i];
-    model.visible = ring.visible = sign.visible = !item.collected;
+    model.visible = ring.visible = !item.collected;
+    sign.visible =
+      !item.collected && Math.hypot(item.x - p.x, item.z - p.z) < 8;
     model.position.y = 0.15 + Math.sin(clock * 3) * 0.06;
     ring.material.opacity = game.player.hp < game.player.maxHp ? 0.8 : 0.3;
   }
@@ -2332,7 +2356,6 @@ function updateModels(dt) {
     if (batch.instanceColor) batch.instanceColor.needsUpdate = true;
   }
   floorEffects?.update(game, clock, reducedMotion.matches);
-  departmentFX?.update();
   lockFX?.update(clock, reducedMotion.matches);
   presentationFX?.update(game, clock, viewRig.blend, reducedMotion.matches);
 }
@@ -2364,12 +2387,18 @@ function updateCamera(dt, advance = true) {
     const visual = renderActor(game.player);
     const margin = portrait ? 4 : 8;
     const x = clamp(visual.x, margin, (game.map.width - 1) * 2 - margin);
-    const z = clamp(visual.z - 1.2, 5, (game.map.height - 1) * 2 - 5);
+    const z = clamp(
+      visual.z + (portrait ? OVERHEAD.portraitLead : OVERHEAD.lead),
+      5,
+      (game.map.height - 1) * 2 - 5,
+    );
     follow.lerp(vector.set(x, 0, z), Math.min(1, dt * 7));
     const shake = Math.max(game.shake, viewKick);
     camera.position
       .copy(follow)
-      .add(vector.set((Math.random() - 0.5) * shake, 26, 17));
+      .add(
+        vector.set((Math.random() - 0.5) * shake, OVERHEAD.up, OVERHEAD.back),
+      );
     camera.lookAt(follow);
   }
   camera.updateMatrixWorld();
@@ -2847,6 +2876,8 @@ function telemetry() {
     viewBlend: viewRig.blend,
     transitProgress: viewRig.transitProgress,
     cameraPosition: activeCamera().position.toArray(),
+    overheadFov: camera.fov,
+    ghostsVisible: ghosts?.visibleCount || 0,
     shieldVisible: presentationFX?.shieldVisible || false,
     lobs: (game.lobs || []).map((shot) => ({ ...shot })),
     waves: (game.waves || []).map((wave) => ({ ...wave })),
@@ -3046,18 +3077,18 @@ function frame(now) {
     f.el.style.top = `${pos.y - age * 70}px`;
     f.el.style.opacity = Math.min(1, (1.25 - age) * 3);
   }
+  // Silhouettes help the overhead view only; first person must not see through walls.
+  ghosts?.update(mode === "playing" && !ending && viewRig.blend < 0.5);
   renderer.render(scene, activeCamera());
   telemetry();
 }
 
 function resize() {
   const portrait = innerWidth < 700 && innerHeight > innerWidth;
-  const height = mode === "menu" ? (portrait ? 12 : 8.5) : portrait ? 22 : 15;
+  const lens = mode === "menu" ? MENU_LENS : OVERHEAD;
   const aspect = innerWidth / innerHeight;
-  camera.left = (-height * aspect) / 2;
-  camera.right = (height * aspect) / 2;
-  camera.top = height / 2;
-  camera.bottom = -height / 2;
+  camera.aspect = aspect;
+  camera.fov = portrait ? lens.portraitFov : lens.fov;
   camera.updateProjectionMatrix();
   fpsCamera.aspect = aspect;
   fpsCamera.fov = compactScreen.matches ? (portrait ? 94 : 80) : 76;
@@ -3298,6 +3329,12 @@ function bindInput() {
   };
   ui["practice-start"].onclick = () =>
     start(true, null, { kind: "practice", level: selectedStage });
+  ui["open-aisles"].onclick = () => {
+    openPracticeAisles(progress);
+    refreshProgressUI();
+    chooseStage(selectedStage);
+    ui["practice-start"].focus();
+  };
   ui["open-daily"].onclick = () => openDaily();
   ui["open-leaderboard"].onclick = () => openDaily(true);
   for (const kind of ["daily", "general"]) {
@@ -3449,6 +3486,7 @@ async function init() {
     canvas: ui.world,
     antialias: true,
     powerPreference: "high-performance",
+    stencil: true,
   });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -3457,7 +3495,12 @@ async function init() {
   renderer.shadowMap.type = THREE.PCFShadowMap;
   scene = new THREE.Scene();
   scene.background = new THREE.Color(palette.ink);
-  camera = new THREE.OrthographicCamera(-10, 10, 8, -8, 0.1, 100);
+  camera = new THREE.PerspectiveCamera(
+    OVERHEAD.fov,
+    innerWidth / innerHeight,
+    0.5,
+    160,
+  );
   fpsCamera = new THREE.PerspectiveCamera(
     76,
     innerWidth / innerHeight,
@@ -3466,8 +3509,9 @@ async function init() {
   );
   viewRig = new ViewRig(camera, fpsCamera);
   scene.add(fpsCamera);
-  keyLight = new THREE.DirectionalLight(0xf2f6ff, 3.2);
-  keyLight.position.set(5, 24, 14);
+  // A lower key and a weaker fill give longer shadows and ink-blue depth.
+  keyLight = new THREE.DirectionalLight(0xf2f6ff, 3.7);
+  keyLight.position.set(3, 17, 22);
   keyLight.target.position.set(15, 0, 12);
   keyLight.castShadow = true;
   keyLight.shadow.mapSize.set(2048, 2048);
@@ -3482,7 +3526,7 @@ async function init() {
   keyLight.shadow.bias = -0.0002;
   keyLight.shadow.normalBias = 0.04;
   scene.add(keyLight, keyLight.target);
-  fillLight = new THREE.HemisphereLight(0xc2cbdf, 0x525e70, 1.65);
+  fillLight = new THREE.HemisphereLight(0xc2cbdf, 0x3a4458, 1.05);
   scene.add(fillLight);
   const rim = new THREE.DirectionalLight(0xb7c9e4, 1.2);
   rim.position.set(0, 8, -15);

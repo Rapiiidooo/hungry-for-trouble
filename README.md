@@ -2,7 +2,15 @@
 
 SHELF CONTROL has classified the supermarket staff as rubbish. One heavily unqualified vacuum must rescue MOP-3, free the basement crew and unplug the store AI across twenty-five floors. Eat your ammunition, dodge weaponised receipts and resign spectacularly.
 
-Play at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/). Submitted to the 404 Game Jam in [entry PR #6](https://github.com/404-Repo/404-game-jam/pull/6).
+Play at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/). Submitted to the 404 Game Jam in [entry PR #6](https://github.com/404-Repo/404-game-jam/pull/6). Short on time? **Level Select** can open all ten aisles for unranked practice.
+
+## How it was made
+
+- **Brief:** a maze chase crossed with an arcade shooter, started on 20 September 2026 after the owner stopped an earlier coffin-delivery prototype whose contract menus felt like administration. The [first commit](https://github.com/Rapiiidooo/hungry-for-trouble/blob/986b0b5/tasks/first-playable.md) records that decision.
+- **Models:** twelve objects built with the 404 recipe from three construction candidates each. Twenty-four candidates were discarded, one after failing the verifier; [receipts](receipts/README.md) keep every candidate, verifier report and selection reason.
+- **Thrown away:** an acid-green palette, a cream theme, a trivial first boss fight, crowded scaled-down phone HUDs and, in the last jam week, the flat orthographic overhead camera. Failed playtests stay in the receipts, marked FAIL.
+- **Gates:** each public release ran the official phone/4G gate; the verdicts are kept under `receipts/verification-*/jam/`.
+- **Tools:** OpenAI Codex built the game, Claude Code the final camera and visual-finish pass, the 404 recipe every mesh, and Atlas the soundtrack and two portraits. Details are in the credits and the entry file.
 
 ## Play locally
 
@@ -10,7 +18,7 @@ Play at [trouble.rapidoai.dev](https://trouble.rapidoai.dev/). Submitted to the 
 npm run dev
 ```
 
-Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installation or API key is required to run the game, leaderboard and room server. The complete static browser build is in `game/`, including Three.js and its license. Google Fonts is optional; system fonts provide a fallback.
+Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installation or API key is required to run the game, leaderboard and room server. The complete static browser build is in `game/`, including Three.js, its license and the two self-hosted typefaces (Barlow Condensed and DM Sans, SIL Open Font License, in `game/fonts/`).
 
 | Action                     | Desktop               | Touch        |
 | -------------------------- | --------------------- | ------------ |
@@ -20,7 +28,7 @@ Open [localhost:3001](http://localhost:3001). Use Node 24 or newer. No installat
 | Pause                      | Escape                | Pause button |
 | Change view during Vac Cam | V                     | View button  |
 
-A new campaign starts with ten shots. Crumbs refill ammunition and advance the collection goal. Once the goal is met, reach the marked checkout. Batteries give eight seconds of invulnerability, free spread shots and reversed enemy pursuit. White/red repair kits restore one heart and remain available when health is full. Checkout restores one heart on departure. Pick one upgrade between aisles; the cards illustrate each effect and show exact before/after stats. Campaign records and unlocked aisles are saved in this browser.
+The overhead camera uses a long perspective lens with north at the top. A vacuum or enemy hidden behind a shelf keeps a flat silhouette, so threats stay readable. A new campaign starts with ten shots. Crumbs refill ammunition and advance the collection goal. Once the goal is met, reach the marked checkout. Batteries give eight seconds of invulnerability, free spread shots and reversed enemy pursuit. White/red repair kits restore one heart and remain available when health is full. Checkout restores one heart on departure. Pick one upgrade between aisles; the cards illustrate each effect and show exact before/after stats. Campaign records and unlocked aisles are saved in this browser.
 
 Vac Cam goggles grant 18 seconds of first-person play, extra ammunition and faster firing. Click to lock mouse aim, or drag if pointer lock is unavailable. On touch, hold the right pad or right half of the scene to fire and drag sideways to look. The horizon stays level; holding still stops turning. A wider portrait view and gentle assistance near visible enemies help thumb aiming. V or **Top View** returns overhead while keeping the fire-rate bonus. The phone HUD puts essential status at the top, keeps a small live score between the thumb controls and opens the map with its map icon. Pause retains the full floor name, score and mission help.
 
@@ -56,7 +64,7 @@ Dash gives a short protected burst in your movement direction, or your aim direc
 24. **Four On The Floor:** four coloured keys, steam traps and a transport shortcut connect a cross-shaped vault.
 25. **The Locksmith:** open four locks around the perimeter, enter the central vault and destroy the last backup. Rotating receipt fans alternate with staggered artillery and shockwaves.
 
-After the familiar first aisle, eighteen floors use seeded cover and supplies inside distinct silhouettes: rings, a clover, a crescent, joined islands, a figure eight and a spiral, with different boss arenas. Objectives remain reachable. New players see ten floors and two bosses. The first Director checkout rolls the credits, interrupted by the cleaning crew, and ends with **Made by Rapido**. **The adventure continues** then introduces the hidden service lift and a conversation that waits for the player before adding ten floors to the route. Each real clear is saved. Existing Director clears unlock floor 11. Level Select can start any reached aisle with three hearts, ten shots and no upgrades. That run keeps its three-heart baseline as you progress; heart upgrades add slots normally. Full campaign personal records remain separate from practice.
+After the familiar first aisle, eighteen floors use seeded cover and supplies inside distinct silhouettes: rings, a clover, a crescent, joined islands, a figure eight and a spiral, with different boss arenas. Objectives remain reachable. New players see ten floors and two bosses. The first Director checkout rolls the credits, interrupted by the cleaning crew, and ends with **Made by Rapido**. **The adventure continues** then introduces the hidden service lift and a conversation that waits for the player before adding ten floors to the route. Each real clear is saved. Existing Director clears unlock floor 11. Level Select can start any reached aisle with three hearts, ten shots and no upgrades. **Open all ten aisles** unlocks aisles 1 to 10 for this unranked practice; it clears nothing, and the hidden floors still wait behind the Director. That run keeps its three-heart baseline as you progress; heart upgrades add slots normally. Full campaign personal records remain separate from practice.
 
 After floor 20, the crew escape and golden vacuum reward lead to **The Locked Wing**. Five further floors appear only then, including for existing saves that already cleared the core. A short frozen briefing introduces the first key. Collect a key, then approach a matching door to open it automatically. Keys stay with you for that aisle and reset on restart or the next floor. Red triangles, green diamonds, blue circles and yellow squares appear on the pickups, doors, map and compact key ring. Closed doors block movement and shots. Explore the branches, collect every key and the crumb quota, then reach checkout; the final vault also requires defeating the Locksmith. Every key is reachable before its own lock, and transport pads cannot bypass the order.
 

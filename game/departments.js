@@ -325,7 +325,6 @@ export function departmentScene({ world, game, ownedGeometry }) {
     textures = [];
   const art = tileArt(theme.pattern);
   textures.push(art);
-  const signs = [];
   const colors = new Map([
     [0xf0f2f3, theme.body],
     [0xc94732, theme.trim],
@@ -394,24 +393,14 @@ export function departmentScene({ world, game, ownedGeometry }) {
           map[row][col + 1] === "#" &&
           ![undefined, "#", " "].includes(map[row + 1]?.[col]),
       );
-      const anchors = [
-        game.map.start,
-        game.map.exit,
-        { x: game.map.width, z: game.map.height },
-      ];
-      const chosen = [];
-      for (const anchor of anchors) {
-        const site = candidates
-          .filter((p) =>
-            chosen.every((q) => Math.hypot(p.x - q.x, p.z - q.z) > 11),
-          )
-          .sort(
-            (a, b) =>
-              Math.hypot(a.x - anchor.x, a.z - anchor.z) -
-              Math.hypot(b.x - anchor.x, b.z - anchor.z),
-          )[0];
+      // One printed board near the entrance names the department without crowding play.
+      for (const anchor of [game.map.start]) {
+        const site = candidates.sort(
+          (a, b) =>
+            Math.hypot(a.x - anchor.x, a.z - anchor.z) -
+            Math.hypot(b.x - anchor.x, b.z - anchor.z),
+        )[0];
         if (!site) continue;
-        chosen.push(site);
         const texture = artwork(1024, 256, (ctx, width, height) => {
           ctx.fillStyle = `#${theme.trim.toString(16).padStart(6, "0")}`;
           ctx.fillRect(0, 0, width, height);
@@ -432,30 +421,23 @@ export function departmentScene({ world, game, ownedGeometry }) {
             231,
           );
         });
-        const sign = new THREE.Sprite(
-          new THREE.SpriteMaterial({
-            map: texture,
-            toneMapped: false,
-            depthWrite: false,
-          }),
-        );
-        sign.scale.set(3.4, 0.85, 1);
+        textures.push(texture);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          toneMapped: false,
+        });
+        const sign = new THREE.Mesh(new THREE.PlaneGeometry(3, 0.75), material);
+        sign.userData.ownMaterial = true;
+        ownedGeometry.push(sign.geometry);
+        // Stand the board on the shelf's aisle edge, tilted back towards the camera.
         sign.position.set(
           site.x,
-          theme.pattern === "cargo" ? 2.5 : 1.8,
-          site.z,
+          theme.pattern === "cargo" ? 2.45 : 1.72,
+          site.z + 0.62,
         );
+        sign.rotation.x = -0.5;
         world.add(sign);
-        signs.push(sign);
       }
-    },
-    update() {
-      for (const sign of signs)
-        sign.visible =
-          Math.hypot(
-            sign.position.x - game.player.x,
-            sign.position.z - game.player.z,
-          ) < 16;
     },
     dispose() {
       for (const material of materials.values()) material.dispose();

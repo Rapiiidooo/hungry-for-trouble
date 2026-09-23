@@ -6,6 +6,11 @@ const ROLES = [
     "One more tiny change. Famous last words.",
   ],
   [
+    "CAMERA & VISUAL FINISH",
+    "Claude Code · Anthropic",
+    "Tilted the lens. The shelves finally got depth.",
+  ],
+  [
     "ANIMATION DEPARTMENT",
     "Three.js & Codex",
     "Motion capture performed by absolutely no humans.",

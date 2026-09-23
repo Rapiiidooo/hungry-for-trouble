@@ -88,13 +88,13 @@ export class ViewRig {
     c.position.x = THREE.MathUtils.lerp(a.position.x, b.position.x, centre);
     c.position.z = THREE.MathUtils.lerp(a.position.z, b.position.z, centre);
     c.quaternion.slerpQuaternions(a.quaternion, b.quaternion, t);
-    const distance = Math.max(1, a.position.distanceTo(b.position));
-    // Homogeneous normalisation joins orthographic and perspective without a lens cut.
-    const normalization = THREE.MathUtils.lerp(distance, 1, t);
+    // Both lenses are perspective, so their projections blend without a lens cut.
     for (let i = 0; i < 16; i++)
-      c.projectionMatrix.elements[i] =
-        (1 - t) * a.projectionMatrix.elements[i] +
-        (t * b.projectionMatrix.elements[i]) / normalization;
+      c.projectionMatrix.elements[i] = THREE.MathUtils.lerp(
+        a.projectionMatrix.elements[i],
+        b.projectionMatrix.elements[i],
+        t,
+      );
     c.projectionMatrixInverse.copy(c.projectionMatrix).invert();
     c.updateMatrixWorld();
     this.updateTransit(dt, reducedMotion);
