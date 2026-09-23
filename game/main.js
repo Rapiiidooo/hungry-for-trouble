@@ -567,7 +567,7 @@ function beginEscape(destination = "result") {
     destination === "credits" ? "SKIP TO CREDITS" : "SKIP TO RESULTS";
   ui.message.classList.remove("show");
   particles.length = 0;
-  weapon.visible = false;
+  weapon.visible = muzzleFlash.visible = false;
   sound.effect("escape");
 }
 
@@ -1760,7 +1760,7 @@ function menu() {
   paused = false;
   if (world) world.visible = false;
   releaseLook();
-  if (weapon) weapon.visible = false;
+  if (weapon) weapon.visible = muzzleFlash.visible = false;
   menuWorld.visible = true;
   for (const id of ["menu", "hero-label", "footer"]) ui[id].hidden = false;
   for (const id of [
@@ -2739,8 +2739,13 @@ function updateHud() {
   ui["heal-hint"].textContent = game.daily
     ? "♥ REPAIR KIT +1 · RESPAWNS IN 30s"
     : "♥ REPAIR KIT +1 · CHECKOUT +1";
+  // Radio advice waits overhead; first person keeps the upper-left view clear.
   ui["radio"].hidden =
-    clock > radioUntil || paused || game.elapsed < 3 || game.overtime > 0;
+    clock > radioUntil ||
+    paused ||
+    game.elapsed < 3 ||
+    game.overtime > 0 ||
+    viewRig.blend > 0.5;
   const closeMine = game.mines.some(
     (m) =>
       m.blast > 0 && Math.hypot(m.x - game.player.x, m.z - game.player.z) < 2.4,
