@@ -281,9 +281,15 @@ try {
   await controls();
   await page.keyboard.press("KeyV");
   await sleep(900);
-  await page.keyboard.press("Escape");
-  await screenshot("mission-log");
-  await page.click("#pause-menu");
+  // The unarmed probe can fall to the Director during the view checks; both paths reach the menu.
+  if ((await read()).state === "playing") {
+    await page.keyboard.press("Escape");
+    await screenshot("mission-log");
+    await page.click("#pause-menu");
+  } else {
+    await page.waitForSelector("#result", { visible: true });
+    await page.click("#back-menu");
+  }
   await page.click("#open-route");
   assert.equal(
     await page.$$eval("#route-map .route-node", (nodes) => nodes.length),
