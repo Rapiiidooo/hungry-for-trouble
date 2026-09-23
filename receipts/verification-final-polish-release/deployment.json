@@ -1,0 +1,55 @@
+{
+  "url": "https://trouble.rapidoai.dev/",
+  "commit": "0ac02f146f6a21e933780fad916d48f7b83321af",
+  "utc": "2026-09-23T22:58:39.955441+00:00",
+  "files": [
+    {
+      "file": "game/index.html",
+      "sha256": "2f55fc8dc4e8591e04680ce7bafe7384e258ba802913c99ae487ab32d820c189",
+      "match": true
+    },
+    {
+      "file": "game/main.js",
+      "sha256": "1fb1b1b70404631232205a583fd651e0c38344d4acbb213714998695d64f5764",
+      "match": true
+    },
+    {
+      "file": "game/finish.css",
+      "sha256": "e4a87d87d9b3412043e056846fa6e9a91a9aa9c327cd69dd86d5f1fe55141a62",
+      "match": true
+    },
+    {
+      "file": "game/lock-effects.js",
+      "sha256": "18264fd0a39df13fa8585f203f522695b8db401740da92ecf32b689806ce41b3",
+      "match": true
+    },
+    {
+      "file": "game/style.css",
+      "sha256": "34b725713a8bf8972877c39080c17b60ec20c71f6e695af8cc1b7243f2484cd3",
+      "match": true
+    },
+    {
+      "file": "game/actor-ghosts.js",
+      "sha256": "2f062fbcf7d47cc8fa85523e26d8ad46ff6a2de2e02e8c800733c27be640146c",
+      "match": true
+    },
+    {
+      "file": "game/credits.js",
+      "sha256": "9af3c6db039d11958fb1da7d291027c5fde1881a1a6b05d0f3bf7e4b3c515007",
+      "match": true
+    },
+    {
+      "file": "game/fonts/dm-sans-variable.woff2",
+      "sha256": "468d56b6b25b05b70190b6c233d773f6f1770e8579827ce022a57f03fa8002fb",
+      "match": true
+    }
+  ],
+  "endpoints": {
+    "/healthz": 200,
+    "/api/daily": 200,
+    "/api/leaderboard?scope=general": 200,
+    "/analytics/script.js": 200
+  },
+  "score_store_sha256_before_after_equal": true,
+  "score_submissions_created": 0
+}
