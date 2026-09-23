@@ -1,0 +1,90 @@
+{
+  "url": "https://trouble.rapidoai.dev/",
+  "commit": "d3189497996019ce2f836779f614096589b9d5c3",
+  "utc": "2026-09-23T22:26:31.821262+00:00",
+  "files": [
+    {
+      "file": "game/index.html",
+      "sha256": "2f55fc8dc4e8591e04680ce7bafe7384e258ba802913c99ae487ab32d820c189",
+      "match": true
+    },
+    {
+      "file": "game/main.js",
+      "sha256": "40d437680e5d4419d9676fbd22c71f10b7e8a1839c2d8d7afec2e58d517138ab",
+      "match": true
+    },
+    {
+      "file": "game/style.css",
+      "sha256": "34b725713a8bf8972877c39080c17b60ec20c71f6e695af8cc1b7243f2484cd3",
+      "match": true
+    },
+    {
+      "file": "game/finish.css",
+      "sha256": "88299608608ea6874f4fe4376552864e1cdee9fd42a7f2cf13deedfdd45d3920",
+      "match": true
+    },
+    {
+      "file": "game/actor-ghosts.js",
+      "sha256": "2f062fbcf7d47cc8fa85523e26d8ad46ff6a2de2e02e8c800733c27be640146c",
+      "match": true
+    },
+    {
+      "file": "game/lock-effects.js",
+      "sha256": "0c3a5f87c6511ec86a7e76cc6a391eff3f1d68edc01b5bfa01a8dcf2fccbca1a",
+      "match": true
+    },
+    {
+      "file": "game/credits.js",
+      "sha256": "9af3c6db039d11958fb1da7d291027c5fde1881a1a6b05d0f3bf7e4b3c515007",
+      "match": true
+    },
+    {
+      "file": "game/escape-scene.js",
+      "sha256": "7e8caa713e0c9d9ae7a77e314f5d4b200c49274989cba0a50d85f7e176e39634",
+      "match": true
+    },
+    {
+      "file": "game/view-rig.js",
+      "sha256": "c55e12d50bc943b3c197083dbea1369c66d308f7dd52705c0b5f54c147fb57ee",
+      "match": true
+    },
+    {
+      "file": "game/arcade.js",
+      "sha256": "8d36b37c9017f04086d52c61cb553fae83cba3db7f7099c8796d151e48e3b9de",
+      "match": true
+    },
+    {
+      "file": "game/departments.js",
+      "sha256": "263270ef7fb2d246bf4c8606e265d48f70a0f10df41f65e83118ebce5fdf077b",
+      "match": true
+    },
+    {
+      "file": "game/combat-fx.js",
+      "sha256": "1e4e9443da38dd62c45f68a156000581822d1237cf1c0923ec52f5700501ffc3",
+      "match": true
+    },
+    {
+      "file": "game/fonts/dm-sans-variable.woff2",
+      "sha256": "468d56b6b25b05b70190b6c233d773f6f1770e8579827ce022a57f03fa8002fb",
+      "match": true
+    },
+    {
+      "file": "game/fonts/barlow-condensed-900.woff2",
+      "sha256": "2036f7f4aacc7759dcf8c6be2bd5bbde873c25a860f24dca0530ad14d4937723",
+      "match": true
+    },
+    {
+      "file": "game/media/night-shift.mp3",
+      "sha256": "777f6302cd48f827c4f5d34a663bd750e348004ce3543001d5aec40fac8879ca",
+      "match": true
+    }
+  ],
+  "endpoints": {
+    "/healthz": 200,
+    "/api/daily": 200,
+    "/api/leaderboard?scope=general": 200,
+    "/analytics/script.js": 200
+  },
+  "score_store_sha256_before_after_equal": true,
+  "score_submissions_created": 0
+}
